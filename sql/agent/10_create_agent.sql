@@ -182,12 +182,21 @@ CREATE OR REPLACE AGENT KRAKEN_DB.RAW.KRAKEN_AGENT
   tool_resources:
     KrakenTrading:
       semantic_view: "KRAKEN_DB.ANALYTICS.KRAKEN_TRADING_SV"
+      execution_environment:
+        type: "warehouse"
+        warehouse: "KRAKEN_WH"
 
     KrakenOperations:
       semantic_view: "KRAKEN_DB.ANALYTICS.KRAKEN_OPERATIONS_SV"
+      execution_environment:
+        type: "warehouse"
+        warehouse: "KRAKEN_WH"
 
     BlockchainOntology:
       semantic_view: "KRAKEN_DB.ANALYTICS.DLT_BLOCKCHAIN_ONTOLOGY_SV"
+      execution_environment:
+        type: "warehouse"
+        warehouse: "KRAKEN_WH"
 
     TicketSearch:
       name: "KRAKEN_DB.SEARCH.SUPPORT_TICKET_SEARCH"
