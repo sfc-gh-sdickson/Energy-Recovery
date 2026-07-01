@@ -112,16 +112,65 @@ CREATE OR REPLACE AGENT KRAKEN_DB.RAW.KRAKEN_AGENT
       covering 10 blockchain networks, consensus mechanisms, tokens, and smart contracts.
 
     sample_questions:
+      # Cortex Analyst - Trading (KrakenTrading)
       - question: "What was our total trading volume last week across all pairs?"
         answer: "I'll query the trading data to calculate total settled trade volume for the past 7 days, broken down by trading pair."
-      - question: "Which customers are showing suspicious transaction patterns?"
-        answer: "I'll run the fraud detection model to identify customers with high-velocity trading, large transactions, or unusual leverage patterns in the last 24 hours."
+      - question: "Which trading pair generated the most fee revenue this month?"
+        answer: "I'll aggregate fee revenue by trading pair for the current month and rank by total fees collected."
+      - question: "What is the average trade size in USD for VIP vs Institutional customers?"
+        answer: "I'll compare average trade values grouped by account tier, filtering to VIP and Institutional customers."
+      # Cortex Analyst - Operations (KrakenOperations)
       - question: "What's the average resolution time for Critical priority tickets this month?"
         answer: "I'll analyze support ticket data filtered to Critical priority tickets created this month and calculate average resolution time in hours."
+      - question: "How many compliance events are still in Pending review status?"
+        answer: "I'll count compliance events grouped by review status to show how many are Pending vs Cleared vs Escalated."
+      - question: "Which support category has the lowest CSAT score?"
+        answer: "I'll calculate average satisfaction scores by ticket category and identify the lowest-performing category."
+      # Cortex Analyst - Blockchain Ontology (BlockchainOntology)
       - question: "What consensus mechanism does Ethereum use and how does it differ from Bitcoin?"
         answer: "I'll query the blockchain ontology to compare consensus mechanisms. Ethereum uses Proof of Stake (PoS) while Bitcoin uses Proof of Work (PoW), with different security models and energy profiles."
+      - question: "List all ERC-20 tokens in the system with their total supply."
+        answer: "I'll query the token table filtered to Fungible (ERC-20) type and return token names, symbols, and total supply."
+      # Cortex Search - Tickets (TicketSearch)
       - question: "Find any support tickets related to failed withdrawals to hardware wallets"
         answer: "I'll search the support ticket database for tickets mentioning hardware wallets, Ledger, Trezor, or failed withdrawal issues."
+      - question: "Search for tickets where customers reported unexpected margin calls"
+        answer: "I'll perform a semantic search over support tickets for margin call complaints and unexpected liquidation issues."
+      # Cortex Search - Compliance (ComplianceSearch)
+      - question: "Search for compliance events related to sanctions screening failures"
+        answer: "I'll search compliance documentation for events involving OFAC sanctions, screening failures, or blocked transactions."
+      - question: "Find compliance alerts involving politically exposed persons in the EU"
+        answer: "I'll search compliance events for PEP checks and politically exposed person alerts filtered to EU jurisdiction."
+      # ML Functions - Fraud (FraudAlerts)
+      - question: "Which customers are showing suspicious transaction patterns right now?"
+        answer: "I'll run the fraud detection model to identify customers with high-velocity trading, large transactions, or unusual leverage patterns in the last 24 hours."
+      - question: "Are there any high-volume traders who triggered AML alerts today?"
+        answer: "I'll check the fraud alerts function for customers with elevated risk scores based on transaction velocity and amount anomalies."
+      # ML Functions - Churn (ChurnRisk)
+      - question: "Which customers are most likely to churn and why?"
+        answer: "I'll run the churn prediction model to identify at-risk customers based on inactivity, login abandonment, and support friction signals."
+      - question: "Show me Pro-tier customers at risk of leaving the platform"
+        answer: "I'll filter churn predictions to Pro-tier accounts and return those with the highest churn probability along with disengagement reasons."
+      # ML Functions - Volume Forecast (VolumeForecast)
+      - question: "What is the predicted trading volume for BTC/USD next week?"
+        answer: "I'll run the volume forecast model to provide a 7-day prediction for BTC/USD based on 30-day trends and momentum."
+      - question: "Which pairs are showing increasing volume trends?"
+        answer: "I'll check the volume forecast for all pairs and identify those with an increasing trend direction."
+      # ML Functions - LTV (CustomerLTV)
+      - question: "Who are our highest lifetime value customers?"
+        answer: "I'll run the LTV model to rank customers by predicted annual lifetime value and segment them into Whale, High Value, Growth, and Standard tiers."
+      - question: "What is the LTV breakdown by customer segment?"
+        answer: "I'll retrieve lifetime value predictions and group them by segment classification to show distribution across Whale, High Value, Growth, and Standard."
+      # ML Functions - Risk (RiskScores)
+      - question: "Which open futures positions have the worst risk grades?"
+        answer: "I'll run the risk scoring model to identify open positions with grade D or F based on leverage, unrealized losses, and concentration."
+      - question: "Are there any customers with extreme leverage on their positions?"
+        answer: "I'll check risk scores for positions with leverage above 20x and significant unrealized losses."
+      # ML Functions - Ticket Classifier (TicketClassifier)
+      - question: "Are there any support tickets that appear to be misrouted?"
+        answer: "I'll run the ticket classifier to compare current categories with predicted categories and flag mismatches with high confidence."
+      - question: "What does the ticket classification model predict for recent open tickets?"
+        answer: "I'll classify the 30 most recent open tickets and show predicted category vs assigned category with confidence scores."
 
   tools:
     - tool_spec:
