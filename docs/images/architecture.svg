@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc"/>
+      <stop offset="100%" style="stop-color:#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="snowflakeBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#29b5e8"/>
+      <stop offset="100%" style="stop-color:#1a8bb5"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#5b21b6"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bgGrad)" rx="8"/>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" font-size="22" font-weight="bold" fill="#1e293b">Kraken Intelligence Agent — System Architecture</text>
+  <text x="600" y="62" text-anchor="middle" font-size="12" fill="#64748b">Streaming-First Scalable ELT Pipeline with Snowflake Cortex</text>
+
+  <!-- Data Sources Layer -->
+  <rect x="30" y="85" width="220" height="280" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="30" y="85" width="220" height="32" rx="8" fill="url(#orangeGrad)"/>
+  <text x="140" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="white">DATA SOURCES</text>
+
+  <rect x="45" y="130" width="190" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="140" y="149" text-anchor="middle" font-size="10" fill="#92400e">Trading Engine (Spot/Margin)</text>
+
+  <rect x="45" y="165" width="190" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="140" y="184" text-anchor="middle" font-size="10" fill="#92400e">Futures/Derivatives Platform</text>
+
+  <rect x="45" y="200" width="190" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="140" y="219" text-anchor="middle" font-size="10" fill="#92400e">Customer Support (Zendesk)</text>
+
+  <rect x="45" y="235" width="190" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="140" y="254" text-anchor="middle" font-size="10" fill="#92400e">Compliance/AML Engine</text>
+
+  <rect x="45" y="270" width="190" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="140" y="289" text-anchor="middle" font-size="10" fill="#92400e">Blockchain Nodes (On-Chain)</text>
+
+  <rect x="45" y="305" width="190" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="140" y="324" text-anchor="middle" font-size="10" fill="#92400e">Market Data Feeds (OHLCV)</text>
+
+  <!-- Arrows from sources to Snowflake -->
+  <path d="M250 225 L295 225" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <defs><marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#f59e0b"/></marker></defs>
+
+  <!-- Snowflake Platform -->
+  <rect x="295" y="85" width="600" height="620" rx="8" fill="white" stroke="#29b5e8" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="295" y="85" width="600" height="32" rx="8" fill="url(#snowflakeBlue)"/>
+  <text x="595" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="white">SNOWFLAKE PLATFORM (KRAKEN_DB)</text>
+
+  <!-- RAW Schema -->
+  <rect x="310" y="130" width="270" height="150" rx="6" fill="#f0f9ff" stroke="#29b5e8" stroke-width="1"/>
+  <text x="445" y="148" text-anchor="middle" font-size="11" font-weight="bold" fill="#0369a1">RAW Schema</text>
+
+  <rect x="320" y="155" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="380" y="170" text-anchor="middle" font-size="9" fill="#0c4a6e">CUSTOMERS</text>
+
+  <rect x="320" y="180" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="380" y="195" text-anchor="middle" font-size="9" fill="#0c4a6e">TRADES</text>
+
+  <rect x="320" y="205" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="380" y="220" text-anchor="middle" font-size="9" fill="#0c4a6e">SUPPORT_TICKETS</text>
+
+  <rect x="320" y="230" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="380" y="245" text-anchor="middle" font-size="9" fill="#0c4a6e">COMPLIANCE_EVENTS</text>
+
+  <rect x="450" y="155" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="510" y="170" text-anchor="middle" font-size="9" fill="#0c4a6e">ORDERS</text>
+
+  <rect x="450" y="180" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="510" y="195" text-anchor="middle" font-size="9" fill="#0c4a6e">WALLETS</text>
+
+  <rect x="450" y="205" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="510" y="220" text-anchor="middle" font-size="9" fill="#0c4a6e">STAKING_POSITIONS</text>
+
+  <rect x="450" y="230" width="120" height="22" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+  <text x="510" y="245" text-anchor="middle" font-size="9" fill="#0c4a6e">MARKET_DATA</text>
+
+  <!-- Ontology Schema -->
+  <rect x="595" y="130" width="285" height="150" rx="6" fill="#faf5ff" stroke="#7c3aed" stroke-width="1"/>
+  <text x="737" y="148" text-anchor="middle" font-size="11" font-weight="bold" fill="#6d28d9">ONTOLOGY Schema (ISO/TS 23258)</text>
+
+  <rect x="605" y="155" width="125" height="22" rx="3" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="0.5"/>
+  <text x="667" y="170" text-anchor="middle" font-size="9" fill="#4c1d95">BLOCKCHAIN</text>
+
+  <rect x="605" y="180" width="125" height="22" rx="3" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="0.5"/>
+  <text x="667" y="195" text-anchor="middle" font-size="9" fill="#4c1d95">BLOCK</text>
+
+  <rect x="605" y="205" width="125" height="22" rx="3" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="0.5"/>
+  <text x="667" y="220" text-anchor="middle" font-size="9" fill="#4c1d95">TRANSACTION</text>
+
+  <rect x="605" y="230" width="125" height="22" rx="3" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="0.5"/>
+  <text x="667" y="245" text-anchor="middle" font-size="9" fill="#4c1d95">SMART_CONTRACT</text>
+
+  <rect x="740" y="155" width="125" height="22" rx="3" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="0.5"/>
+  <text x="802" y="170" text-anchor="middle" font-size="9" fill="#4c1d95">TOKEN</text>
+
+  <rect x="740" y="180" width="125" height="22" rx="3" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="0.5"/>
+  <text x="802" y="195" text-anchor="middle" font-size="9" fill="#4c1d95">DLT_NODE</text>
+
+  <rect x="740" y="205" width="125" height="22" rx="3" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="0.5"/>
+  <text x="802" y="220" text-anchor="middle" font-size="9" fill="#4c1d95">CONSENSUS_MECHANISM</text>
+
+  <!-- Analytics Layer -->
+  <rect x="310" y="295" width="270" height="100" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1"/>
+  <text x="445" y="313" text-anchor="middle" font-size="11" font-weight="bold" fill="#065f46">ANALYTICS Schema</text>
+
+  <rect x="320" y="320" width="250" height="22" rx="3" fill="#d1fae5" stroke="#6ee7b7" stroke-width="0.5"/>
+  <text x="445" y="335" text-anchor="middle" font-size="9" fill="#064e3b">VW_TRADING_SUMMARY | VW_CUSTOMER_360</text>
+
+  <rect x="320" y="345" width="250" height="22" rx="3" fill="#d1fae5" stroke="#6ee7b7" stroke-width="0.5"/>
+  <text x="445" y="360" text-anchor="middle" font-size="9" fill="#064e3b">VW_COMPLIANCE_DASHBOARD | VW_SUPPORT_METRICS</text>
+
+  <rect x="320" y="370" width="250" height="22" rx="3" fill="#d1fae5" stroke="#6ee7b7" stroke-width="0.5"/>
+  <text x="445" y="385" text-anchor="middle" font-size="9" fill="#064e3b">VW_REVENUE_ANALYTICS | VW_MARKET_OVERVIEW</text>
+
+  <!-- Semantic Views -->
+  <rect x="595" y="295" width="285" height="100" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
+  <text x="737" y="313" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e40af">Semantic Views (Cortex Analyst)</text>
+
+  <rect x="605" y="320" width="265" height="22" rx="3" fill="#dbeafe" stroke="#93c5fd" stroke-width="0.5"/>
+  <text x="737" y="335" text-anchor="middle" font-size="9" fill="#1e3a8a">KRAKEN_TRADING_SV (trades, orders, market)</text>
+
+  <rect x="605" y="345" width="265" height="22" rx="3" fill="#dbeafe" stroke="#93c5fd" stroke-width="0.5"/>
+  <text x="737" y="360" text-anchor="middle" font-size="9" fill="#1e3a8a">KRAKEN_OPERATIONS_SV (support, compliance)</text>
+
+  <rect x="605" y="370" width="265" height="22" rx="3" fill="#dbeafe" stroke="#93c5fd" stroke-width="0.5"/>
+  <text x="737" y="385" text-anchor="middle" font-size="9" fill="#1e3a8a">DLT_BLOCKCHAIN_ONTOLOGY_SV (on-chain)</text>
+
+  <!-- ML Layer -->
+  <rect x="310" y="410" width="270" height="100" rx="6" fill="#fdf2f8" stroke="#ec4899" stroke-width="1"/>
+  <text x="445" y="428" text-anchor="middle" font-size="11" font-weight="bold" fill="#9d174d">ML Schema (Predictions)</text>
+
+  <rect x="320" y="435" width="120" height="22" rx="3" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.5"/>
+  <text x="380" y="450" text-anchor="middle" font-size="9" fill="#831843">Fraud/AML Model</text>
+
+  <rect x="320" y="460" width="120" height="22" rx="3" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.5"/>
+  <text x="380" y="475" text-anchor="middle" font-size="9" fill="#831843">Churn Model</text>
+
+  <rect x="320" y="485" width="120" height="22" rx="3" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.5"/>
+  <text x="380" y="500" text-anchor="middle" font-size="9" fill="#831843">Volume Forecast</text>
+
+  <rect x="450" y="435" width="120" height="22" rx="3" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.5"/>
+  <text x="510" y="450" text-anchor="middle" font-size="9" fill="#831843">Customer LTV</text>
+
+  <rect x="450" y="460" width="120" height="22" rx="3" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.5"/>
+  <text x="510" y="475" text-anchor="middle" font-size="9" fill="#831843">Risk Scoring</text>
+
+  <rect x="450" y="485" width="120" height="22" rx="3" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.5"/>
+  <text x="510" y="500" text-anchor="middle" font-size="9" fill="#831843">Ticket Classifier</text>
+
+  <!-- Cortex Search -->
+  <rect x="595" y="410" width="285" height="100" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1"/>
+  <text x="737" y="428" text-anchor="middle" font-size="11" font-weight="bold" fill="#9a3412">Cortex Search Services</text>
+
+  <rect x="605" y="435" width="265" height="28" rx="3" fill="#ffedd5" stroke="#fdba74" stroke-width="0.5"/>
+  <text x="737" y="453" text-anchor="middle" font-size="9" fill="#7c2d12">SUPPORT_TICKET_SEARCH (full-text ticket search)</text>
+
+  <rect x="605" y="468" width="265" height="28" rx="3" fill="#ffedd5" stroke="#fdba74" stroke-width="0.5"/>
+  <text x="737" y="486" text-anchor="middle" font-size="9" fill="#7c2d12">COMPLIANCE_DOC_SEARCH (policy/regulation search)</text>
+
+  <!-- Agent Layer -->
+  <rect x="310" y="530" width="570" height="160" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="595" y="550" text-anchor="middle" font-size="13" font-weight="bold" fill="#15803d">KRAKEN_AGENT (Snowflake Intelligence)</text>
+
+  <rect x="325" y="560" width="165" height="55" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="407" y="578" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">Tool: Cortex Analyst</text>
+  <text x="407" y="592" text-anchor="middle" font-size="8" fill="#166534">Text-to-SQL via</text>
+  <text x="407" y="604" text-anchor="middle" font-size="8" fill="#166534">Semantic Views</text>
+
+  <rect x="500" y="560" width="165" height="55" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="582" y="578" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">Tool: Cortex Search</text>
+  <text x="582" y="592" text-anchor="middle" font-size="8" fill="#166534">Unstructured data</text>
+  <text x="582" y="604" text-anchor="middle" font-size="8" fill="#166534">retrieval</text>
+
+  <rect x="675" y="560" width="190" height="55" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="770" y="578" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">Tool: ML Functions (UDFs)</text>
+  <text x="770" y="592" text-anchor="middle" font-size="8" fill="#166534">Predictions, scoring,</text>
+  <text x="770" y="604" text-anchor="middle" font-size="8" fill="#166534">anomaly detection</text>
+
+  <!-- Persona Routing -->
+  <rect x="325" y="625" width="540" height="55" rx="4" fill="white" stroke="#16a34a" stroke-width="1" stroke-dasharray="4"/>
+  <text x="595" y="643" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803d">Multi-Persona Routing</text>
+  <text x="410" y="663" text-anchor="middle" font-size="9" fill="#166534">Executive/PM</text>
+  <text x="595" y="663" text-anchor="middle" font-size="9" fill="#166534">Compliance Officer</text>
+  <text x="770" y="663" text-anchor="middle" font-size="9" fill="#166534">Support Manager</text>
+
+  <!-- Users -->
+  <rect x="940" y="85" width="230" height="620" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="940" y="85" width="230" height="32" rx="8" fill="url(#purpleGrad)"/>
+  <text x="1055" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="white">CONSUMERS</text>
+
+  <rect x="955" y="130" width="200" height="55" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="1055" y="152" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">Snowflake Intelligence</text>
+  <text x="1055" y="168" text-anchor="middle" font-size="9" fill="#6d28d9">Natural Language Interface</text>
+
+  <rect x="955" y="200" width="200" height="55" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="1055" y="222" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">Product Managers</text>
+  <text x="1055" y="238" text-anchor="middle" font-size="9" fill="#6d28d9">KPIs, revenue, growth</text>
+
+  <rect x="955" y="270" width="200" height="55" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="1055" y="292" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">Compliance Team</text>
+  <text x="1055" y="308" text-anchor="middle" font-size="9" fill="#6d28d9">AML, risk, regulations</text>
+
+  <rect x="955" y="340" width="200" height="55" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="1055" y="362" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">Support Managers</text>
+  <text x="1055" y="378" text-anchor="middle" font-size="9" fill="#6d28d9">Tickets, SLAs, CSAT</text>
+
+  <rect x="955" y="410" width="200" height="55" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="1055" y="432" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">Trading Ops</text>
+  <text x="1055" y="448" text-anchor="middle" font-size="9" fill="#6d28d9">Volume, liquidity, pairs</text>
+
+  <rect x="955" y="480" width="200" height="55" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="1055" y="502" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">API / Integrations</text>
+  <text x="1055" y="518" text-anchor="middle" font-size="9" fill="#6d28d9">REST API, CLI, Webhooks</text>
+
+  <!-- Connecting arrows -->
+  <path d="M895 600 L940 300" stroke="#16a34a" stroke-width="1.5" fill="none" marker-end="url(#arrowGreen)"/>
+  <defs><marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#16a34a"/></marker></defs>
+
+  <!-- Footer -->
+  <text x="600" y="780" text-anchor="middle" font-size="10" fill="#94a3b8">Kraken Intelligence Agent | Snowflake Cortex | Streaming-First ELT Architecture</text>
+</svg>

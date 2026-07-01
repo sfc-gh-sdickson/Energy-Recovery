@@ -1,67 +1,10 @@
 # Snowflake Intelligence Agent Project Template
 
 ## Purpose
-Itron is asking Snowflake to build a Natural language query tool that integrates their operations data and the ESGOnt Ontology to provide a Deterministic rule set that is used with the Probablistic LLM to provide the highest degree of analysis without hallucinations.  The ESGOnt can be found here: @https://annasvjaya.com/esgont & @https://www.sciencedirect.com/science/article/pii/S266691612500074X?via%3Dihub
+Building a Snowflake CoWork Agent for a business like Kraken is the ability to democratize data access and automate complex, cross-functional workflows while maintaining strict security and governance.Because Kraken operates in a highly regulated, high-velocity, and data-intensive industry, the main value proposition of a CoWork Agent is shifting from "asking for a report" to "taking an action."Here are the most impactful reasons for implementing this technology at a company like Kraken:1. Accelerating Decision-Making Across SilosCryptocurrency exchanges manage massive amounts of disparate data, ranging from structured trade volumes and order book depth to unstructured customer support tickets, compliance logs, and market sentiment.The Problem: Currently, getting an answer to a complex question (e.g., "Why did our support ticket volume spike for a specific trading pair last week?") often requires multiple departments, manual SQL queries, and days of back-and-forth.The CoWork Solution: A CoWork Agent can synthesize structured data (from Snowflake) and unstructured data (from support tickets or external market reports) to provide an immediate, natural-language answer. This allows non-technical team members—such as Product Managers or Compliance Officers—to gain insights instantly without waiting on data analysts.2. Operationalizing Compliance and Risk ManagementKraken operates in a space where regulatory compliance is paramount.The Benefit: A Snowflake CoWork Agent is built with enterprise-grade governance. It operates within the organization's existing security perimeter, meaning it respects role-based access controls (RBAC) and data masking.The Use Case: You could build an agent that proactively monitors for anomalous patterns in transaction data or customer activity, immediately surfacing these to the compliance team with a summary of the context, the data source, and the specific policy violation, significantly reducing the "time-to-detection" for potential issues.3. Automating Routine "Knowledge Work"Knowledge workers at a global firm like Kraken spend significant time on repetitive, high-context tasks that aren't easily automated by simple scripts.Automated Briefings: Employees could trigger an agent to prepare a "morning briefing" that aggregates overnight market volatility, top customer queries, and system performance metrics, formatted exactly for their role.Tool Integration: Using Model Context Protocol (MCP) connectors, these agents can bridge the gap between Snowflake and external tools like Slack, Jira, or Salesforce. For instance, an agent could identify a recurring technical error from support logs (unstructured data) and automatically draft a Jira ticket for the engineering team, including the relevant data context from Snowflake.4. Improving "Time-to-Insight" for StrategyFor a business that relies on rapid execution, having a "personal agent" for every employee reduces the friction of manual data exploration.Self-Service Analytics: Instead of navigating rigid dashboards, leadership can ask "What if" questions (e.g., "How would a 5% increase in fee structure for [Asset] impact our monthly revenue based on last quarter’s volume?") and receive data-grounded forecasts immediately. This allows for faster, more informed strategic pivots in a volatile market.Summary: Why it fits KrakenThe core advantage of using Snowflake CoWork specifically—rather than a generic LLM—is that it is grounded in your enterprise data from day one. It doesn't just "chat"; it understands how Kraken defines its business metrics, follows your specific governance rules, and can be configured to take actions that actually move the business forward within the systems you already use.
 
 ## Customer details
-Itron
-We create a more resourceful world Protecting the world’s resources is essential
-Itron is transforming how the world manages energy, water and city services. Our trusted intelligent infrastructure solutions help utilities and cities improve efficiency, build resilience and deliver safe, reliable and affordable service. With edge intelligence, we connect people, data insights and devices so communities can better manage the essential resources they rely on to live and thrive. Join us as we create a more resourceful world.
-
-Innovation is in our DNA
-People throughout the industry know us for delivering proven results, at scale, for decades. Leveraging our expertise and innovation, we open the door to more possibilities for energy, water and city service management with more intelligence that’s delivered in the right places, at the right time.
-
-INNOVATION HIGHLIGHTS
-Meet our team
-Itron’s executive leadership team has spent decades serving energy and water industry. Like all of us at Itron, they are committed to creating more efficient and insightful utilities, smarter cities and a more resourceful world that addresses the sustainability challenges of today and tomorrow.
-
-Our values and behaviors
-Protecting the world’s energy and water is essential. To ensure our work has the greatest positive impact on the management of these resources as possible, we align ourselves to a shared set of values and behaviors. These guide not only what we do but how we do it as we create a more resourceful world
-
-CUSTOMER-CENTRIC
-we listen; we imagine; we execute; we strive to exceed the expectation of our customers, internal or external
-
-AUTHENTIC
-we are respectful; we are direct; we discuss; we debate; we speak up; we tell the truth; we act with integrity, always
-
-ACCOUNTABLE
-we are decisive; we own our work – both our results and how they are achieved
-
-AGILE
-we prepare; we anticipate; we are flexible; we are resilient; we act with urgency; we are persistent; we drive change
-
-COLLABORATIVE
-we push each other forward; we pull each other upward; we are better together; once a decision is made, we support it
-
-INNOVATIVE
-we are curious; we look forward; we explore; we take risks; we find a better way; we continuously learn
-
-Resourcefulness in action
-
-2025 Resourcefulness Report
-How can utilities embrace the transformative role of data analytics, AI and grid edge intelligence? Download our report to find out.
-
-2025 Corporate Sustainability Report
-Explore Itron’s sustainability strategy, progress and results for the most recent reporting year.
-
-2024 Proven Benefits Supplement
-Learn how Itron's solutions help address the sustainability challenges of our customers.
-
-New and noteworthy
-Itron logl
-June 25, 2026
-Nominations Now Open for Itron’s Eighth Annual Innovator Award
-
-June 24, 2026
-AI Water MetersOpens in new window
-
-June 17, 2026
-Leading with a Viewpoint and Grace Opens in new window
-
-June 16, 2026
-Itron Collaborates With Watercare Services For New Zealand's Largest Smart Water Meter UpgradeOpens in new window
-Powering the next generation
-Solving the energy and water challenges of tomorrow will require fresh thinking and new perspectives. Those solutions will rely heavily on STEM education. That's why Itron, as a business leader and STEM employer, has worked with renowned educators to develop Resourcefulness: An Introduction to the Energy-Water Nexus.
+Kraken is a prominent, global cryptocurrency exchange that provides a platform for individuals and institutions to buy, sell, and trade digital assets. Founded in 2011, it has grown from a specialized Bitcoin platform into a comprehensive multi-asset financial services company.While it is widely known as a crypto exchange, Kraken's operations have expanded to include derivatives, staking services, and, in some regions, access to traditional financial assets like stocks and ETFs.How Kraken Makes MoneyKraken’s revenue model is diversified across several streams:Trading Fees (Transaction Fees): This is the core of Kraken's business. The platform charges a percentage fee on trades executed on its exchange. These fees vary based on the user's trading volume, the specific market (e.g., spot, margin, or futures), and whether the user is an individual or an institutional client. Higher-volume traders typically benefit from lower, tiered fee structures.Staking and Earn Services: Kraken allows users to "stake" or hold certain cryptocurrencies to help secure blockchain networks. In return, users earn rewards. Kraken generates revenue by taking a commission or percentage of the staking rewards generated by the assets held on its platform.Asset-Based and Service Revenue: Beyond trading, Kraken earns through various financial services, such as:Custody Services: Managing the secure storage of assets for institutional clients.Payment and Financing Services: Providing infrastructure for payments and capital efficiency tools.Over-the-Counter (OTC) Trading: Kraken operates an OTC desk for large-volume traders. Unlike its standard exchange, the OTC desk often acts as the counterparty to the trade, which can involve different risk-and-revenue dynamics.Expansion into Traditional Finance: Increasingly, Kraken has diversified into non-crypto areas, such as offering commission-free trading for stocks and ETFs in certain jurisdictions and facilitating tokenized equities. These initiatives create additional revenue channels independent of pure cryptocurrency trading volume.Key Aspects of Their BusinessNot a Bank or Broker: Kraken emphasizes that it operates as a venue where users trade directly with one another. It is not an investment advisor or a traditional bank, and it does not manage or "undo" user trades.Infrastructure-Focused: The parent company, Payward, Inc., manages a unified infrastructure that supports multiple products (such as Kraken, Kraken Pro, and various institutional tools) on shared systems for liquidity, compliance, and risk management. This allows the company to launch new services efficiently.
 
 ## Customer Configuration
 
@@ -69,13 +12,13 @@ Solving the energy and water challenges of tomorrow will require fresh thinking 
 
 | Variable | Description | Example (Cathay Bank) |
 |----------|-------------|-------------------|
-| `{CUSTOMER_NAME}` | Customer name | Itron |
-| `{CUSTOMER_NAME_UPPER}` | Uppercase for SQL objects | Itron |
-| `{DATABASE_NAME}` | Main database name | Itron_DB |
-| `{WAREHOUSE_NAME}` | Warehouse name | Itron_WH |
-| `{AGENT_NAME}` | Agent identifier | Itron_AGENT |
-| `{BUSINESS_DOMAIN}` | Customer's business focus | Natural Resource Management Company |
-| `{WEB_PRESENCE}`  | Web Address | https://www.itron.com/
+| `{CUSTOMER_NAME}` | Customer name | Kraken |
+| `{CUSTOMER_NAME_UPPER}` | Uppercase for SQL objects | Kraken |
+| `{DATABASE_NAME}` | Main database name | Kraken_DB |
+| `{WAREHOUSE_NAME}` | Warehouse name | Kraken_WH |
+| `{AGENT_NAME}` | Agent identifier | Kraken_AGENT |
+| `{BUSINESS_DOMAIN}` | Customer's business focus | Crypto Currency Exchange |
+| `{WEB_PRESENCE}`  | Web Address | https://www.Kraken.com/
 
 ---
 
@@ -86,7 +29,7 @@ Solving the energy and water challenges of tomorrow will require fresh thinking 
 The proposed architecture is a modern, streaming-first Scalable ELT Pipeline designed for near real-time data availability, scalability, and maintainability.  All of the ESG data will stream data into Snowflake and they have the desire to be able to ask questions of their data with Natural Language Queries.
 
 (Note: All project images should be SVG graphics and as you can see in the "Agent Project Structure" section, there should always be architecture.svg, deployment_flow.svg, ml_models.svg at a minimum)
- This Project should encompass all aspects of the details identified on their website @https://www.itron.com. The Agent Project Structure directories should be created in the root github repo directory.
+ This Project should encompass all aspects of the details identified on their website @https://www.Kraken.com. The Agent Project Structure directories should be created in the root github repo directory. Use these files in the Ontology Directory to build the Ontology for this project.
  Additionally, create a "Query Tool Chain" SVG diagram.  This should show examples of the questions and the tool path used to answer.  I am trying to identify when each tool is used and whether the agent used the ontology.
  ```
 
@@ -109,7 +52,7 @@ The proposed architecture is a modern, streaming-first Scalable ELT Pipeline des
     ├── setup/
     │   ├── 01_database_and_schema.sql # Database, schemas, warehouse
     │   └── 02_create_tables.sql       # All table definitions
-    |   └── 03_ESGOnt_Ontology.sql # Create all tables and load the ESGOnt Ontology
+    |   └── 03_Blockchain_Ontology.sql # Create all tables and load the Blockchain Ontology
     ├── data/
     │   └── 04_generate_synthetic_data.sql # Test data generation
     ├── views/
@@ -133,7 +76,7 @@ These are examples of what is required.  You may need to add more project define
 
 1. `sql/setup/01_database_and_schema.sql`
 2. `sql/setup/02_create_tables.sql`
-3. `sql/data/03_ESGOnt_Ontology.sql`
+3. `sql/data/03_Blockchain_Ontology.sql`
 4. `sql/data/04_generate_synthetic_data.sql`
 5. `sql/views/05_create_views.sql`
 6. `sql/views/06_create_semantic_views.sql`
