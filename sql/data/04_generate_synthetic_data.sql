@@ -56,11 +56,11 @@ SELECT
 FROM TABLE(GENERATOR(ROWCOUNT => 520));
 
 -- ============================================================================
--- DYNAMICS CRM: Contacts (1500)
+-- DYNAMICS CRM: Contacts (1500) - distributed across accounts
 -- ============================================================================
 INSERT INTO CONTACTS
 SELECT UUID_STRING(),
-    (SELECT ACCOUNT_ID FROM ACCOUNTS ORDER BY RANDOM() LIMIT 1),
+    a.ACCOUNT_ID,
     CASE MOD(SEQ4(), 20) WHEN 0 THEN 'Mohammed' WHEN 1 THEN 'Chen' WHEN 2 THEN 'David' WHEN 3 THEN 'Maria' WHEN 4 THEN 'Raj' WHEN 5 THEN 'Sophie' WHEN 6 THEN 'Ahmed' WHEN 7 THEN 'Jun' WHEN 8 THEN 'Carlos' WHEN 9 THEN 'Anna' WHEN 10 THEN 'Robert' WHEN 11 THEN 'Fatima' WHEN 12 THEN 'Wei' WHEN 13 THEN 'James' WHEN 14 THEN 'Aisha' WHEN 15 THEN 'Thomas' WHEN 16 THEN 'Yuki' WHEN 17 THEN 'Omar' WHEN 18 THEN 'Priya' WHEN 19 THEN 'Hans' END,
     CASE MOD(SEQ4(), 15) WHEN 0 THEN 'Al-Rashid' WHEN 1 THEN 'Wong' WHEN 2 THEN 'Schmidt' WHEN 3 THEN 'Garcia' WHEN 4 THEN 'Patel' WHEN 5 THEN 'Martin' WHEN 6 THEN 'Hassan' WHEN 7 THEN 'Nakamura' WHEN 8 THEN 'Rodriguez' WHEN 9 THEN 'Jensen' WHEN 10 THEN 'Kumar' WHEN 11 THEN 'Kim' WHEN 12 THEN 'Santos' WHEN 13 THEN 'Mueller' WHEN 14 THEN 'Singh' END,
     'contact' || SEQ4() || '@example.com',
@@ -71,7 +71,9 @@ SELECT UUID_STRING(),
     CASE WHEN MOD(SEQ4(), 5) = 0 THEN TRUE ELSE FALSE END,
     DATEADD('day', -UNIFORM(30, 1500, RANDOM()), CURRENT_TIMESTAMP()),
     DATEADD('day', -UNIFORM(1, 60, RANDOM()), CURRENT_TIMESTAMP())
-FROM TABLE(GENERATOR(ROWCOUNT => 1500));
+FROM TABLE(GENERATOR(ROWCOUNT => 1500)) g
+JOIN (SELECT ACCOUNT_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM ACCOUNTS) a
+    ON MOD(SEQ4(), 520) + 1 = a.RN;
 
 -- ============================================================================
 -- DYNAMICS CRM: Opportunities (2200)
@@ -99,22 +101,26 @@ JOIN (SELECT ACCOUNT_ID, ACCOUNT_NAME, REGION, ROW_NUMBER() OVER (ORDER BY RANDO
     ON MOD(SEQ4(), 520) + 1 = a.RN;
 
 -- ============================================================================
--- DYNAMICS CRM: Activities (3000)
+-- DYNAMICS CRM: Activities (3000) - distributed across accounts/contacts/opps
 -- ============================================================================
 INSERT INTO ACTIVITIES
 SELECT UUID_STRING(),
-    (SELECT ACCOUNT_ID FROM ACCOUNTS ORDER BY RANDOM() LIMIT 1),
-    (SELECT CONTACT_ID FROM CONTACTS ORDER BY RANDOM() LIMIT 1),
-    (SELECT OPPORTUNITY_ID FROM OPPORTUNITIES ORDER BY RANDOM() LIMIT 1),
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 'Email' WHEN 1 THEN 'Call' WHEN 2 THEN 'Meeting' WHEN 3 THEN 'Demo' WHEN 4 THEN 'Site Visit' END,
-    CASE MOD(SEQ4(), 10) WHEN 0 THEN 'Follow-up on PX Q650 proposal' WHEN 1 THEN 'Technical review meeting' WHEN 2 THEN 'Quarterly business review' WHEN 3 THEN 'Product demo - desalination ERD' WHEN 4 THEN 'Site visit - new plant assessment' WHEN 5 THEN 'Pricing discussion' WHEN 6 THEN 'Contract negotiation call' WHEN 7 THEN 'PX G1300 introduction' WHEN 8 THEN 'Aftermarket service review' WHEN 9 THEN 'Competitive displacement meeting' END,
+    a.ACCOUNT_ID,
+    c.CONTACT_ID,
+    o.OPPORTUNITY_ID,
+    CASE MOD(a.RN, 5) WHEN 0 THEN 'Email' WHEN 1 THEN 'Call' WHEN 2 THEN 'Meeting' WHEN 3 THEN 'Demo' WHEN 4 THEN 'Site Visit' END,
+    CASE MOD(a.RN, 10) WHEN 0 THEN 'Follow-up on PX Q650 proposal' WHEN 1 THEN 'Technical review meeting' WHEN 2 THEN 'Quarterly business review' WHEN 3 THEN 'Product demo - desalination ERD' WHEN 4 THEN 'Site visit - new plant assessment' WHEN 5 THEN 'Pricing discussion' WHEN 6 THEN 'Contract negotiation call' WHEN 7 THEN 'PX G1300 introduction' WHEN 8 THEN 'Aftermarket service review' WHEN 9 THEN 'Competitive displacement meeting' END,
     'Engagement with customer regarding Energy Recovery solutions',
     DATEADD('day', -UNIFORM(0, 365, RANDOM()), CURRENT_TIMESTAMP()),
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 5 WHEN 1 THEN 15 WHEN 2 THEN 60 WHEN 3 THEN 90 WHEN 4 THEN 480 END,
-    CASE MOD(SEQ4(), 3) WHEN 0 THEN 'Completed' WHEN 1 THEN 'Completed' WHEN 2 THEN 'Scheduled' END,
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 'Sarah Chen' WHEN 1 THEN 'Ahmed Al-Rashid' WHEN 2 THEN 'Marcus Weber' WHEN 3 THEN 'Priya Sharma' WHEN 4 THEN 'James Morrison' END,
+    CASE MOD(a.RN, 5) WHEN 0 THEN 5 WHEN 1 THEN 15 WHEN 2 THEN 60 WHEN 3 THEN 90 WHEN 4 THEN 480 END,
+    CASE MOD(a.RN, 3) WHEN 0 THEN 'Completed' WHEN 1 THEN 'Completed' WHEN 2 THEN 'Scheduled' END,
+    CASE MOD(a.RN, 5) WHEN 0 THEN 'Sarah Chen' WHEN 1 THEN 'Ahmed Al-Rashid' WHEN 2 THEN 'Marcus Weber' WHEN 3 THEN 'Priya Sharma' WHEN 4 THEN 'James Morrison' END,
     CURRENT_TIMESTAMP()
-FROM TABLE(GENERATOR(ROWCOUNT => 3000));
+FROM (SELECT ACCOUNT_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM ACCOUNTS LIMIT 520) a
+CROSS JOIN (SELECT SEQ4() AS N FROM TABLE(GENERATOR(ROWCOUNT => 6))) g2
+JOIN (SELECT CONTACT_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM CONTACTS) c ON MOD(a.RN * 6 + g2.N, 1500) + 1 = c.RN
+JOIN (SELECT OPPORTUNITY_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM OPPORTUNITIES) o ON MOD(a.RN * 6 + g2.N, (SELECT COUNT(*) FROM OPPORTUNITIES)) + 1 = o.RN
+LIMIT 3000;
 
 -- ============================================================================
 -- DYNAMICS FINANCE: General Ledger (5000)
@@ -203,22 +209,27 @@ FROM INVOICES i
 WHERE i.STATUS IN ('Open', 'Overdue');
 
 -- ============================================================================
--- DYNAMICS FINANCE: Accounts Payable (600)
+-- DYNAMICS FINANCE: Accounts Payable (600) - distributed across suppliers
 -- ============================================================================
 INSERT INTO ACCOUNTS_PAYABLE
 SELECT UUID_STRING(),
-    (SELECT SUPPLIER_ID FROM ENERGY_RECOVERY_DB.ORACLE_ERP.SUPPLIERS ORDER BY RANDOM() LIMIT 1),
-    CASE MOD(SEQ4(), 10) WHEN 0 THEN 'CeramTec GmbH' WHEN 1 THEN 'Kyocera Corporation' WHEN 2 THEN 'Sandvik AB' WHEN 3 THEN 'Parker Hannifin' WHEN 4 THEN 'Trelleborg Sealing' WHEN 5 THEN 'SKF Group' WHEN 6 THEN 'Saint-Gobain' WHEN 7 THEN 'CoorsTek Inc' WHEN 8 THEN 'Morgan Advanced Materials' WHEN 9 THEN 'Kennametal' END,
-    'SINV-' || LPAD(SEQ4()::VARCHAR, 6, '0'),
+    s.SUPPLIER_ID,
+    s.SUPPLIER_NAME,
+    'SINV-' || LPAD(s.RN::VARCHAR, 6, '0'),
     DATEADD('day', -UNIFORM(0, 180, RANDOM()), CURRENT_DATE()),
     DATEADD('day', -UNIFORM(-60, 120, RANDOM()), CURRENT_DATE()),
-    CASE WHEN MOD(SEQ4(), 3) IN (0,1) THEN DATEADD('day', -UNIFORM(0, 60, RANDOM()), CURRENT_DATE()) ELSE NULL END,
+    CASE WHEN MOD(s.RN, 3) IN (0,1) THEN DATEADD('day', -UNIFORM(0, 60, RANDOM()), CURRENT_DATE()) ELSE NULL END,
     ROUND(UNIFORM(5000, 500000, RANDOM())::NUMBER, 2),
-    CASE WHEN MOD(SEQ4(), 3) IN (0,1) THEN 0 ELSE ROUND(UNIFORM(5000, 500000, RANDOM())::NUMBER, 2) END,
-    CASE MOD(SEQ4(), 3) WHEN 0 THEN 'Paid' WHEN 1 THEN 'Paid' WHEN 2 THEN 'Open' END,
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 'Raw Materials' WHEN 1 THEN 'Components' WHEN 2 THEN 'Services' WHEN 3 THEN 'Equipment' WHEN 4 THEN 'Utilities' END,
+    CASE WHEN MOD(s.RN, 3) IN (0,1) THEN 0 ELSE ROUND(UNIFORM(5000, 500000, RANDOM())::NUMBER, 2) END,
+    CASE MOD(s.RN, 3) WHEN 0 THEN 'Paid' WHEN 1 THEN 'Paid' WHEN 2 THEN 'Open' END,
+    CASE MOD(s.RN, 5) WHEN 0 THEN 'Raw Materials' WHEN 1 THEN 'Components' WHEN 2 THEN 'Services' WHEN 3 THEN 'Equipment' WHEN 4 THEN 'Utilities' END,
     'USD', CURRENT_DATE()
-FROM TABLE(GENERATOR(ROWCOUNT => 600));
+FROM (
+    SELECT SUPPLIER_ID, SUPPLIER_NAME, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN
+    FROM ENERGY_RECOVERY_DB.ORACLE_ERP.SUPPLIERS
+) s
+CROSS JOIN (SELECT SEQ4() AS N FROM TABLE(GENERATOR(ROWCOUNT => 5))) g
+LIMIT 600;
 
 -- ============================================================================
 -- SCADA/IoT: Device Registry (42,000 devices)
@@ -352,7 +363,7 @@ SELECT UUID_STRING(), UUID_STRING(),
     CASE MOD(SEQ4(), 4) WHEN 0 THEN 'each' WHEN 1 THEN 'kg' WHEN 2 THEN 'set' WHEN 3 THEN 'each' END,
     ROUND(UNIFORM(5, 25000, RANDOM())::NUMBER, 4),
     UNIFORM(7, 90, RANDOM()),
-    (SELECT SUPPLIER_ID FROM SUPPLIERS ORDER BY RANDOM() LIMIT 1),
+    (SELECT SUPPLIER_ID FROM SUPPLIERS LIMIT 1),
     CASE WHEN MOD(SEQ4(), 5) IN (0,1,4) THEN TRUE ELSE FALSE END,
     'Rev ' || CHR(65 + MOD(SEQ4(), 5)),
     DATEADD('day', -UNIFORM(0, 365, RANDOM()), CURRENT_DATE())
@@ -398,18 +409,20 @@ FROM TABLE(GENERATOR(ROWCOUNT => 120));
 -- ORACLE ERP: Purchase Orders (500)
 -- ============================================================================
 INSERT INTO PURCHASE_ORDERS
-SELECT UUID_STRING(), 'PO-' || LPAD((SEQ4() + 5000)::VARCHAR, 7, '0'),
-    (SELECT SUPPLIER_ID FROM SUPPLIERS ORDER BY RANDOM() LIMIT 1),
+SELECT UUID_STRING(), 'PO-' || LPAD((s.RN + 5000)::VARCHAR, 7, '0'),
+    s.SUPPLIER_ID,
     UUID_STRING(),
-    CASE MOD(SEQ4(), 10) WHEN 0 THEN 'Alumina Powder 99.7%' WHEN 1 THEN 'Duplex Steel Bar SAF 2507' WHEN 2 THEN 'EPDM O-Ring Set' WHEN 3 THEN 'SiC Thrust Bearing' WHEN 4 THEN 'Viton Seal Kit' WHEN 5 THEN 'SS316 Housing Blank' WHEN 6 THEN 'Diamond Grinding Wheel' WHEN 7 THEN 'Packaging Crates' WHEN 8 THEN 'Lubricant - Food Grade' WHEN 9 THEN 'Electronic Sensors' END,
+    CASE MOD(s.RN, 10) WHEN 0 THEN 'Alumina Powder 99.7%' WHEN 1 THEN 'Duplex Steel Bar SAF 2507' WHEN 2 THEN 'EPDM O-Ring Set' WHEN 3 THEN 'SiC Thrust Bearing' WHEN 4 THEN 'Viton Seal Kit' WHEN 5 THEN 'SS316 Housing Blank' WHEN 6 THEN 'Diamond Grinding Wheel' WHEN 7 THEN 'Packaging Crates' WHEN 8 THEN 'Lubricant - Food Grade' WHEN 9 THEN 'Electronic Sensors' END,
     UNIFORM(10, 500, RANDOM()),
     UNIFORM(0, 400, RANDOM()),
     ROUND(UNIFORM(10, 5000, RANDOM())::NUMBER, 4),
     ROUND(UNIFORM(5000, 500000, RANDOM())::NUMBER, 2),
     DATEADD('day', -UNIFORM(0, 365, RANDOM()), CURRENT_DATE()),
     DATEADD('day', UNIFORM(14, 90, RANDOM()), CURRENT_DATE()),
-    CASE WHEN MOD(SEQ4(), 3) IN (0,1) THEN DATEADD('day', -UNIFORM(0, 60, RANDOM()), CURRENT_DATE()) ELSE NULL END,
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 'Received' WHEN 1 THEN 'Received' WHEN 2 THEN 'Sent' WHEN 3 THEN 'Partially Received' WHEN 4 THEN 'Approved' END,
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 'Ceramics' WHEN 1 THEN 'Metals' WHEN 2 THEN 'Seals' WHEN 3 THEN 'Electronics' WHEN 4 THEN 'Packaging' END,
+    CASE WHEN MOD(s.RN, 3) IN (0,1) THEN DATEADD('day', -UNIFORM(0, 60, RANDOM()), CURRENT_DATE()) ELSE NULL END,
+    CASE MOD(s.RN, 5) WHEN 0 THEN 'Received' WHEN 1 THEN 'Received' WHEN 2 THEN 'Sent' WHEN 3 THEN 'Partially Received' WHEN 4 THEN 'Approved' END,
+    CASE MOD(s.RN, 5) WHEN 0 THEN 'Ceramics' WHEN 1 THEN 'Metals' WHEN 2 THEN 'Seals' WHEN 3 THEN 'Electronics' WHEN 4 THEN 'Packaging' END,
     'Main Warehouse', CURRENT_TIMESTAMP()
-FROM TABLE(GENERATOR(ROWCOUNT => 500));
+FROM (SELECT SUPPLIER_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM SUPPLIERS) s
+CROSS JOIN (SELECT SEQ4() AS N FROM TABLE(GENERATOR(ROWCOUNT => 5))) g
+LIMIT 500;
