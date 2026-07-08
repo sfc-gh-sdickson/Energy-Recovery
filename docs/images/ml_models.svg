@@ -1,149 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 550" font-family="Segoe UI, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600" font-family="Segoe UI, Arial, sans-serif">
   <defs>
-    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#3b82f6"/>
-      <stop offset="100%" style="stop-color:#2563eb"/>
-    </linearGradient>
-    <linearGradient id="featureGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8b5cf6"/>
-      <stop offset="100%" style="stop-color:#7c3aed"/>
-    </linearGradient>
-    <linearGradient id="modelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#10b981"/>
-      <stop offset="100%" style="stop-color:#059669"/>
-    </linearGradient>
-    <linearGradient id="deployGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f59e0b"/>
-      <stop offset="100%" style="stop-color:#d97706"/>
-    </linearGradient>
-    <filter id="shadow3" x="-3%" y="-3%" width="106%" height="106%">
-      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.16"/>
     </filter>
-    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#64748b"/>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
     </marker>
   </defs>
 
-  <rect width="1000" height="550" fill="#f8fafc"/>
-  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">ML Models Pipeline — Energy Recovery</text>
+  <!-- White Background -->
+  <rect width="1100" height="600" fill="#ffffff"/>
 
-  <!-- DATA SOURCES -->
-  <text x="110" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#2563eb">DATA SOURCES</text>
+  <!-- Title -->
+  <text x="550" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#0f172a">ML Models — Questions Answered</text>
+  <text x="550" y="56" text-anchor="middle" font-size="12" fill="#64748b">Each model answers specific business questions via SQL UDF functions</text>
 
-  <rect x="30" y="90" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
-  <text x="110" y="114" text-anchor="middle" font-size="9" fill="white" font-weight="bold">DEVICE_TELEMETRY</text>
+  <!-- ═══════════ MODEL 1: Predict Failure ═══════════ -->
+  <rect x="40" y="85" width="490" height="110" rx="8" fill="#ffffff" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="285" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#991b1b">PREDICT_PX_FAILURE()</text>
+  <text x="285" y="130" text-anchor="middle" font-size="11" fill="#7f1d1d">Predicts which PX devices will fail within the next 30 days</text>
+  <line x1="60" y1="142" x2="510" y2="142" stroke="#fecaca" stroke-width="1"/>
+  <text x="60" y="160" font-size="10" fill="#334155" font-weight="bold">Questions answered:</text>
+  <text x="60" y="177" font-size="10" fill="#475569">• "Which PX devices are at risk of failure in the next 30 days?"</text>
+  <text x="60" y="192" font-size="10" fill="#475569">• "What devices need immediate maintenance attention?"</text>
 
-  <rect x="30" y="140" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
-  <text x="110" y="164" text-anchor="middle" font-size="9" fill="white" font-weight="bold">DEVICE_REGISTRY</text>
+  <!-- Model 1: Output -->
+  <rect x="570" y="85" width="490" height="110" rx="8" fill="#ffffff" stroke="#dc2626" stroke-width="1" filter="url(#shadow)"/>
+  <text x="815" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#991b1b">Output</text>
+  <text x="590" y="128" font-size="9" fill="#475569">device_id, serial_number, device_model, installation_site</text>
+  <text x="590" y="146" font-size="9" fill="#475569">risk_score: 0-100 | risk_level: Critical/High/Medium/Low</text>
+  <text x="590" y="164" font-size="9" fill="#475569">primary_risk_factor: "High vibration - possible bearing wear"</text>
+  <text x="590" y="182" font-size="9" fill="#475569">recommended_action: "Schedule bearing inspection within 14 days"</text>
 
-  <rect x="30" y="190" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
-  <text x="110" y="214" text-anchor="middle" font-size="9" fill="white" font-weight="bold">ALARMS</text>
+  <line x1="530" y1="140" x2="565" y2="140" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <rect x="30" y="240" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
-  <text x="110" y="264" text-anchor="middle" font-size="9" fill="white" font-weight="bold">MAINTENANCE_LOGS</text>
+  <!-- ═══════════ MODEL 2: Score Efficiency ═══════════ -->
+  <rect x="40" y="215" width="490" height="110" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+  <text x="285" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">SCORE_ENERGY_EFFICIENCY()</text>
+  <text x="285" y="260" text-anchor="middle" font-size="11" fill="#1e3a8a">Scores device efficiency vs. design specs and identifies savings</text>
+  <line x1="60" y1="272" x2="510" y2="272" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="60" y="290" font-size="10" fill="#334155" font-weight="bold">Questions answered:</text>
+  <text x="60" y="307" font-size="10" fill="#475569">• "What is the energy efficiency gap across our fleet?"</text>
+  <text x="60" y="322" font-size="10" fill="#475569">• "How much energy could we save by optimizing underperforming devices?"</text>
 
-  <rect x="30" y="290" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
-  <text x="110" y="314" text-anchor="middle" font-size="9" fill="white" font-weight="bold">SALES_ORDERS</text>
+  <!-- Model 2: Output -->
+  <rect x="570" y="215" width="490" height="110" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1" filter="url(#shadow)"/>
+  <text x="815" y="238" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e40af">Output</text>
+  <text x="590" y="258" font-size="9" fill="#475569">device_model, site_region, device_count</text>
+  <text x="590" y="276" font-size="9" fill="#475569">avg_efficiency: 96.2% | design_efficiency: 98.7%</text>
+  <text x="590" y="294" font-size="9" fill="#475569">efficiency_gap: 2.5% | rating: Good/Fair/Poor</text>
+  <text x="590" y="312" font-size="9" fill="#475569">potential_energy_savings_kwh: 125,000</text>
 
-  <rect x="30" y="340" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
-  <text x="110" y="364" text-anchor="middle" font-size="9" fill="white" font-weight="bold">OPPORTUNITIES</text>
+  <line x1="530" y1="270" x2="565" y2="270" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- FEATURE ENGINEERING -->
-  <text x="340" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#7c3aed">FEATURE ENGINEERING</text>
+  <!-- ═══════════ MODEL 3: Forecast Demand ═══════════ -->
+  <rect x="40" y="345" width="490" height="110" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="285" y="370" text-anchor="middle" font-size="14" font-weight="bold" fill="#065f46">FORECAST_DEMAND()</text>
+  <text x="285" y="390" text-anchor="middle" font-size="11" fill="#064e3b">Forecasts product demand by region for next quarter</text>
+  <line x1="60" y1="402" x2="510" y2="402" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="60" y="420" font-size="10" fill="#334155" font-weight="bold">Questions answered:</text>
+  <text x="60" y="437" font-size="10" fill="#475569">• "What is the demand forecast for next quarter by product line?"</text>
+  <text x="60" y="452" font-size="10" fill="#475569">• "Which regions are showing the strongest demand growth?"</text>
 
-  <rect x="240" y="95" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
-  <text x="340" y="116" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Vibration Analysis</text>
-  <text x="340" y="132" text-anchor="middle" font-size="8" fill="#ddd6fe">AVG, trend, threshold breach</text>
-  <text x="340" y="144" text-anchor="middle" font-size="8" fill="#ddd6fe">count &gt; 5.0 mm/s</text>
+  <!-- Model 3: Output -->
+  <rect x="570" y="345" width="490" height="110" rx="8" fill="#ffffff" stroke="#059669" stroke-width="1" filter="url(#shadow)"/>
+  <text x="815" y="368" text-anchor="middle" font-size="11" font-weight="bold" fill="#065f46">Output</text>
+  <text x="590" y="388" font-size="9" fill="#475569">product_line, region, forecast_quarter</text>
+  <text x="590" y="406" font-size="9" fill="#475569">forecast_units: 180 | forecast_revenue: $45.2M</text>
+  <text x="590" y="424" font-size="9" fill="#475569">confidence: High/Medium/Low</text>
+  <text x="590" y="442" font-size="9" fill="#475569">growth_rate_pct: 8.0%</text>
 
-  <rect x="240" y="165" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
-  <text x="340" y="186" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Efficiency Metrics</text>
-  <text x="340" y="202" text-anchor="middle" font-size="8" fill="#ddd6fe">AVG recovery %, gap vs design</text>
-  <text x="340" y="214" text-anchor="middle" font-size="8" fill="#ddd6fe">degradation rate</text>
+  <line x1="530" y1="400" x2="565" y2="400" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <rect x="240" y="235" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
-  <text x="340" y="256" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Operational Features</text>
-  <text x="340" y="272" text-anchor="middle" font-size="8" fill="#ddd6fe">Operating hours, age,</text>
-  <text x="340" y="284" text-anchor="middle" font-size="8" fill="#ddd6fe">days since service, alarm count</text>
+  <!-- ═══════════ MODEL 4: Equipment Health ═══════════ -->
+  <rect x="40" y="475" width="490" height="110" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="285" y="500" text-anchor="middle" font-size="14" font-weight="bold" fill="#92400e">CALCULATE_EQUIPMENT_HEALTH()</text>
+  <text x="285" y="520" text-anchor="middle" font-size="11" fill="#78350f">Composite health score combining efficiency, vibration, maintenance, age</text>
+  <line x1="60" y1="532" x2="510" y2="532" stroke="#fde68a" stroke-width="1"/>
+  <text x="60" y="550" font-size="10" fill="#334155" font-weight="bold">Questions answered:</text>
+  <text x="60" y="567" font-size="10" fill="#475569">• "What is the equipment health score distribution across our fleet?"</text>
+  <text x="60" y="582" font-size="10" fill="#475569">• "Which devices are in critical condition and what is the top concern?"</text>
 
-  <rect x="240" y="305" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
-  <text x="340" y="326" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Demand Signals</text>
-  <text x="340" y="342" text-anchor="middle" font-size="8" fill="#ddd6fe">Historical orders, pipeline,</text>
-  <text x="340" y="354" text-anchor="middle" font-size="8" fill="#ddd6fe">seasonal patterns, backlog</text>
+  <!-- Model 4: Output -->
+  <rect x="570" y="475" width="490" height="110" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1" filter="url(#shadow)"/>
+  <text x="815" y="498" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">Output</text>
+  <text x="590" y="518" font-size="9" fill="#475569">device_id, serial_number, device_model, installation_site</text>
+  <text x="590" y="536" font-size="9" fill="#475569">health_score: 0-100 | status: Excellent/Good/Fair/Poor/Critical</text>
+  <text x="590" y="554" font-size="9" fill="#475569">efficiency_score, vibration_score, maintenance_score, age_score</text>
+  <text x="590" y="572" font-size="9" fill="#475569">top_concern: "High vibration - bearing inspection needed"</text>
 
-  <!-- Arrows: Data to Features -->
-  <path d="M 190 110 L 235 120" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 190 160 L 235 170" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 190 260 L 235 260" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 190 310 L 235 330" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 190 360 L 235 340" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-
-  <!-- MODEL SCORING -->
-  <text x="590" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#059669">MODEL SCORING</text>
-
-  <rect x="490" y="90" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
-  <text x="590" y="112" text-anchor="middle" font-size="10" fill="white" font-weight="bold">PREDICT_PX_FAILURE</text>
-  <text x="590" y="130" text-anchor="middle" font-size="8" fill="#a7f3d0">Rule-based risk scoring (0-100)</text>
-  <text x="590" y="145" text-anchor="middle" font-size="8" fill="#a7f3d0">Weighted: vib 40% + eff 30% + temp 20%</text>
-
-  <rect x="490" y="170" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
-  <text x="590" y="192" text-anchor="middle" font-size="10" fill="white" font-weight="bold">SCORE_ENERGY_EFFICIENCY</text>
-  <text x="590" y="210" text-anchor="middle" font-size="8" fill="#a7f3d0">Actual vs design spec comparison</text>
-  <text x="590" y="225" text-anchor="middle" font-size="8" fill="#a7f3d0">Gap analysis + savings estimate</text>
-
-  <rect x="490" y="250" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
-  <text x="590" y="272" text-anchor="middle" font-size="10" fill="white" font-weight="bold">FORECAST_DEMAND</text>
-  <text x="590" y="290" text-anchor="middle" font-size="8" fill="#a7f3d0">Historical trend + 8% growth</text>
-  <text x="590" y="305" text-anchor="middle" font-size="8" fill="#a7f3d0">Pipeline-weighted adjustment</text>
-
-  <rect x="490" y="330" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
-  <text x="590" y="352" text-anchor="middle" font-size="10" fill="white" font-weight="bold">CALCULATE_EQUIPMENT_HEALTH</text>
-  <text x="590" y="370" text-anchor="middle" font-size="8" fill="#a7f3d0">Composite: eff 35% + vib 30%</text>
-  <text x="590" y="385" text-anchor="middle" font-size="8" fill="#a7f3d0">+ maint 20% + age 15%</text>
-
-  <!-- Arrows: Features to Models -->
-  <path d="M 440 122 L 485 122" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 440 192 L 485 200" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 440 262 L 485 270" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 440 332 L 485 350" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-
-  <!-- DEPLOYMENT -->
-  <text x="840" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#d97706">DEPLOYMENT</text>
-
-  <rect x="740" y="90" width="210" height="60" rx="8" fill="url(#deployGrad)" filter="url(#shadow3)"/>
-  <text x="845" y="114" text-anchor="middle" font-size="10" fill="white" font-weight="bold">SQL UDF (RETURNS ARRAY)</text>
-  <text x="845" y="132" text-anchor="middle" font-size="8" fill="#fef3c7">Deployed to ML_MODELS schema</text>
-  <text x="845" y="144" text-anchor="middle" font-size="8" fill="#fef3c7">Executed via ENERGY_RECOVERY_WH</text>
-
-  <rect x="740" y="170" width="210" height="60" rx="8" fill="url(#deployGrad)" filter="url(#shadow3)"/>
-  <text x="845" y="194" text-anchor="middle" font-size="10" fill="white" font-weight="bold">Agent Tool (Generic)</text>
-  <text x="845" y="212" text-anchor="middle" font-size="8" fill="#fef3c7">Registered in Agent spec</text>
-  <text x="845" y="224" text-anchor="middle" font-size="8" fill="#fef3c7">type: function</text>
-
-  <rect x="740" y="250" width="210" height="60" rx="8" fill="url(#deployGrad)" filter="url(#shadow3)"/>
-  <text x="845" y="274" text-anchor="middle" font-size="10" fill="white" font-weight="bold">Natural Language Access</text>
-  <text x="845" y="292" text-anchor="middle" font-size="8" fill="#fef3c7">User asks → Agent routes →</text>
-  <text x="845" y="304" text-anchor="middle" font-size="8" fill="#fef3c7">Function executes → Results returned</text>
-
-  <!-- Arrows: Models to Deploy -->
-  <path d="M 690 122 L 735 120" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 690 202 L 735 200" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <path d="M 690 280 L 735 280" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-
-  <!-- Output Examples -->
-  <rect x="50" y="420" width="900" height="110" rx="10" fill="white" stroke="#e2e8f0" filter="url(#shadow3)"/>
-  <text x="500" y="445" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b">Model Outputs (Example)</text>
-
-  <text x="80" y="470" font-size="9" fill="#475569" font-weight="bold">PredictFailure:</text>
-  <text x="175" y="470" font-size="9" fill="#475569">{device_id, risk_score: 82, risk_level: "Critical", primary_risk_factor: "High vibration", recommended_action: "..."}</text>
-
-  <text x="80" y="490" font-size="9" fill="#475569" font-weight="bold">ScoreEfficiency:</text>
-  <text x="175" y="490" font-size="9" fill="#475569">{device_model: "PX-Q650", avg_efficiency: 96.2, design: 98.7, gap: 2.5%, potential_savings_kwh: 125000}</text>
-
-  <text x="80" y="510" font-size="9" fill="#475569" font-weight="bold">ForecastDemand:</text>
-  <text x="175" y="510" font-size="9" fill="#475569">{product_line: "Desalination", region: "MENA", forecast_units: 180, forecast_revenue: $45.2M, confidence: "High"}</text>
-
-  <text x="80" y="530" font-size="9" fill="#475569" font-weight="bold">EquipmentHealth:</text>
-  <text x="175" y="530" font-size="9" fill="#475569">{device_id, health_score: 45, status: "Poor", top_concern: "High vibration - bearing inspection needed"}</text>
+  <line x1="530" y1="530" x2="565" y2="530" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 </svg>

@@ -1,109 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" font-family="Segoe UI, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 520" font-family="Segoe UI, Arial, sans-serif">
   <defs>
-    <linearGradient id="stepGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#29b5e8"/>
-      <stop offset="100%" style="stop-color:#1a8fc4"/>
-    </linearGradient>
-    <filter id="shadow2" x="-3%" y="-3%" width="106%" height="106%">
-      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.16"/>
     </filter>
-  </defs>
-
-  <rect width="1000" height="600" fill="#f8fafc"/>
-  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">Deployment Flow — Execution Order</text>
-
-  <!-- Step 1 -->
-  <rect x="50" y="70" width="200" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="150" y="93" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 1</text>
-  <text x="150" y="112" text-anchor="middle" font-size="9" fill="#e0f2fe">01_database_and_schema.sql</text>
-  <text x="150" y="124" text-anchor="middle" font-size="8" fill="#bae6fd">DB + Schemas + Warehouse</text>
-
-  <!-- Step 2 -->
-  <rect x="280" y="70" width="200" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="380" y="93" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 2</text>
-  <text x="380" y="112" text-anchor="middle" font-size="9" fill="#e0f2fe">02_create_tables.sql</text>
-  <text x="380" y="124" text-anchor="middle" font-size="8" fill="#bae6fd">22 Tables (4 schemas)</text>
-
-  <!-- Step 3 -->
-  <rect x="510" y="70" width="200" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="610" y="93" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 3</text>
-  <text x="610" y="112" text-anchor="middle" font-size="9" fill="#e0f2fe">03_ISA_95_Ontology.sql</text>
-  <text x="610" y="124" text-anchor="middle" font-size="8" fill="#bae6fd">Ontology Tables + Seed Data</text>
-
-  <!-- Step 4 -->
-  <rect x="740" y="70" width="210" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="845" y="93" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 4</text>
-  <text x="845" y="112" text-anchor="middle" font-size="9" fill="#e0f2fe">04_generate_synthetic_data.sql</text>
-  <text x="845" y="124" text-anchor="middle" font-size="8" fill="#bae6fd">107K+ Rows Synthetic Data</text>
-
-  <!-- Arrows Row 1 -->
-  <path d="M 250 100 L 275 100" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
-  <path d="M 480 100 L 505 100" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
-  <path d="M 710 100 L 735 100" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
-
-  <defs>
-    <marker id="arrowB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#29b5e8"/>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
     </marker>
   </defs>
 
-  <!-- Step 5 -->
-  <rect x="50" y="190" width="200" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="150" y="213" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 5</text>
-  <text x="150" y="232" text-anchor="middle" font-size="9" fill="#e0f2fe">05_create_views.sql</text>
-  <text x="150" y="244" text-anchor="middle" font-size="8" fill="#bae6fd">6 Analytical Views</text>
+  <!-- White Background -->
+  <rect width="1100" height="520" fill="#ffffff"/>
 
-  <!-- Step 6 -->
-  <rect x="280" y="190" width="200" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="380" y="213" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 6</text>
-  <text x="380" y="232" text-anchor="middle" font-size="9" fill="#e0f2fe">06_create_semantic_views.sql</text>
-  <text x="380" y="244" text-anchor="middle" font-size="8" fill="#bae6fd">3 Semantic Views</text>
+  <!-- Title -->
+  <text x="550" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#0f172a">Deployment Flow — Execution Order</text>
 
-  <!-- Step 7 -->
-  <rect x="510" y="190" width="200" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="610" y="213" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 7</text>
-  <text x="610" y="232" text-anchor="middle" font-size="9" fill="#e0f2fe">07_create_cortex_search.sql</text>
-  <text x="610" y="244" text-anchor="middle" font-size="8" fill="#bae6fd">1 Cortex Search Service</text>
+  <!-- Row 1: Steps 1-4 -->
+  <rect x="40" y="70" width="220" height="65" rx="8" fill="#ffffff" stroke="#0891b2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="150" y="94" text-anchor="middle" font-size="12" font-weight="bold" fill="#0e7490">Step 1</text>
+  <text x="150" y="112" text-anchor="middle" font-size="10" fill="#155e75">01_database_and_schema.sql</text>
+  <text x="150" y="126" text-anchor="middle" font-size="9" fill="#64748b">Database + 9 Schemas + Warehouse</text>
 
-  <!-- Step 8 (optional) -->
-  <rect x="740" y="190" width="210" height="60" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="4" filter="url(#shadow2)"/>
-  <text x="845" y="213" text-anchor="middle" font-size="10" font-weight="bold" fill="#64748b">STEP 8 (Optional)</text>
-  <text x="845" y="232" text-anchor="middle" font-size="9" fill="#64748b">08_ml_models.ipynb</text>
-  <text x="845" y="244" text-anchor="middle" font-size="8" fill="#94a3b8">ML Model Training</text>
+  <line x1="260" y1="102" x2="290" y2="102" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- Arrows Row 2 -->
-  <path d="M 250 220 L 275 220" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
-  <path d="M 480 220 L 505 220" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
-  <path d="M 710 220 L 735 220" stroke="#94a3b8" stroke-width="2" fill="none" stroke-dasharray="4" marker-end="url(#arrowB)"/>
+  <rect x="295" y="70" width="220" height="65" rx="8" fill="#ffffff" stroke="#0891b2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="405" y="94" text-anchor="middle" font-size="12" font-weight="bold" fill="#0e7490">Step 2</text>
+  <text x="405" y="112" text-anchor="middle" font-size="10" fill="#155e75">02_create_tables.sql</text>
+  <text x="405" y="126" text-anchor="middle" font-size="9" fill="#64748b">22 Tables across 4 Source Schemas</text>
+
+  <line x1="515" y1="102" x2="545" y2="102" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="550" y="70" width="220" height="65" rx="8" fill="#ffffff" stroke="#0891b2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="660" y="94" text-anchor="middle" font-size="12" font-weight="bold" fill="#0e7490">Step 3</text>
+  <text x="660" y="112" text-anchor="middle" font-size="10" fill="#155e75">03_ISA_95_Ontology.sql</text>
+  <text x="660" y="126" text-anchor="middle" font-size="9" fill="#64748b">Ontology Tables + Seed Data</text>
+
+  <line x1="770" y1="102" x2="800" y2="102" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="805" y="70" width="250" height="65" rx="8" fill="#ffffff" stroke="#0891b2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="930" y="94" text-anchor="middle" font-size="12" font-weight="bold" fill="#0e7490">Step 4</text>
+  <text x="930" y="112" text-anchor="middle" font-size="10" fill="#155e75">04_generate_synthetic_data.sql</text>
+  <text x="930" y="126" text-anchor="middle" font-size="9" fill="#64748b">107,000+ Rows Synthetic Data</text>
 
   <!-- Down arrow from row 1 to row 2 -->
-  <path d="M 150 130 L 150 185" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
+  <line x1="930" y1="135" x2="930" y2="165" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- Step 9 -->
-  <rect x="280" y="310" width="200" height="60" rx="10" fill="url(#stepGrad)" filter="url(#shadow2)"/>
-  <text x="380" y="333" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 9</text>
-  <text x="380" y="352" text-anchor="middle" font-size="9" fill="#e0f2fe">09_ml_model_functions.sql</text>
-  <text x="380" y="364" text-anchor="middle" font-size="8" fill="#bae6fd">4 ML Prediction UDFs</text>
+  <!-- Row 2: Steps 5-7 -->
+  <rect x="40" y="170" width="220" height="65" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="150" y="194" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b21b6">Step 5</text>
+  <text x="150" y="212" text-anchor="middle" font-size="10" fill="#6d28d9">05_create_views.sql</text>
+  <text x="150" y="226" text-anchor="middle" font-size="9" fill="#64748b">6 Analytical Views</text>
 
-  <!-- Step 10 -->
-  <rect x="510" y="310" width="200" height="60" rx="10" fill="#10b981" filter="url(#shadow2)"/>
-  <text x="610" y="333" text-anchor="middle" font-size="10" font-weight="bold" fill="white">STEP 10</text>
-  <text x="610" y="352" text-anchor="middle" font-size="9" fill="#d1fae5">10_create_agent.sql</text>
-  <text x="610" y="364" text-anchor="middle" font-size="8" fill="#a7f3d0">ENERGY_RECOVERY_AGENT</text>
+  <line x1="260" y1="202" x2="290" y2="202" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- Arrows Row 3 -->
-  <path d="M 380 250 L 380 305" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
-  <path d="M 480 340 L 505 340" stroke="#29b5e8" stroke-width="2" fill="none" marker-end="url(#arrowB)"/>
+  <rect x="295" y="170" width="220" height="65" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="405" y="194" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b21b6">Step 6</text>
+  <text x="405" y="212" text-anchor="middle" font-size="10" fill="#6d28d9">06_create_semantic_views.sql</text>
+  <text x="405" y="226" text-anchor="middle" font-size="9" fill="#64748b">3 Semantic Views (Cortex Analyst)</text>
 
-  <!-- Dependencies note -->
-  <rect x="50" y="420" width="900" height="160" rx="10" fill="white" stroke="#e2e8f0" filter="url(#shadow2)"/>
-  <text x="500" y="445" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">Dependencies</text>
+  <line x1="515" y1="202" x2="545" y2="202" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <text x="80" y="475" font-size="10" fill="#475569">Step 1 → Step 2: Tables require schemas to exist</text>
-  <text x="80" y="495" font-size="10" fill="#475569">Step 2 → Step 3: Ontology tables need schema; Knowledge articles table created here</text>
-  <text x="80" y="515" font-size="10" fill="#475569">Step 3 → Step 4: Synthetic data populates tables created in Steps 2-3</text>
-  <text x="80" y="535" font-size="10" fill="#475569">Step 4 → Steps 5-7: Views and search require populated tables</text>
-  <text x="80" y="555" font-size="10" fill="#475569">Steps 5-9 → Step 10: Agent references semantic views, search service, and ML functions</text>
-  <text x="80" y="575" font-size="10" fill="#94a3b8">Step 8 is optional: ML UDFs in Step 9 use rule-based scoring without trained models</text>
+  <rect x="550" y="170" width="220" height="65" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="660" y="194" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b21b6">Step 7</text>
+  <text x="660" y="212" text-anchor="middle" font-size="10" fill="#6d28d9">07_create_cortex_search.sql</text>
+  <text x="660" y="226" text-anchor="middle" font-size="9" fill="#64748b">Cortex Search Service</text>
+
+  <!-- Back arrow from Step 4 down to feed Row 2 -->
+  <path d="M 930 170 L 930 202 L 770 202" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Row 3: Steps 8-9 -->
+  <line x1="150" y1="235" x2="150" y2="270" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="275" width="220" height="65" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="150" y="299" text-anchor="middle" font-size="12" font-weight="bold" fill="#065f46">Step 8</text>
+  <text x="150" y="317" text-anchor="middle" font-size="10" fill="#047857">08_ml_models.ipynb</text>
+  <text x="150" y="331" text-anchor="middle" font-size="9" fill="#64748b">ML Model Training (Notebook)</text>
+
+  <line x1="260" y1="307" x2="290" y2="307" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="295" y="275" width="220" height="65" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="405" y="299" text-anchor="middle" font-size="12" font-weight="bold" fill="#065f46">Step 9</text>
+  <text x="405" y="317" text-anchor="middle" font-size="10" fill="#047857">09_ml_model_functions.sql</text>
+  <text x="405" y="331" text-anchor="middle" font-size="9" fill="#64748b">4 ML Prediction UDFs</text>
+
+  <!-- Row 4: Step 10 (Agent) -->
+  <line x1="405" y1="340" x2="405" y2="375" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="220" y="380" width="460" height="75" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="450" y="408" text-anchor="middle" font-size="14" font-weight="bold" fill="#0f766e">Step 10 — 10_create_agent.sql</text>
+  <text x="450" y="428" text-anchor="middle" font-size="11" fill="#115e59">ENERGY_RECOVERY_AGENT</text>
+  <text x="450" y="446" text-anchor="middle" font-size="10" fill="#64748b">Combines all: 3 Analyst + 1 Search + 4 ML Functions = 8 Tools</text>
+
+  <!-- Dependencies Box -->
+  <rect x="720" y="275" width="340" height="180" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="890" y="300" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f172a">Dependencies</text>
+  <text x="740" y="325" font-size="10" fill="#475569">Step 1 → 2: Tables need schemas</text>
+  <text x="740" y="345" font-size="10" fill="#475569">Step 2 → 3: Ontology needs schemas</text>
+  <text x="740" y="365" font-size="10" fill="#475569">Step 3 → 4: Data populates tables</text>
+  <text x="740" y="385" font-size="10" fill="#475569">Step 4 → 5-7: Views need data</text>
+  <text x="740" y="405" font-size="10" fill="#475569">Step 7 → 8-9: ML uses populated tables</text>
+  <text x="740" y="425" font-size="10" fill="#475569">Steps 6,7,9 → 10: Agent needs all tools</text>
+  <text x="740" y="445" font-size="10" fill="#94a3b8">All steps are required.</text>
 </svg>

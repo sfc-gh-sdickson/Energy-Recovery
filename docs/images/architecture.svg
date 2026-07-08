@@ -1,156 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="Segoe UI, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" font-family="Segoe UI, Arial, sans-serif">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#f8fafc"/>
-      <stop offset="100%" style="stop-color:#e2e8f0"/>
-    </linearGradient>
-    <linearGradient id="snowflakeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#29b5e8"/>
-      <stop offset="100%" style="stop-color:#1a8fc4"/>
-    </linearGradient>
-    <linearGradient id="sourceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="100%" style="stop-color:#4f46e5"/>
-    </linearGradient>
-    <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#10b981"/>
-      <stop offset="100%" style="stop-color:#059669"/>
-    </linearGradient>
-    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="2" dy="3" stdDeviation="4" flood-opacity="0.15"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.18"/>
     </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
   </defs>
 
-  <!-- Background -->
-  <rect width="1200" height="800" fill="url(#bgGrad)"/>
+  <!-- White Background -->
+  <rect width="1400" height="700" fill="#ffffff"/>
 
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" font-size="22" font-weight="bold" fill="#1e293b">Energy Recovery — Snowflake Intelligence Architecture</text>
+  <text x="700" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">Energy Recovery — System Architecture</text>
+  <text x="700" y="62" text-anchor="middle" font-size="13" fill="#64748b">Agent at top | Data flows left to right | Streaming-first ELT Pipeline</text>
 
-  <!-- SOURCE SYSTEMS (Left) -->
-  <text x="100" y="80" font-size="14" font-weight="bold" fill="#4f46e5">SOURCE SYSTEMS</text>
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- AGENT (Top Center) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="480" y="90" width="440" height="80" rx="12" fill="#0f766e" filter="url(#shadow)"/>
+  <text x="700" y="122" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffffff">ENERGY_RECOVERY_AGENT</text>
+  <text x="700" y="146" text-anchor="middle" font-size="12" fill="#ccfbf1">3 Cortex Analyst  |  1 Cortex Search  |  4 ML Functions</text>
+  <text x="700" y="162" text-anchor="middle" font-size="11" fill="#99f6e4">Natural Language → Insights for Executives, Engineers, Operators</text>
 
-  <rect x="30" y="100" width="180" height="55" rx="8" fill="url(#sourceGrad)" filter="url(#shadow)"/>
-  <text x="120" y="123" text-anchor="middle" font-size="11" fill="white" font-weight="bold">Microsoft Dynamics</text>
-  <text x="120" y="142" text-anchor="middle" font-size="10" fill="#c7d2fe">CRM + Finance &amp; Ops</text>
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- INTELLIGENCE LAYER (Row 2) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
 
-  <rect x="30" y="175" width="180" height="55" rx="8" fill="url(#sourceGrad)" filter="url(#shadow)"/>
-  <text x="120" y="198" text-anchor="middle" font-size="11" fill="white" font-weight="bold">SCADA / IoT</text>
-  <text x="120" y="217" text-anchor="middle" font-size="10" fill="#c7d2fe">42,000+ PX Devices</text>
+  <!-- Semantic Views -->
+  <rect x="80" y="220" width="240" height="70" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="200" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#5b21b6">Semantic Views</text>
+  <text x="200" y="270" text-anchor="middle" font-size="10" fill="#6d28d9">SV_FINANCIAL_OPS</text>
+  <text x="200" y="284" text-anchor="middle" font-size="10" fill="#6d28d9">SV_CRM_PIPELINE | SV_IOT_PERFORMANCE</text>
 
-  <rect x="30" y="250" width="180" height="55" rx="8" fill="url(#sourceGrad)" filter="url(#shadow)"/>
-  <text x="120" y="273" text-anchor="middle" font-size="11" fill="white" font-weight="bold">Oracle ERP</text>
-  <text x="120" y="292" text-anchor="middle" font-size="10" fill="#c7d2fe">Manufacturing &amp; Supply Chain</text>
+  <!-- Cortex Search -->
+  <rect x="380" y="220" width="240" height="70" rx="8" fill="#ffffff" stroke="#0891b2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="500" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#0e7490">Cortex Search</text>
+  <text x="500" y="270" text-anchor="middle" font-size="10" fill="#155e75">KNOWLEDGE_SEARCH</text>
+  <text x="500" y="284" text-anchor="middle" font-size="10" fill="#155e75">Product Specs, Procedures, ISA-95</text>
 
-  <!-- Arrows: Source to Snowflake -->
-  <path d="M 210 127 L 280 200" stroke="#6366f1" stroke-width="2" fill="none" marker-end="url(#arrowPurple)"/>
-  <path d="M 210 202 L 280 240" stroke="#6366f1" stroke-width="2" fill="none" marker-end="url(#arrowPurple)"/>
-  <path d="M 210 277 L 280 280" stroke="#6366f1" stroke-width="2" fill="none" marker-end="url(#arrowPurple)"/>
+  <!-- ML Functions -->
+  <rect x="680" y="220" width="240" height="70" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="800" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#065f46">ML Prediction Functions</text>
+  <text x="800" y="270" text-anchor="middle" font-size="10" fill="#047857">PredictFailure | ScoreEfficiency</text>
+  <text x="800" y="284" text-anchor="middle" font-size="10" fill="#047857">ForecastDemand | EquipmentHealth</text>
 
-  <defs>
-    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#6366f1"/>
-    </marker>
-    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#29b5e8"/>
-    </marker>
-    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#10b981"/>
-    </marker>
-  </defs>
+  <!-- ISA-95 Ontology -->
+  <rect x="980" y="220" width="240" height="70" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1100" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#92400e">ISA-95 Ontology</text>
+  <text x="1100" y="270" text-anchor="middle" font-size="10" fill="#a16207">Enterprise → Site → Area</text>
+  <text x="1100" y="284" text-anchor="middle" font-size="10" fill="#a16207">→ Work Center → Work Unit</text>
 
-  <!-- SNOWFLAKE PLATFORM (Center) -->
-  <rect x="270" y="70" width="660" height="680" rx="16" fill="white" stroke="#29b5e8" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="270" y="70" width="660" height="40" rx="16" fill="url(#snowflakeGrad)"/>
-  <rect x="270" y="94" width="660" height="16" fill="url(#snowflakeGrad)"/>
-  <text x="600" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="white">SNOWFLAKE DATA CLOUD</text>
+  <!-- Arrows from Intelligence to Agent -->
+  <line x1="200" y1="220" x2="560" y2="170" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="500" y1="220" x2="640" y2="170" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="800" y1="220" x2="760" y2="170" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1100" y1="220" x2="840" y2="170" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- RAW LAYER -->
-  <text x="310" y="140" font-size="12" font-weight="bold" fill="#475569">RAW INGESTION</text>
-  <rect x="300" y="150" width="140" height="40" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="370" y="174" text-anchor="middle" font-size="10" fill="#475569">DYNAMICS_CRM</text>
-  <rect x="455" y="150" width="140" height="40" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="525" y="174" text-anchor="middle" font-size="10" fill="#475569">DYNAMICS_FINANCE</text>
-  <rect x="610" y="150" width="130" height="40" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="675" y="174" text-anchor="middle" font-size="10" fill="#475569">SCADA_IOT</text>
-  <rect x="755" y="150" width="130" height="40" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="820" y="174" text-anchor="middle" font-size="10" fill="#475569">ORACLE_ERP</text>
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ANALYTICS LAYER (Row 3) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="80" y="340" width="1140" height="60" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="700" y="367" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">ANALYTICS SCHEMA — Cross-Domain Views</text>
+  <text x="700" y="387" text-anchor="middle" font-size="11" fill="#2563eb">V_FINANCIAL_SUMMARY  |  V_REVENUE_BY_PRODUCT  |  V_AR_AGING  |  V_SALES_PIPELINE  |  V_DEVICE_HEALTH  |  V_SUPPLY_CHAIN</text>
 
-  <!-- ISA-95 ONTOLOGY -->
-  <rect x="300" y="210" width="580" height="45" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
-  <text x="590" y="228" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">ISA-95 ONTOLOGY</text>
-  <text x="590" y="245" text-anchor="middle" font-size="9" fill="#92400e">Enterprise → Site → Area → Work Center → Work Unit | Material | Equipment | Process Segments</text>
+  <!-- Arrows from Analytics up to Intelligence -->
+  <line x1="200" y1="340" x2="200" y2="290" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="500" y1="340" x2="500" y2="290" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="800" y1="340" x2="800" y2="290" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1100" y1="340" x2="1100" y2="290" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- ANALYTICS LAYER -->
-  <text x="310" y="285" font-size="12" font-weight="bold" fill="#475569">ANALYTICS LAYER</text>
-  <rect x="300" y="295" width="120" height="35" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-  <text x="360" y="316" text-anchor="middle" font-size="9" fill="#1e40af">V_FINANCIAL</text>
-  <rect x="435" y="295" width="120" height="35" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-  <text x="495" y="316" text-anchor="middle" font-size="9" fill="#1e40af">V_PIPELINE</text>
-  <rect x="570" y="295" width="120" height="35" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-  <text x="630" y="316" text-anchor="middle" font-size="9" fill="#1e40af">V_DEVICE_HEALTH</text>
-  <rect x="705" y="295" width="120" height="35" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-  <text x="765" y="316" text-anchor="middle" font-size="9" fill="#1e40af">V_SUPPLY_CHAIN</text>
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SOURCE SCHEMAS (Row 4) - Data flows left to right -->
+  <!-- ═══════════════════════════════════════════════════════ -->
 
-  <!-- SEMANTIC VIEWS -->
-  <text x="310" y="365" font-size="12" font-weight="bold" fill="#475569">SEMANTIC VIEWS (Cortex Analyst)</text>
-  <rect x="300" y="375" width="180" height="50" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="390" y="395" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">SV_FINANCIAL_OPS</text>
-  <text x="390" y="412" text-anchor="middle" font-size="8" fill="#6d28d9">Revenue, Orders, AR/AP, GL</text>
+  <rect x="80" y="450" width="260" height="80" rx="8" fill="#ffffff" stroke="#6366f1" stroke-width="2" filter="url(#shadow)"/>
+  <text x="210" y="478" text-anchor="middle" font-size="13" font-weight="bold" fill="#4338ca">DYNAMICS_CRM</text>
+  <text x="210" y="496" text-anchor="middle" font-size="10" fill="#4f46e5">Accounts | Contacts</text>
+  <text x="210" y="512" text-anchor="middle" font-size="10" fill="#4f46e5">Opportunities | Activities</text>
 
-  <rect x="500" y="375" width="180" height="50" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="590" y="395" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">SV_CRM_PIPELINE</text>
-  <text x="590" y="412" text-anchor="middle" font-size="8" fill="#6d28d9">Opportunities, Accounts, Activities</text>
+  <rect x="380" y="450" width="260" height="80" rx="8" fill="#ffffff" stroke="#6366f1" stroke-width="2" filter="url(#shadow)"/>
+  <text x="510" y="478" text-anchor="middle" font-size="13" font-weight="bold" fill="#4338ca">DYNAMICS_FINANCE</text>
+  <text x="510" y="496" text-anchor="middle" font-size="10" fill="#4f46e5">GL | Sales Orders | Invoices</text>
+  <text x="510" y="512" text-anchor="middle" font-size="10" fill="#4f46e5">Accounts Receivable | AP</text>
 
-  <rect x="700" y="375" width="180" height="50" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="790" y="395" text-anchor="middle" font-size="10" font-weight="bold" fill="#5b21b6">SV_IOT_PERFORMANCE</text>
-  <text x="790" y="412" text-anchor="middle" font-size="8" fill="#6d28d9">Devices, Telemetry, Alarms</text>
+  <rect x="680" y="450" width="260" height="80" rx="8" fill="#ffffff" stroke="#6366f1" stroke-width="2" filter="url(#shadow)"/>
+  <text x="810" y="478" text-anchor="middle" font-size="13" font-weight="bold" fill="#4338ca">SCADA_IOT</text>
+  <text x="810" y="496" text-anchor="middle" font-size="10" fill="#4f46e5">Device Registry (42,000+)</text>
+  <text x="810" y="512" text-anchor="middle" font-size="10" fill="#4f46e5">Telemetry | Alarms | Maintenance</text>
 
-  <!-- CORTEX SEARCH + ML MODELS -->
-  <text x="310" y="460" font-size="12" font-weight="bold" fill="#475569">INTELLIGENCE SERVICES</text>
+  <rect x="980" y="450" width="240" height="80" rx="8" fill="#ffffff" stroke="#6366f1" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1100" y="478" text-anchor="middle" font-size="13" font-weight="bold" fill="#4338ca">ORACLE_ERP</text>
+  <text x="1100" y="496" text-anchor="middle" font-size="10" fill="#4f46e5">Production Orders | BOM</text>
+  <text x="1100" y="512" text-anchor="middle" font-size="10" fill="#4f46e5">Inventory | Suppliers | PO</text>
 
-  <rect x="300" y="470" width="200" height="50" rx="8" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
-  <text x="400" y="490" text-anchor="middle" font-size="10" font-weight="bold" fill="#065f46">Cortex Search</text>
-  <text x="400" y="507" text-anchor="middle" font-size="8" fill="#047857">Knowledge Base (10+ articles)</text>
+  <!-- Arrows from Schemas up to Analytics -->
+  <line x1="210" y1="450" x2="210" y2="400" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="510" y1="450" x2="510" y2="400" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="810" y1="450" x2="810" y2="400" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1100" y1="450" x2="1100" y2="400" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <rect x="520" y="470" width="360" height="50" rx="8" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
-  <text x="700" y="490" text-anchor="middle" font-size="10" font-weight="bold" fill="#065f46">ML Model Functions (UDFs)</text>
-  <text x="700" y="507" text-anchor="middle" font-size="8" fill="#047857">PredictFailure | ScoreEfficiency | ForecastDemand | EquipmentHealth</text>
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SOURCE SYSTEMS (Row 5 - Bottom) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
 
-  <!-- AGENT -->
-  <rect x="350" y="555" width="500" height="70" rx="12" fill="url(#aiGrad)" filter="url(#shadow)"/>
-  <text x="600" y="582" text-anchor="middle" font-size="16" font-weight="bold" fill="white">ENERGY_RECOVERY_AGENT</text>
-  <text x="600" y="605" text-anchor="middle" font-size="11" fill="#d1fae5">8 Tools: 3 Analyst + 1 Search + 4 ML Functions</text>
+  <rect x="80" y="590" width="260" height="60" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="210" y="618" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">Microsoft Dynamics 365</text>
+  <text x="210" y="636" text-anchor="middle" font-size="10" fill="#64748b">CRM + Finance &amp; Operations</text>
 
-  <!-- Arrows: Semantic Views to Agent -->
-  <path d="M 390 425 L 500 555" stroke="#7c3aed" stroke-width="1.5" fill="none" stroke-dasharray="4"/>
-  <path d="M 590 425 L 580 555" stroke="#7c3aed" stroke-width="1.5" fill="none" stroke-dasharray="4"/>
-  <path d="M 790 425 L 700 555" stroke="#7c3aed" stroke-width="1.5" fill="none" stroke-dasharray="4"/>
-  <path d="M 400 520 L 500 555" stroke="#10b981" stroke-width="1.5" fill="none" stroke-dasharray="4"/>
-  <path d="M 700 520 L 650 555" stroke="#10b981" stroke-width="1.5" fill="none" stroke-dasharray="4"/>
+  <rect x="480" y="590" width="260" height="60" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="610" y="618" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">SCADA Systems</text>
+  <text x="610" y="636" text-anchor="middle" font-size="10" fill="#64748b">IoT Sensors on PX Devices</text>
 
-  <!-- USERS (Bottom) -->
-  <rect x="380" y="660" width="440" height="60" rx="10" fill="#f8fafc" stroke="#64748b" stroke-dasharray="4"/>
-  <text x="600" y="685" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">USERS (Natural Language Interface)</text>
-  <text x="600" y="705" text-anchor="middle" font-size="10" fill="#64748b">Executives | Engineers | Operators | Sales | Finance</text>
+  <rect x="880" y="590" width="240" height="60" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="1000" y="618" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">Oracle ERP</text>
+  <text x="1000" y="636" text-anchor="middle" font-size="10" fill="#64748b">Manufacturing &amp; Supply Chain</text>
 
-  <!-- Arrow: Agent to Users -->
-  <path d="M 600 625 L 600 660" stroke="#10b981" stroke-width="2.5" fill="none" marker-end="url(#arrowGreen)"/>
+  <!-- Arrows from Source Systems to Schemas -->
+  <line x1="210" y1="590" x2="210" y2="530" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="610" y1="590" x2="810" y2="530" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1000" y1="590" x2="1100" y2="530" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- Legend -->
-  <rect x="950" y="100" width="220" height="180" rx="8" fill="white" stroke="#e2e8f0" filter="url(#shadow)"/>
-  <text x="1060" y="122" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e293b">Legend</text>
-  <rect x="965" y="135" width="16" height="12" rx="3" fill="url(#sourceGrad)"/>
-  <text x="990" y="145" font-size="9" fill="#475569">Source Systems</text>
-  <rect x="965" y="158" width="16" height="12" rx="3" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="990" y="168" font-size="9" fill="#475569">Raw Schemas</text>
-  <rect x="965" y="181" width="16" height="12" rx="3" fill="#fef3c7" stroke="#f59e0b"/>
-  <text x="990" y="191" font-size="9" fill="#475569">ISA-95 Ontology</text>
-  <rect x="965" y="204" width="16" height="12" rx="3" fill="#ede9fe" stroke="#7c3aed"/>
-  <text x="990" y="214" font-size="9" fill="#475569">Semantic Views</text>
-  <rect x="965" y="227" width="16" height="12" rx="3" fill="#d1fae5" stroke="#10b981"/>
-  <text x="990" y="237" font-size="9" fill="#475569">AI/ML Services</text>
-  <rect x="965" y="250" width="16" height="12" rx="3" fill="url(#aiGrad)"/>
-  <text x="990" y="260" font-size="9" fill="#475569">Cortex Agent</text>
+  <!-- Left label: Streaming Ingestion -->
+  <text x="40" y="560" font-size="10" fill="#94a3b8" transform="rotate(-90 40 560)">Streaming Ingestion</text>
+
+  <!-- Right side: Snowflake Platform label -->
+  <rect x="1260" y="340" width="120" height="190" rx="8" fill="#f0f9ff" stroke="#29b5e8" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="1320" y="380" text-anchor="middle" font-size="11" font-weight="bold" fill="#0369a1">Snowflake</text>
+  <text x="1320" y="396" text-anchor="middle" font-size="11" font-weight="bold" fill="#0369a1">Data Cloud</text>
+  <text x="1320" y="430" text-anchor="middle" font-size="9" fill="#0c4a6e">Compute</text>
+  <text x="1320" y="450" text-anchor="middle" font-size="9" fill="#0c4a6e">Storage</text>
+  <text x="1320" y="470" text-anchor="middle" font-size="9" fill="#0c4a6e">Cortex AI</text>
+  <text x="1320" y="490" text-anchor="middle" font-size="9" fill="#0c4a6e">Auto-Scale</text>
+  <text x="1320" y="510" text-anchor="middle" font-size="9" fill="#0c4a6e">Governance</text>
 </svg>
