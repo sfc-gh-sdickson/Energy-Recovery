@@ -104,12 +104,21 @@ CREATE OR REPLACE AGENT ENERGY_RECOVERY_AGENT
   tool_resources:
     FinancialAnalyst:
       semantic_view: "ENERGY_RECOVERY_DB.AGENT.SV_FINANCIAL_OPS"
+      execution_environment:
+        type: "warehouse"
+        warehouse: "ENERGY_RECOVERY_WH"
 
     PipelineAnalyst:
       semantic_view: "ENERGY_RECOVERY_DB.AGENT.SV_CRM_PIPELINE"
+      execution_environment:
+        type: "warehouse"
+        warehouse: "ENERGY_RECOVERY_WH"
 
     DeviceAnalyst:
       semantic_view: "ENERGY_RECOVERY_DB.AGENT.SV_IOT_PERFORMANCE"
+      execution_environment:
+        type: "warehouse"
+        warehouse: "ENERGY_RECOVERY_WH"
 
     KnowledgeSearch:
       name: "ENERGY_RECOVERY_DB.AGENT.ENERGY_RECOVERY_KNOWLEDGE_SEARCH"
