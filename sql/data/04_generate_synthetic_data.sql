@@ -248,10 +248,11 @@ FROM TABLE(GENERATOR(ROWCOUNT => 42000));
 
 -- ============================================================================
 -- SCADA/IoT: Device Telemetry (50,000 readings)
+-- Uses CROSS JOIN to ensure proper distribution across 5000 devices x 10 readings
 -- ============================================================================
 INSERT INTO DEVICE_TELEMETRY
 SELECT UUID_STRING(),
-    (SELECT DEVICE_ID FROM DEVICE_REGISTRY WHERE STATUS = 'Active' ORDER BY RANDOM() LIMIT 1),
+    d.DEVICE_ID,
     DATEADD('minute', -UNIFORM(0, 43200, RANDOM()), CURRENT_TIMESTAMP()),
     CURRENT_DATE(),
     ROUND(UNIFORM(55, 82, RANDOM())::FLOAT, 2),
@@ -264,47 +265,55 @@ SELECT UUID_STRING(),
     UNIFORM(800, 1800, RANDOM()),
     ROUND(UNIFORM(0.5, 5.0, RANDOM())::FLOAT, 2),
     UNIFORM(25000, 45000, RANDOM()),
-    CASE MOD(SEQ4(), 10) WHEN 0 THEN 'High Load' WHEN 9 THEN 'Low Load' ELSE 'Normal' END,
+    CASE MOD(ROW_NUMBER() OVER (ORDER BY d.DEVICE_ID), 10) WHEN 0 THEN 'High Load' WHEN 9 THEN 'Low Load' ELSE 'Normal' END,
     'Good'
-FROM TABLE(GENERATOR(ROWCOUNT => 50000));
+FROM (
+    SELECT DEVICE_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN
+    FROM DEVICE_REGISTRY
+    WHERE STATUS = 'Active'
+    LIMIT 5000
+) d
+CROSS JOIN (SELECT SEQ4() AS N FROM TABLE(GENERATOR(ROWCOUNT => 10))) g;
 
 -- ============================================================================
--- SCADA/IoT: Alarms (2500)
+-- SCADA/IoT: Alarms (2500) - one alarm per device for even distribution
 -- ============================================================================
 INSERT INTO ALARMS
 SELECT UUID_STRING(),
-    (SELECT DEVICE_ID FROM DEVICE_REGISTRY ORDER BY RANDOM() LIMIT 1),
+    d.DEVICE_ID,
     DATEADD('hour', -UNIFORM(0, 8760, RANDOM()), CURRENT_TIMESTAMP()),
-    CASE MOD(SEQ4(), 8) WHEN 0 THEN 'VIB-HIGH' WHEN 1 THEN 'PRESS-DIFF-HIGH' WHEN 2 THEN 'TEMP-HIGH' WHEN 3 THEN 'FLOW-LOW' WHEN 4 THEN 'EFF-LOW' WHEN 5 THEN 'ROTOR-SPEED' WHEN 6 THEN 'SEAL-LEAK' WHEN 7 THEN 'COMM-FAIL' END,
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 'Critical' WHEN 1 THEN 'High' WHEN 2 THEN 'Medium' WHEN 3 THEN 'Medium' WHEN 4 THEN 'Low' END,
-    CASE MOD(SEQ4(), 8) WHEN 0 THEN 'Vibration' WHEN 1 THEN 'Pressure' WHEN 2 THEN 'Temperature' WHEN 3 THEN 'Flow' WHEN 4 THEN 'Efficiency' WHEN 5 THEN 'Mechanical' WHEN 6 THEN 'Seal Integrity' WHEN 7 THEN 'Communication' END,
+    CASE MOD(d.RN, 8) WHEN 0 THEN 'VIB-HIGH' WHEN 1 THEN 'PRESS-DIFF-HIGH' WHEN 2 THEN 'TEMP-HIGH' WHEN 3 THEN 'FLOW-LOW' WHEN 4 THEN 'EFF-LOW' WHEN 5 THEN 'ROTOR-SPEED' WHEN 6 THEN 'SEAL-LEAK' WHEN 7 THEN 'COMM-FAIL' END,
+    CASE MOD(d.RN, 5) WHEN 0 THEN 'Critical' WHEN 1 THEN 'High' WHEN 2 THEN 'Medium' WHEN 3 THEN 'Medium' WHEN 4 THEN 'Low' END,
+    CASE MOD(d.RN, 8) WHEN 0 THEN 'Vibration' WHEN 1 THEN 'Pressure' WHEN 2 THEN 'Temperature' WHEN 3 THEN 'Flow' WHEN 4 THEN 'Efficiency' WHEN 5 THEN 'Mechanical' WHEN 6 THEN 'Seal Integrity' WHEN 7 THEN 'Communication' END,
     'Alarm triggered - threshold exceeded',
     CASE WHEN UNIFORM(1, 100, RANDOM()) <= 80 THEN TRUE ELSE FALSE END,
     CASE WHEN UNIFORM(1, 100, RANDOM()) <= 80 THEN 'Operations Center' ELSE NULL END,
-    NULL, 'Process upset', 'Investigated and resolved'
-FROM TABLE(GENERATOR(ROWCOUNT => 2500));
+    NULL,
+    CASE MOD(d.RN, 5) WHEN 0 THEN 'Bearing wear' WHEN 1 THEN 'Fouling' WHEN 2 THEN 'Seal degradation' WHEN 3 THEN 'Process upset' WHEN 4 THEN 'Sensor drift' END,
+    'Investigated and resolved'
+FROM (SELECT DEVICE_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM DEVICE_REGISTRY LIMIT 2500) d;
 
 -- ============================================================================
--- SCADA/IoT: Maintenance Logs (3200)
+-- SCADA/IoT: Maintenance Logs (3200) - one per device for even distribution
 -- ============================================================================
 INSERT INTO MAINTENANCE_LOGS
 SELECT UUID_STRING(),
-    (SELECT DEVICE_ID FROM DEVICE_REGISTRY ORDER BY RANDOM() LIMIT 1),
-    CASE MOD(SEQ4(), 4) WHEN 0 THEN 'Preventive' WHEN 1 THEN 'Corrective' WHEN 2 THEN 'Preventive' WHEN 3 THEN 'Predictive' END,
-    'WO-' || LPAD(SEQ4()::VARCHAR, 7, '0'),
+    d.DEVICE_ID,
+    CASE MOD(d.RN, 4) WHEN 0 THEN 'Preventive' WHEN 1 THEN 'Corrective' WHEN 2 THEN 'Preventive' WHEN 3 THEN 'Predictive' END,
+    'WO-' || LPAD(d.RN::VARCHAR, 7, '0'),
     DATEADD('day', -UNIFORM(1, 730, RANDOM()), CURRENT_TIMESTAMP()),
     DATEADD('hour', UNIFORM(4, 72, RANDOM()), DATEADD('day', -UNIFORM(1, 730, RANDOM()), CURRENT_TIMESTAMP())),
     'Scheduled maintenance - inspection and parts replacement',
-    CASE MOD(SEQ4(), 5) WHEN 0 THEN 'Seal kit, thrust bearings' WHEN 1 THEN 'Thrust bearings' WHEN 2 THEN 'Seal kit only' WHEN 3 THEN 'Rotor, seals, bearings' WHEN 4 THEN 'End cover gaskets' END,
+    CASE MOD(d.RN, 5) WHEN 0 THEN 'Seal kit, thrust bearings' WHEN 1 THEN 'Thrust bearings' WHEN 2 THEN 'Seal kit only' WHEN 3 THEN 'Rotor, seals, bearings' WHEN 4 THEN 'End cover gaskets' END,
     ROUND(UNIFORM(4, 40, RANDOM())::NUMBER, 2),
     ROUND(UNIFORM(500, 15000, RANDOM())::NUMBER, 2),
     ROUND(UNIFORM(400, 8000, RANDOM())::NUMBER, 2),
     NULL,
-    CASE MOD(SEQ4(), 6) WHEN 0 THEN 'John Smith' WHEN 1 THEN 'Ahmed Khalil' WHEN 2 THEN 'Wei Zhang' WHEN 3 THEN 'Carlos Ruiz' WHEN 4 THEN 'Raj Patel' WHEN 5 THEN 'Tom Anderson' END,
+    CASE MOD(d.RN, 6) WHEN 0 THEN 'John Smith' WHEN 1 THEN 'Ahmed Khalil' WHEN 2 THEN 'Wei Zhang' WHEN 3 THEN 'Carlos Ruiz' WHEN 4 THEN 'Raj Patel' WHEN 5 THEN 'Tom Anderson' END,
     'Completed',
     ROUND(UNIFORM(4, 72, RANDOM())::NUMBER, 2),
-    CASE MOD(SEQ4(), 6) WHEN 0 THEN 'Seal wear' WHEN 1 THEN 'Bearing failure' WHEN 2 THEN 'Normal wear' WHEN 3 THEN 'Vibration anomaly' WHEN 4 THEN 'Scheduled replacement' WHEN 5 THEN 'Efficiency degradation' END
-FROM TABLE(GENERATOR(ROWCOUNT => 3200));
+    CASE MOD(d.RN, 6) WHEN 0 THEN 'Seal wear' WHEN 1 THEN 'Bearing failure' WHEN 2 THEN 'Normal wear' WHEN 3 THEN 'Vibration anomaly' WHEN 4 THEN 'Scheduled replacement' WHEN 5 THEN 'Efficiency degradation' END
+FROM (SELECT DEVICE_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM DEVICE_REGISTRY LIMIT 3200) d;
 
 UPDATE MAINTENANCE_LOGS SET TOTAL_COST = PARTS_COST + LABOR_COST;
 
