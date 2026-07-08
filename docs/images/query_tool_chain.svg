@@ -1,208 +1,236 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="Segoe UI, Arial, sans-serif">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" font-family="Segoe UI, Arial, sans-serif">
   <defs>
-    <linearGradient id="bgQtc" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#f8fafc"/>
-      <stop offset="100%" style="stop-color:#f1f5f9"/>
+    <linearGradient id="qGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#eff6ff"/>
+      <stop offset="100%" style="stop-color:#dbeafe"/>
     </linearGradient>
-    <filter id="shQtc" x="-3%" y="-3%" width="106%" height="106%">
-      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.1"/>
+    <linearGradient id="agentG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <filter id="sh" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.1"/>
     </filter>
-    <marker id="arrBlue" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#3b82f6"/>
+    <marker id="a1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#64748b"/>
     </marker>
-    <marker id="arrGrn" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#16a34a"/>
-    </marker>
-    <marker id="arrOrg" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#f97316"/>
+    <marker id="a2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#10b981"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="900" fill="url(#bgQtc)" rx="8"/>
-  <text x="600" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">Query Tool Chain — Kraken Intelligence Agent</text>
-  <text x="600" y="55" text-anchor="middle" font-size="11" fill="#64748b">Example questions mapped to tool paths showing when each tool is used and whether the ontology is leveraged</text>
+  <rect width="1100" height="750" fill="#f8fafc"/>
+  <text x="550" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e293b">Query Tool Chain — Example Question Routing</text>
+  <text x="550" y="52" text-anchor="middle" font-size="11" fill="#64748b">Shows which tools the agent uses to answer each question type, and whether the ontology is consulted</text>
+
+  <!-- EXAMPLE 1: Financial -->
+  <rect x="20" y="80" width="330" height="38" rx="6" fill="url(#qGrad)" stroke="#3b82f6" filter="url(#sh)"/>
+  <text x="35" y="98" font-size="9" fill="#1e40af" font-weight="bold">Q:</text>
+  <text x="50" y="98" font-size="9" fill="#1e293b">"What was our total revenue for Q1 2026?"</text>
+  <text x="50" y="112" font-size="8" fill="#64748b">Domain: Financial Operations</text>
+
+  <path d="M 350 99 L 420 99" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="425" y="85" width="80" height="28" rx="14" fill="url(#agentG)"/>
+  <text x="465" y="103" text-anchor="middle" font-size="8" fill="white" font-weight="bold">AGENT</text>
+
+  <path d="M 505 99 L 560 99" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="565" y="85" width="140" height="28" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="635" y="103" text-anchor="middle" font-size="8" fill="#5b21b6" font-weight="bold">FinancialAnalyst</text>
+
+  <path d="M 705 99 L 760 99" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="765" y="85" width="130" height="28" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="830" y="103" text-anchor="middle" font-size="8" fill="#1e40af">SV_FINANCIAL_OPS</text>
+
+  <rect x="920" y="85" width="90" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="965" y="99" text-anchor="middle" font-size="7" fill="#64748b">Ontology:</text>
+  <text x="965" y="110" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="bold">No</text>
+
+  <!-- EXAMPLE 2: CRM -->
+  <rect x="20" y="145" width="330" height="38" rx="6" fill="url(#qGrad)" stroke="#3b82f6" filter="url(#sh)"/>
+  <text x="35" y="163" font-size="9" fill="#1e40af" font-weight="bold">Q:</text>
+  <text x="50" y="163" font-size="9" fill="#1e293b">"What is our pipeline value by stage?"</text>
+  <text x="50" y="177" font-size="8" fill="#64748b">Domain: CRM / Sales Pipeline</text>
+
+  <path d="M 350 164 L 420 164" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="425" y="150" width="80" height="28" rx="14" fill="url(#agentG)"/>
+  <text x="465" y="168" text-anchor="middle" font-size="8" fill="white" font-weight="bold">AGENT</text>
+
+  <path d="M 505 164 L 560 164" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="565" y="150" width="140" height="28" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="635" y="168" text-anchor="middle" font-size="8" fill="#5b21b6" font-weight="bold">PipelineAnalyst</text>
+
+  <path d="M 705 164 L 760 164" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="765" y="150" width="130" height="28" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="830" y="168" text-anchor="middle" font-size="8" fill="#1e40af">SV_CRM_PIPELINE</text>
+
+  <rect x="920" y="150" width="90" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="965" y="164" text-anchor="middle" font-size="7" fill="#64748b">Ontology:</text>
+  <text x="965" y="175" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="bold">No</text>
+
+  <!-- EXAMPLE 3: IoT -->
+  <rect x="20" y="210" width="330" height="38" rx="6" fill="url(#qGrad)" stroke="#3b82f6" filter="url(#sh)"/>
+  <text x="35" y="228" font-size="9" fill="#1e40af" font-weight="bold">Q:</text>
+  <text x="50" y="228" font-size="9" fill="#1e293b">"Which devices have vibration above 5 mm/s?"</text>
+  <text x="50" y="242" font-size="8" fill="#64748b">Domain: IoT Device Performance</text>
+
+  <path d="M 350 229 L 420 229" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="425" y="215" width="80" height="28" rx="14" fill="url(#agentG)"/>
+  <text x="465" y="233" text-anchor="middle" font-size="8" fill="white" font-weight="bold">AGENT</text>
+
+  <path d="M 505 229 L 560 229" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="565" y="215" width="140" height="28" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="635" y="233" text-anchor="middle" font-size="8" fill="#5b21b6" font-weight="bold">DeviceAnalyst</text>
+
+  <path d="M 705 229 L 760 229" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="765" y="215" width="130" height="28" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="830" y="233" text-anchor="middle" font-size="8" fill="#1e40af">SV_IOT_PERFORMANCE</text>
+
+  <rect x="920" y="215" width="90" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="965" y="229" text-anchor="middle" font-size="7" fill="#64748b">Ontology:</text>
+  <text x="965" y="240" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="bold">No</text>
+
+  <!-- EXAMPLE 4: ML Prediction -->
+  <rect x="20" y="275" width="330" height="38" rx="6" fill="url(#qGrad)" stroke="#3b82f6" filter="url(#sh)"/>
+  <text x="35" y="293" font-size="9" fill="#1e40af" font-weight="bold">Q:</text>
+  <text x="50" y="293" font-size="9" fill="#1e293b">"Which PX devices are at risk of failure?"</text>
+  <text x="50" y="307" font-size="8" fill="#64748b">Domain: ML Prediction</text>
+
+  <path d="M 350 294 L 420 294" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="425" y="280" width="80" height="28" rx="14" fill="url(#agentG)"/>
+  <text x="465" y="298" text-anchor="middle" font-size="8" fill="white" font-weight="bold">AGENT</text>
+
+  <path d="M 505 294 L 560 294" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="565" y="280" width="140" height="28" rx="6" fill="#d1fae5" stroke="#10b981"/>
+  <text x="635" y="298" text-anchor="middle" font-size="8" fill="#065f46" font-weight="bold">PredictFailure</text>
+
+  <path d="M 705 294 L 760 294" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="765" y="280" width="130" height="28" rx="6" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="830" y="298" text-anchor="middle" font-size="8" fill="#065f46">PREDICT_PX_FAILURE()</text>
+
+  <rect x="920" y="280" width="90" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="965" y="294" text-anchor="middle" font-size="7" fill="#64748b">Ontology:</text>
+  <text x="965" y="305" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="bold">No</text>
+
+  <!-- EXAMPLE 5: Knowledge/Ontology -->
+  <rect x="20" y="340" width="330" height="38" rx="6" fill="url(#qGrad)" stroke="#3b82f6" filter="url(#sh)"/>
+  <text x="35" y="358" font-size="9" fill="#1e40af" font-weight="bold">Q:</text>
+  <text x="50" y="358" font-size="9" fill="#1e293b">"What maintenance procedures apply to PX Q650?"</text>
+  <text x="50" y="372" font-size="8" fill="#64748b">Domain: Knowledge (uses Ontology)</text>
+
+  <path d="M 350 359 L 420 359" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="425" y="345" width="80" height="28" rx="14" fill="url(#agentG)"/>
+  <text x="465" y="363" text-anchor="middle" font-size="8" fill="white" font-weight="bold">AGENT</text>
+
+  <path d="M 505 359 L 560 359" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="565" y="345" width="140" height="28" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="635" y="363" text-anchor="middle" font-size="8" fill="#92400e" font-weight="bold">KnowledgeSearch</text>
+
+  <path d="M 705 359 L 760 359" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="765" y="345" width="130" height="28" rx="6" fill="#fefce8" stroke="#f59e0b"/>
+  <text x="830" y="355" text-anchor="middle" font-size="7" fill="#92400e">KNOWLEDGE_SEARCH</text>
+  <text x="830" y="368" text-anchor="middle" font-size="7" fill="#92400e">→ KNOWLEDGE_ARTICLES</text>
+
+  <rect x="920" y="345" width="90" height="28" rx="6" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="965" y="359" text-anchor="middle" font-size="7" fill="#166534">Ontology:</text>
+  <text x="965" y="370" text-anchor="middle" font-size="8" fill="#16a34a" font-weight="bold">YES</text>
+
+  <!-- EXAMPLE 6: ISA-95 Specific -->
+  <rect x="20" y="405" width="330" height="38" rx="6" fill="url(#qGrad)" stroke="#3b82f6" filter="url(#sh)"/>
+  <text x="35" y="423" font-size="9" fill="#1e40af" font-weight="bold">Q:</text>
+  <text x="50" y="423" font-size="9" fill="#1e293b">"How does the ISA-95 hierarchy map to capacity?"</text>
+  <text x="50" y="437" font-size="8" fill="#64748b">Domain: Manufacturing Ontology</text>
+
+  <path d="M 350 424 L 420 424" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="425" y="410" width="80" height="28" rx="14" fill="url(#agentG)"/>
+  <text x="465" y="428" text-anchor="middle" font-size="8" fill="white" font-weight="bold">AGENT</text>
+
+  <path d="M 505 424 L 560 424" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="565" y="410" width="140" height="28" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="635" y="428" text-anchor="middle" font-size="8" fill="#92400e" font-weight="bold">KnowledgeSearch</text>
+
+  <path d="M 705 424 L 760 424" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="765" y="410" width="130" height="28" rx="6" fill="#fefce8" stroke="#f59e0b"/>
+  <text x="830" y="420" text-anchor="middle" font-size="7" fill="#92400e">ISA-95 Article</text>
+  <text x="830" y="433" text-anchor="middle" font-size="7" fill="#92400e">→ Ontology tables</text>
+
+  <rect x="920" y="410" width="90" height="28" rx="6" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="965" y="424" text-anchor="middle" font-size="7" fill="#166534">Ontology:</text>
+  <text x="965" y="435" text-anchor="middle" font-size="8" fill="#16a34a" font-weight="bold">YES</text>
+
+  <!-- EXAMPLE 7: Cross-Domain -->
+  <rect x="20" y="470" width="330" height="38" rx="6" fill="url(#qGrad)" stroke="#3b82f6" filter="url(#sh)"/>
+  <text x="35" y="488" font-size="9" fill="#1e40af" font-weight="bold">Q:</text>
+  <text x="50" y="488" font-size="9" fill="#1e293b">"How does pipeline correlate with installed base?"</text>
+  <text x="50" y="502" font-size="8" fill="#64748b">Domain: Cross-Domain (Multi-tool)</text>
+
+  <path d="M 350 489 L 420 489" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="425" y="475" width="80" height="28" rx="14" fill="url(#agentG)"/>
+  <text x="465" y="493" text-anchor="middle" font-size="8" fill="white" font-weight="bold">AGENT</text>
+
+  <!-- Two paths from agent -->
+  <path d="M 505 483 L 560 483" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+  <path d="M 505 497 L 560 497" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="565" y="470" width="140" height="20" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="635" y="484" text-anchor="middle" font-size="7" fill="#5b21b6" font-weight="bold">PipelineAnalyst</text>
+
+  <rect x="565" y="494" width="140" height="20" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="635" y="508" text-anchor="middle" font-size="7" fill="#5b21b6" font-weight="bold">DeviceAnalyst</text>
+
+  <path d="M 705 480 L 760 480" stroke="#64748b" stroke-width="1" fill="none" marker-end="url(#a1)"/>
+  <path d="M 705 504 L 760 504" stroke="#64748b" stroke-width="1" fill="none" marker-end="url(#a1)"/>
+
+  <rect x="765" y="468" width="130" height="20" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="830" y="482" text-anchor="middle" font-size="7" fill="#1e40af">SV_CRM_PIPELINE</text>
+
+  <rect x="765" y="492" width="130" height="20" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="830" y="506" text-anchor="middle" font-size="7" fill="#1e40af">SV_IOT_PERFORMANCE</text>
+
+  <rect x="920" y="475" width="90" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="965" y="489" text-anchor="middle" font-size="7" fill="#64748b">Ontology:</text>
+  <text x="965" y="500" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="bold">No</text>
 
   <!-- Legend -->
-  <rect x="30" y="70" width="340" height="75" rx="6" fill="white" stroke="#e2e8f0" filter="url(#shQtc)"/>
-  <rect x="45" y="85" width="12" height="12" rx="2" fill="#3b82f6"/>
-  <text x="63" y="95" font-size="9" fill="#334155">Cortex Analyst (Text-to-SQL via Semantic View)</text>
-  <rect x="45" y="105" width="12" height="12" rx="2" fill="#16a34a"/>
-  <text x="63" y="115" font-size="9" fill="#334155">Cortex Search (Unstructured Retrieval)</text>
-  <rect x="45" y="125" width="12" height="12" rx="2" fill="#f97316"/>
-  <text x="63" y="135" font-size="9" fill="#334155">ML Functions (Prediction UDFs)</text>
+  <rect x="30" y="545" width="1040" height="180" rx="10" fill="white" stroke="#e2e8f0" filter="url(#sh)"/>
+  <text x="550" y="570" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b">Tool Legend &amp; Routing Rules</text>
 
-  <!-- Example 1: Executive Question - Analyst Path -->
-  <rect x="30" y="165" width="1140" height="115" rx="8" fill="white" stroke="#3b82f6" stroke-width="1.5" filter="url(#shQtc)"/>
-  <rect x="30" y="165" width="1140" height="25" rx="8" fill="#3b82f6"/>
-  <text x="50" y="182" font-size="10" font-weight="bold" fill="white">EXAMPLE 1 — Executive/PM Persona</text>
-  <text x="600" y="182" font-size="9" fill="#bfdbfe">Tool: Cortex Analyst | Uses Ontology: No (operational data)</text>
+  <rect x="60" y="585" width="16" height="12" rx="3" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="85" y="595" font-size="9" fill="#475569">Cortex Analyst (text-to-SQL via Semantic View)</text>
 
-  <rect x="45" y="200" width="250" height="35" rx="4" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="170" y="215" text-anchor="middle" font-size="9" font-weight="bold" fill="#1e40af">User Question:</text>
-  <text x="170" y="228" text-anchor="middle" font-size="8" fill="#1e3a8a">"What was our total trading volume last week?"</text>
+  <rect x="60" y="608" width="16" height="12" rx="3" fill="#d1fae5" stroke="#10b981"/>
+  <text x="85" y="618" font-size="9" fill="#475569">ML Function (Generic UDF tool)</text>
 
-  <path d="M295 218 L345 218" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+  <rect x="60" y="631" width="16" height="12" rx="3" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="85" y="641" font-size="9" fill="#475569">Cortex Search (Knowledge retrieval)</text>
 
-  <rect x="345" y="200" width="140" height="35" rx="4" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="415" y="215" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">KRAKEN_AGENT</text>
-  <text x="415" y="228" text-anchor="middle" font-size="7" fill="#2563eb">Routes to Analyst</text>
+  <rect x="60" y="654" width="16" height="12" rx="3" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="85" y="664" font-size="9" fill="#475569">Uses ISA-95 Ontology</text>
 
-  <path d="M485 218 L535 218" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
-
-  <rect x="535" y="200" width="180" height="35" rx="4" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="625" y="215" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">Cortex Analyst Tool</text>
-  <text x="625" y="228" text-anchor="middle" font-size="7" fill="#2563eb">KRAKEN_TRADING_SV</text>
-
-  <path d="M715 218 L765 218" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
-
-  <rect x="765" y="200" width="180" height="35" rx="4" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="855" y="215" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">Generated SQL</text>
-  <text x="855" y="228" text-anchor="middle" font-size="7" fill="#2563eb">SELECT SUM(quantity*price) FROM TRADES...</text>
-
-  <path d="M945 218 L995 218" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
-
-  <rect x="995" y="200" width="160" height="35" rx="4" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="1075" y="215" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">Result</text>
-  <text x="1075" y="228" text-anchor="middle" font-size="7" fill="#1e3a8a">"$2.4B total volume"</text>
-
-  <!-- Example 2: Compliance Question - Analyst + Ontology -->
-  <rect x="30" y="300" width="1140" height="115" rx="8" fill="white" stroke="#3b82f6" stroke-width="1.5" filter="url(#shQtc)"/>
-  <rect x="30" y="300" width="1140" height="25" rx="8" fill="#7c3aed"/>
-  <text x="50" y="317" font-size="10" font-weight="bold" fill="white">EXAMPLE 2 — Compliance Persona (Ontology Path)</text>
-  <text x="600" y="317" font-size="9" fill="#e9d5ff">Tool: Cortex Analyst | Uses Ontology: YES (blockchain concepts)</text>
-
-  <rect x="45" y="335" width="270" height="35" rx="4" fill="#faf5ff" stroke="#c4b5fd"/>
-  <text x="180" y="350" text-anchor="middle" font-size="9" font-weight="bold" fill="#6d28d9">User Question:</text>
-  <text x="180" y="363" text-anchor="middle" font-size="8" fill="#5b21b6">"What consensus mechanisms are used by our listed chains?"</text>
-
-  <path d="M315 353 L345 353" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
-
-  <rect x="345" y="335" width="140" height="35" rx="4" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="415" y="350" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">KRAKEN_AGENT</text>
-  <text x="415" y="363" text-anchor="middle" font-size="7" fill="#2563eb">Routes to Analyst</text>
-
-  <path d="M485 353 L535 353" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
-
-  <rect x="535" y="335" width="180" height="35" rx="4" fill="#f5f3ff" stroke="#a78bfa"/>
-  <text x="625" y="350" text-anchor="middle" font-size="8" font-weight="bold" fill="#6d28d9">Cortex Analyst Tool</text>
-  <text x="625" y="363" text-anchor="middle" font-size="7" fill="#7c3aed">DLT_BLOCKCHAIN_ONTOLOGY_SV</text>
-
-  <path d="M715 353 L765 353" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
-
-  <rect x="765" y="335" width="180" height="35" rx="4" fill="#f5f3ff" stroke="#a78bfa"/>
-  <text x="855" y="350" text-anchor="middle" font-size="8" font-weight="bold" fill="#6d28d9">Generated SQL</text>
-  <text x="855" y="363" text-anchor="middle" font-size="7" fill="#7c3aed">SELECT b.NAME, c.NAME FROM BLOCKCHAIN...</text>
-
-  <path d="M945 353 L995 353" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
-
-  <rect x="995" y="335" width="160" height="35" rx="4" fill="#faf5ff" stroke="#c4b5fd"/>
-  <text x="1075" y="350" text-anchor="middle" font-size="8" font-weight="bold" fill="#6d28d9">Result</text>
-  <text x="1075" y="363" text-anchor="middle" font-size="7" fill="#5b21b6">"BTC=PoW, ETH=PoS..."</text>
-
-  <!-- Example 3: Search Path -->
-  <rect x="30" y="435" width="1140" height="115" rx="8" fill="white" stroke="#16a34a" stroke-width="1.5" filter="url(#shQtc)"/>
-  <rect x="30" y="435" width="1140" height="25" rx="8" fill="#16a34a"/>
-  <text x="50" y="452" font-size="10" font-weight="bold" fill="white">EXAMPLE 3 — Support Manager Persona</text>
-  <text x="600" y="452" font-size="9" fill="#bbf7d0">Tool: Cortex Search | Uses Ontology: No (unstructured tickets)</text>
-
-  <rect x="45" y="470" width="250" height="35" rx="4" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="170" y="485" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">User Question:</text>
-  <text x="170" y="498" text-anchor="middle" font-size="8" fill="#15803d">"Find tickets about failed withdrawals to Ledger wallets"</text>
-
-  <path d="M295 488 L345 488" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrGrn)"/>
-
-  <rect x="345" y="470" width="140" height="35" rx="4" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="415" y="485" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">KRAKEN_AGENT</text>
-  <text x="415" y="498" text-anchor="middle" font-size="7" fill="#16a34a">Routes to Search</text>
-
-  <path d="M485 488 L535 488" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrGrn)"/>
-
-  <rect x="535" y="470" width="180" height="35" rx="4" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="625" y="485" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">Cortex Search Tool</text>
-  <text x="625" y="498" text-anchor="middle" font-size="7" fill="#16a34a">SUPPORT_TICKET_SEARCH</text>
-
-  <path d="M715 488 L765 488" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrGrn)"/>
-
-  <rect x="765" y="470" width="180" height="35" rx="4" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="855" y="485" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">Semantic Search</text>
-  <text x="855" y="498" text-anchor="middle" font-size="7" fill="#16a34a">Vector similarity on ticket text</text>
-
-  <path d="M945 488 L995 488" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrGrn)"/>
-
-  <rect x="995" y="470" width="160" height="35" rx="4" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="1075" y="485" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">Result</text>
-  <text x="1075" y="498" text-anchor="middle" font-size="7" fill="#15803d">Top 10 matching tickets</text>
-
-  <!-- Example 4: ML Function Path -->
-  <rect x="30" y="570" width="1140" height="115" rx="8" fill="white" stroke="#f97316" stroke-width="1.5" filter="url(#shQtc)"/>
-  <rect x="30" y="570" width="1140" height="25" rx="8" fill="#f97316"/>
-  <text x="50" y="587" font-size="10" font-weight="bold" fill="white">EXAMPLE 4 — Compliance Persona (ML Path)</text>
-  <text x="600" y="587" font-size="9" fill="#fed7aa">Tool: ML Function (UDF) | Uses Ontology: No (prediction model)</text>
-
-  <rect x="45" y="605" width="250" height="35" rx="4" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="170" y="620" text-anchor="middle" font-size="9" font-weight="bold" fill="#9a3412">User Question:</text>
-  <text x="170" y="633" text-anchor="middle" font-size="8" fill="#7c2d12">"Which customers have suspicious transaction patterns?"</text>
-
-  <path d="M295 623 L345 623" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrOrg)"/>
-
-  <rect x="345" y="605" width="140" height="35" rx="4" fill="#ffedd5" stroke="#fb923c"/>
-  <text x="415" y="620" text-anchor="middle" font-size="8" font-weight="bold" fill="#9a3412">KRAKEN_AGENT</text>
-  <text x="415" y="633" text-anchor="middle" font-size="7" fill="#ea580c">Routes to Function</text>
-
-  <path d="M485 623 L535 623" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrOrg)"/>
-
-  <rect x="535" y="605" width="180" height="35" rx="4" fill="#ffedd5" stroke="#fb923c"/>
-  <text x="625" y="620" text-anchor="middle" font-size="8" font-weight="bold" fill="#9a3412">FraudAlerts Tool</text>
-  <text x="625" y="633" text-anchor="middle" font-size="7" fill="#ea580c">AGENT_GET_FRAUD_ALERTS()</text>
-
-  <path d="M715 623 L765 623" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrOrg)"/>
-
-  <rect x="765" y="605" width="180" height="35" rx="4" fill="#ffedd5" stroke="#fb923c"/>
-  <text x="855" y="620" text-anchor="middle" font-size="8" font-weight="bold" fill="#9a3412">ML Inference</text>
-  <text x="855" y="633" text-anchor="middle" font-size="7" fill="#ea580c">Anomaly detection + scoring</text>
-
-  <path d="M945 623 L995 623" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrOrg)"/>
-
-  <rect x="995" y="605" width="160" height="35" rx="4" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="1075" y="620" text-anchor="middle" font-size="8" font-weight="bold" fill="#9a3412">Result</text>
-  <text x="1075" y="633" text-anchor="middle" font-size="7" fill="#7c2d12">Flagged customers + scores</text>
-
-  <!-- Example 5: Multi-tool -->
-  <rect x="30" y="705" width="1140" height="115" rx="8" fill="white" stroke="#64748b" stroke-width="1.5" filter="url(#shQtc)"/>
-  <rect x="30" y="705" width="1140" height="25" rx="8" fill="#475569"/>
-  <text x="50" y="722" font-size="10" font-weight="bold" fill="white">EXAMPLE 5 — Multi-Tool (Complex Question)</text>
-  <text x="600" y="722" font-size="9" fill="#cbd5e1">Tools: Analyst + Function | Uses Ontology: No (combined structured + ML)</text>
-
-  <rect x="45" y="740" width="280" height="35" rx="4" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="185" y="755" text-anchor="middle" font-size="9" font-weight="bold" fill="#334155">User Question:</text>
-  <text x="185" y="768" text-anchor="middle" font-size="8" fill="#475569">"Show high-LTV customers at risk of churning with their recent volume"</text>
-
-  <path d="M325 758 L355 758" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
-
-  <rect x="355" y="740" width="120" height="35" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="415" y="755" text-anchor="middle" font-size="8" font-weight="bold" fill="#334155">KRAKEN_AGENT</text>
-  <text x="415" y="768" text-anchor="middle" font-size="7" fill="#475569">Multi-tool plan</text>
-
-  <path d="M475 748 L525 738" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#arrBlue)"/>
-  <path d="M475 768 L525 778" stroke="#f97316" stroke-width="1.2" marker-end="url(#arrOrg)"/>
-
-  <rect x="525" y="728" width="130" height="25" rx="4" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="590" y="745" text-anchor="middle" font-size="7" fill="#1e40af">Analyst: Get volume data</text>
-
-  <rect x="525" y="763" width="130" height="25" rx="4" fill="#ffedd5" stroke="#fb923c"/>
-  <text x="590" y="780" text-anchor="middle" font-size="7" fill="#9a3412">Function: Churn + LTV scores</text>
-
-  <path d="M655 740 L700 755" stroke="#64748b" stroke-width="1.2"/>
-  <path d="M655 775 L700 760" stroke="#64748b" stroke-width="1.2"/>
-
-  <rect x="700" y="745" width="130" height="30" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="765" y="762" text-anchor="middle" font-size="8" font-weight="bold" fill="#334155">Synthesize Results</text>
-
-  <path d="M830 760 L880 760" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
-
-  <rect x="880" y="745" width="280" height="30" rx="4" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="1020" y="764" text-anchor="middle" font-size="7" fill="#475569">Combined response: "3 high-LTV customers show churn signals: Alice ($45K LTV, 87% churn)..."</text>
-
-  <!-- Footer -->
-  <text x="600" y="880" text-anchor="middle" font-size="10" fill="#94a3b8">Query Tool Chain | Kraken Intelligence Agent | Snowflake Cortex Orchestration</text>
+  <text x="500" y="595" font-size="9" fill="#475569" font-weight="bold">Routing Rules:</text>
+  <text x="500" y="615" font-size="9" fill="#475569">1. Financial keywords → FinancialAnalyst → SV_FINANCIAL_OPS</text>
+  <text x="500" y="633" font-size="9" fill="#475569">2. Pipeline/CRM keywords → PipelineAnalyst → SV_CRM_PIPELINE</text>
+  <text x="500" y="651" font-size="9" fill="#475569">3. Device/IoT keywords → DeviceAnalyst → SV_IOT_PERFORMANCE</text>
+  <text x="500" y="669" font-size="9" fill="#475569">4. Prediction keywords → ML Functions (PredictFailure, ScoreEfficiency, etc.)</text>
+  <text x="500" y="687" font-size="9" fill="#475569">5. Specs/procedures/how-to → KnowledgeSearch → KNOWLEDGE_ARTICLES (Ontology)</text>
+  <text x="500" y="705" font-size="9" fill="#475569">6. Cross-domain → Multiple tools invoked, results synthesized by agent</text>
 </svg>

@@ -1,24 +1,79 @@
 # Snowflake Intelligence Agent Project Template
 
 ## Purpose
-Building a Snowflake CoWork Agent for a business like Kraken is the ability to democratize data access and automate complex, cross-functional workflows while maintaining strict security and governance.Because Kraken operates in a highly regulated, high-velocity, and data-intensive industry, the main value proposition of a CoWork Agent is shifting from "asking for a report" to "taking an action."Here are the most impactful reasons for implementing this technology at a company like Kraken:1. Accelerating Decision-Making Across SilosCryptocurrency exchanges manage massive amounts of disparate data, ranging from structured trade volumes and order book depth to unstructured customer support tickets, compliance logs, and market sentiment.The Problem: Currently, getting an answer to a complex question (e.g., "Why did our support ticket volume spike for a specific trading pair last week?") often requires multiple departments, manual SQL queries, and days of back-and-forth.The CoWork Solution: A CoWork Agent can synthesize structured data (from Snowflake) and unstructured data (from support tickets or external market reports) to provide an immediate, natural-language answer. This allows non-technical team members—such as Product Managers or Compliance Officers—to gain insights instantly without waiting on data analysts.2. Operationalizing Compliance and Risk ManagementKraken operates in a space where regulatory compliance is paramount.The Benefit: A Snowflake CoWork Agent is built with enterprise-grade governance. It operates within the organization's existing security perimeter, meaning it respects role-based access controls (RBAC) and data masking.The Use Case: You could build an agent that proactively monitors for anomalous patterns in transaction data or customer activity, immediately surfacing these to the compliance team with a summary of the context, the data source, and the specific policy violation, significantly reducing the "time-to-detection" for potential issues.3. Automating Routine "Knowledge Work"Knowledge workers at a global firm like Kraken spend significant time on repetitive, high-context tasks that aren't easily automated by simple scripts.Automated Briefings: Employees could trigger an agent to prepare a "morning briefing" that aggregates overnight market volatility, top customer queries, and system performance metrics, formatted exactly for their role.Tool Integration: Using Model Context Protocol (MCP) connectors, these agents can bridge the gap between Snowflake and external tools like Slack, Jira, or Salesforce. For instance, an agent could identify a recurring technical error from support logs (unstructured data) and automatically draft a Jira ticket for the engineering team, including the relevant data context from Snowflake.4. Improving "Time-to-Insight" for StrategyFor a business that relies on rapid execution, having a "personal agent" for every employee reduces the friction of manual data exploration.Self-Service Analytics: Instead of navigating rigid dashboards, leadership can ask "What if" questions (e.g., "How would a 5% increase in fee structure for [Asset] impact our monthly revenue based on last quarter’s volume?") and receive data-grounded forecasts immediately. This allows for faster, more informed strategic pivots in a volatile market.Summary: Why it fits KrakenThe core advantage of using Snowflake CoWork specifically—rather than a generic LLM—is that it is grounded in your enterprise data from day one. It doesn't just "chat"; it understands how Kraken defines its business metrics, follows your specific governance rules, and can be configured to take actions that actually move the business forward within the systems you already use.
+Building a Snowflake CoWork Agent for a business like Energy Recovery is the ability to democratize data access and automate complex, cross-functional workflows while maintaining strict security and governance.1. Company Insights
+Energy Recovery, Inc. (NASDAQ: ERII) is a publicly traded global leader in the design and manufacturing of energy recovery devices for industrial fluid flow applications, founded in 1992 and headquartered in San Leandro, California. The company's core technology — the PX Pressure Exchanger — recovers up to 98% of otherwise wasted pressure energy in reverse osmosis desalination plants. Energy Recovery holds a dominant market position in desalination energy recovery and is strategically expanding into industrial wastewater treatment and CO2 refrigeration. The company employs approximately 230 people and generated ~$135M in annual revenue in FY2025.
+
+Products & Services:
+
+PX Pressure Exchanger (Desalination) — Isobaric energy recovery devices for large-scale seawater and brackish water RO plants, reducing energy consumption by up to 98%
+Industrial Fluid Flow Products — Pumps and energy recovery devices for wastewater treatment and industrial processes
+PX G1300 (Refrigeration) — Energy recovery for industrial CO2 transcritical refrigeration systems, commercially launched April 2026
+Aftermarket Services — Maintenance, support, and component replacement for installed base
+Financial Insights:
+
+Market Cap: ~$1.15B (as of July 2026)
+Stock: ERII trading ~$19.50 | 52-week range: $13.50–$22.75
+FY2025 Revenue: $135.2M (+5.1% YoY from $128.6M in FY2024)
+FY2026 Guidance: $135M–$145M revenue, 67%–69% gross margin
+Q1 2026: Revenue reported on May 8, 2026; management reiterated full-year guidance citing strong backlog
+Tech Stack (Verified via Sumble):
+
+Cloud: AWS, Azure, GCP
+Databases: Microsoft SQL Server, Oracle
+Data Warehouses: BigQuery, Redshift
+Analytics/BI: Looker, Power BI, Tableau
+Languages: R
+
+2. Industry Insights
+Energy Recovery operates in the Industrial Technology / Water Treatment / Environmental Services sector. The global desalination market is growing rapidly, driven by increasing water scarcity affecting 2B+ people globally, population growth in arid regions, and stricter environmental regulations. The industrial wastewater treatment market is expanding due to regulations requiring reduced water footprints. The CO2 refrigeration market is accelerating as HFC phase-outs drive adoption of natural refrigerants.
+
+Trends & Challenges:
+
+Accelerating desalination adoption — Growing water stress in MENA, Asia-Pacific, and the Americas driving massive RO plant construction and demand for energy-efficient components
+Stricter environmental regulations — Industrial wastewater discharge limits and F-gas regulations pushing companies toward advanced treatment and natural refrigerant systems
+Digitalization & predictive maintenance — Industrial OEMs adopting IoT sensors, AI-driven analytics, and digital twins to optimize equipment performance and reduce downtime
+Sustainability mandates — Manufacturers facing increasing pressure to demonstrate ESG compliance, reduce carbon footprint, and optimize energy use across operations
+Data & AI Use Cases in Manufacturing/Industrial:
+
+Predictive maintenance — AI analyzing sensor data from pumps, motors, and PX devices to predict failures before they occur
+Process optimization — ML models optimizing desalination/refrigeration cycle parameters to minimize energy consumption in real-time
+Supply chain analytics — Demand forecasting, inventory optimization, and logistics planning across global operations
+Energy management — AI-powered monitoring of facility energy consumption with real-time optimization recommendations
+3. Recent News
+Q1 2026 Earnings (May 8, 2026) — Energy Recovery reported Q1 results and reaffirmed full-year FY2026 guidance of $135M–$145M, citing strong backlog and anticipated H2 recovery from large water-segment project shipments
+PX G1300 Commercial Launch (April 15, 2026) — Launched new pressure exchanger for large-scale industrial fluid flow applications, expanding beyond desalination into chemical processing and oil & gas
+New CTO Appointed (March 1, 2026) — Dr. Emily Chen named CTO, bringing 20+ years in fluid dynamics and materials science, expected to drive product innovation
+Strategic Engineering Partnership (June 1, 2026) — Partnered with a major global engineering firm to integrate PX technology into industrial wastewater treatment and chemical processing plant designs
+4. Competitors
+Competitor	Description	Competitive Positioning vs. Energy Recovery
+Danfoss	Global leader in climate and energy-efficient solutions; offers APP pumps and iSave energy recovery devices	Larger and more diversified; broader product portfolio and global presence, but less specialized in PX-style isobaric recovery
+Flowserve	Major flow control systems manufacturer (pumps, valves, seals)	Comprehensive system solutions for desalination and industrial processes; competes on breadth rather than energy recovery specialization
+Sulzer	Fluid engineering company (pumps, agitators, mixers) for water, oil/gas, and power sectors	Long-standing industry presence and global service network; broad portfolio but lacks Energy Recovery's specialized PX efficiency
+Energy Recovery differentiates through its proprietary PX technology with 98% energy recovery efficiency, specialized niche focus, and proven reliability — while competitors offer broader but less specialized industrial solutions.
 
 ## Customer details
-Kraken is a prominent, global cryptocurrency exchange that provides a platform for individuals and institutions to buy, sell, and trade digital assets. Founded in 2011, it has grown from a specialized Bitcoin platform into a comprehensive multi-asset financial services company.While it is widely known as a crypto exchange, Kraken's operations have expanded to include derivatives, staking services, and, in some regions, access to traditional financial assets like stocks and ETFs.How Kraken Makes MoneyKraken’s revenue model is diversified across several streams:Trading Fees (Transaction Fees): This is the core of Kraken's business. The platform charges a percentage fee on trades executed on its exchange. These fees vary based on the user's trading volume, the specific market (e.g., spot, margin, or futures), and whether the user is an individual or an institutional client. Higher-volume traders typically benefit from lower, tiered fee structures.Staking and Earn Services: Kraken allows users to "stake" or hold certain cryptocurrencies to help secure blockchain networks. In return, users earn rewards. Kraken generates revenue by taking a commission or percentage of the staking rewards generated by the assets held on its platform.Asset-Based and Service Revenue: Beyond trading, Kraken earns through various financial services, such as:Custody Services: Managing the secure storage of assets for institutional clients.Payment and Financing Services: Providing infrastructure for payments and capital efficiency tools.Over-the-Counter (OTC) Trading: Kraken operates an OTC desk for large-volume traders. Unlike its standard exchange, the OTC desk often acts as the counterparty to the trade, which can involve different risk-and-revenue dynamics.Expansion into Traditional Finance: Increasingly, Kraken has diversified into non-crypto areas, such as offering commission-free trading for stocks and ETFs in certain jurisdictions and facilitating tokenized equities. These initiatives create additional revenue channels independent of pure cryptocurrency trading volume.Key Aspects of Their BusinessNot a Bank or Broker: Kraken emphasizes that it operates as a venue where users trade directly with one another. It is not an investment advisor or a traditional bank, and it does not manage or "undo" user trades.Infrastructure-Focused: The parent company, Payward, Inc., manages a unified infrastructure that supports multiple products (such as Kraken, Kraken Pro, and various institutional tools) on shared systems for liquidity, compliance, and risk management. This allows the company to launch new services efficiently.
+Energy Recovery Potential Snowflake Value Proposition
+Given Energy Recovery's multi-cloud data landscape (BigQuery, Redshift, SQL Server, Oracle) and growing strategic needs, key Snowflake value propositions include:
+
+Data Warehouse Consolidation — Energy Recovery runs BigQuery, Redshift, AND has Snowflake exposure. Consolidating onto Snowflake would simplify their analytics stack, reduce operational overhead, and provide a single platform across AWS, Azure, and GCP
+IoT & Predictive Maintenance Analytics — With 40,000+ PX devices installed globally generating sensor data, Snowflake's scalable architecture can power predictive maintenance models and real-time operational monitoring at scale
+Supply Chain & Manufacturing Analytics — As the company expands into new markets (refrigeration, wastewater), Snowflake can serve as the unified data platform for demand forecasting, inventory optimization, and production planning
+AI/ML Workloads — Snowflake's Cortex AI capabilities can accelerate Energy Recovery's process optimization and quality control initiatives without requiring a separate ML infrastructure
 
 ## Customer Configuration
 
 **To create a new project, replace these variables throughout:**
 
-| Variable | Description | Example (Cathay Bank) |
+| Variable | Description | Example (Energy Recovery) |
 |----------|-------------|-------------------|
-| `{CUSTOMER_NAME}` | Customer name | Kraken |
-| `{CUSTOMER_NAME_UPPER}` | Uppercase for SQL objects | Kraken |
-| `{DATABASE_NAME}` | Main database name | Kraken_DB |
-| `{WAREHOUSE_NAME}` | Warehouse name | Kraken_WH |
-| `{AGENT_NAME}` | Agent identifier | Kraken_AGENT |
-| `{BUSINESS_DOMAIN}` | Customer's business focus | Crypto Currency Exchange |
-| `{WEB_PRESENCE}`  | Web Address | https://www.Kraken.com/
+| `{CUSTOMER_NAME}` | Customer name | Energy Recovery |
+| `{CUSTOMER_NAME_UPPER}` | Uppercase for SQL objects | ENERGY_RECOVERY |
+| `{DATABASE_NAME}` | Main database name | Energy_Recovery_DB |
+| `{WAREHOUSE_NAME}` | Warehouse name | Energy_Recovery_WH |
+| `{AGENT_NAME}` | Agent identifier | Energy_Recovery_AGENT |
+| `{BUSINESS_DOMAIN}` | Customer's business focus | Manufacturing of energy recovery devices |
+| `{WEB_PRESENCE}`  | Web Address | https://www.EnergyRecovery.com/
 
 ---
 
@@ -26,10 +81,10 @@ Kraken is a prominent, global cryptocurrency exchange that provides a platform f
 
 ```Build a complete Snowflake Intelligence architecture and implementation plan for `{CUSTOMER_NAME_UPPER}`.
 
-The proposed architecture is a modern, streaming-first Scalable ELT Pipeline designed for near real-time data availability, scalability, and maintainability.  All of the ESG data will stream data into Snowflake and they have the desire to be able to ask questions of their data with Natural Language Queries.
+The proposed architecture is a modern, streaming-first Scalable ELT Pipeline designed for near real-time data availability, scalability, and maintainability.  All of the data will stream data into Snowflake, from Microsoft Dynamics, Oracle, SCADA Systems, etc, and they have the desire to be able to ask questions of their data with Natural Language Queries. They are especially interested in the integration of Financial Operations data and their MSFT Dynamics CRM data.
 
 (Note: All project images should be SVG graphics and as you can see in the "Agent Project Structure" section, there should always be architecture.svg, deployment_flow.svg, ml_models.svg at a minimum)
- This Project should encompass all aspects of the details identified on their website @https://www.Kraken.com. The Agent Project Structure directories should be created in the root github repo directory. Use these files in the Ontology Directory to build the Ontology for this project.
+ This Project should encompass all aspects of the details identified on their website @https://www.EnergyRecovery.com. The Agent Project Structure directories should be created in the root github repo directory. Use ISA-95-aligned Ontology to build the Ontology for this project.
  Additionally, create a "Query Tool Chain" SVG diagram.  This should show examples of the questions and the tool path used to answer.  I am trying to identify when each tool is used and whether the agent used the ontology.
  ```
 
@@ -52,7 +107,7 @@ The proposed architecture is a modern, streaming-first Scalable ELT Pipeline des
     ├── setup/
     │   ├── 01_database_and_schema.sql # Database, schemas, warehouse
     │   └── 02_create_tables.sql       # All table definitions
-    |   └── 03_Blockchain_Ontology.sql # Create all tables and load the Blockchain Ontology
+    |   └── 03_ISA_95_Ontology.sql # Create all tables and load the ISA 95 Ontology
     ├── data/
     │   └── 04_generate_synthetic_data.sql # Test data generation
     ├── views/
@@ -76,7 +131,7 @@ These are examples of what is required.  You may need to add more project define
 
 1. `sql/setup/01_database_and_schema.sql`
 2. `sql/setup/02_create_tables.sql`
-3. `sql/data/03_Blockchain_Ontology.sql`
+3. `sql/data/03_ISA_95_Ontology.sql `
 4. `sql/data/04_generate_synthetic_data.sql`
 5. `sql/views/05_create_views.sql`
 6. `sql/views/06_create_semantic_views.sql`

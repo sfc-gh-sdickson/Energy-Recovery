@@ -1,151 +1,149 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" font-family="Segoe UI, Arial, sans-serif">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 550" font-family="Segoe UI, Arial, sans-serif">
   <defs>
-    <linearGradient id="bgMl" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#fdf2f8"/>
-      <stop offset="100%" style="stop-color:#fce7f3"/>
+    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
     </linearGradient>
-    <filter id="shMl" x="-3%" y="-3%" width="106%" height="106%">
-      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.1"/>
+    <linearGradient id="featureGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="modelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="deployGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <filter id="shadow3" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.12"/>
     </filter>
-    <marker id="arrMl" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#7c3aed"/>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#64748b"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="750" fill="url(#bgMl)" rx="8"/>
-  <text x="600" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">ML Pipeline — Kraken Intelligence Agent</text>
-  <text x="600" y="55" text-anchor="middle" font-size="11" fill="#64748b">6 Models: Fraud/AML, Churn, Volume Forecast, LTV, Risk Scoring, Ticket Classification</text>
+  <rect width="1000" height="550" fill="#f8fafc"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">ML Models Pipeline — Energy Recovery</text>
 
-  <!-- Data Sources -->
-  <rect x="30" y="80" width="180" height="620" rx="8" fill="white" stroke="#7c3aed" stroke-width="1.5" filter="url(#shMl)"/>
-  <text x="120" y="105" text-anchor="middle" font-size="11" font-weight="bold" fill="#5b21b6">DATA SOURCES</text>
+  <!-- DATA SOURCES -->
+  <text x="110" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#2563eb">DATA SOURCES</text>
 
-  <rect x="40" y="120" width="160" height="30" rx="4" fill="#f5f3ff" stroke="#c4b5fd"/>
-  <text x="120" y="140" text-anchor="middle" font-size="9" fill="#4c1d95">TRADES (500K rows)</text>
+  <rect x="30" y="90" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
+  <text x="110" y="114" text-anchor="middle" font-size="9" fill="white" font-weight="bold">DEVICE_TELEMETRY</text>
 
-  <rect x="40" y="160" width="160" height="30" rx="4" fill="#f5f3ff" stroke="#c4b5fd"/>
-  <text x="120" y="180" text-anchor="middle" font-size="9" fill="#4c1d95">CUSTOMERS (10K rows)</text>
+  <rect x="30" y="140" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
+  <text x="110" y="164" text-anchor="middle" font-size="9" fill="white" font-weight="bold">DEVICE_REGISTRY</text>
 
-  <rect x="40" y="200" width="160" height="30" rx="4" fill="#f5f3ff" stroke="#c4b5fd"/>
-  <text x="120" y="220" text-anchor="middle" font-size="9" fill="#4c1d95">COMPLIANCE_EVENTS</text>
+  <rect x="30" y="190" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
+  <text x="110" y="214" text-anchor="middle" font-size="9" fill="white" font-weight="bold">ALARMS</text>
 
-  <rect x="40" y="240" width="160" height="30" rx="4" fill="#f5f3ff" stroke="#c4b5fd"/>
-  <text x="120" y="260" text-anchor="middle" font-size="9" fill="#4c1d95">SUPPORT_TICKETS</text>
+  <rect x="30" y="240" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
+  <text x="110" y="264" text-anchor="middle" font-size="9" fill="white" font-weight="bold">MAINTENANCE_LOGS</text>
 
-  <rect x="40" y="280" width="160" height="30" rx="4" fill="#f5f3ff" stroke="#c4b5fd"/>
-  <text x="120" y="300" text-anchor="middle" font-size="9" fill="#4c1d95">MARKET_DATA (OHLCV)</text>
+  <rect x="30" y="290" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
+  <text x="110" y="314" text-anchor="middle" font-size="9" fill="white" font-weight="bold">SALES_ORDERS</text>
 
-  <rect x="40" y="320" width="160" height="30" rx="4" fill="#f5f3ff" stroke="#c4b5fd"/>
-  <text x="120" y="340" text-anchor="middle" font-size="9" fill="#4c1d95">WALLETS / STAKING</text>
+  <rect x="30" y="340" width="160" height="40" rx="6" fill="url(#dataGrad)" filter="url(#shadow3)"/>
+  <text x="110" y="364" text-anchor="middle" font-size="9" fill="white" font-weight="bold">OPPORTUNITIES</text>
 
-  <!-- Feature Engineering -->
-  <rect x="250" y="80" width="200" height="620" rx="8" fill="white" stroke="#ec4899" stroke-width="1.5" filter="url(#shMl)"/>
-  <text x="350" y="105" text-anchor="middle" font-size="11" font-weight="bold" fill="#9d174d">FEATURE ENGINEERING</text>
+  <!-- FEATURE ENGINEERING -->
+  <text x="340" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#7c3aed">FEATURE ENGINEERING</text>
 
-  <rect x="260" y="120" width="180" height="45" rx="4" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="350" y="138" text-anchor="middle" font-size="8" font-weight="bold" fill="#831843">Fraud Features</text>
-  <text x="350" y="153" text-anchor="middle" font-size="7" fill="#9d174d">tx_velocity, amount_zscore, time_patterns</text>
+  <rect x="240" y="95" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
+  <text x="340" y="116" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Vibration Analysis</text>
+  <text x="340" y="132" text-anchor="middle" font-size="8" fill="#ddd6fe">AVG, trend, threshold breach</text>
+  <text x="340" y="144" text-anchor="middle" font-size="8" fill="#ddd6fe">count &gt; 5.0 mm/s</text>
 
-  <rect x="260" y="175" width="180" height="45" rx="4" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="350" y="193" text-anchor="middle" font-size="8" font-weight="bold" fill="#831843">Churn Features</text>
-  <text x="350" y="208" text-anchor="middle" font-size="7" fill="#9d174d">days_since_trade, frequency_decay, ticket_count</text>
+  <rect x="240" y="165" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
+  <text x="340" y="186" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Efficiency Metrics</text>
+  <text x="340" y="202" text-anchor="middle" font-size="8" fill="#ddd6fe">AVG recovery %, gap vs design</text>
+  <text x="340" y="214" text-anchor="middle" font-size="8" fill="#ddd6fe">degradation rate</text>
 
-  <rect x="260" y="230" width="180" height="45" rx="4" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="350" y="248" text-anchor="middle" font-size="8" font-weight="bold" fill="#831843">Volume Features</text>
-  <text x="350" y="263" text-anchor="middle" font-size="7" fill="#9d174d">lag_7d, rolling_avg_30d, volatility, day_of_week</text>
+  <rect x="240" y="235" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
+  <text x="340" y="256" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Operational Features</text>
+  <text x="340" y="272" text-anchor="middle" font-size="8" fill="#ddd6fe">Operating hours, age,</text>
+  <text x="340" y="284" text-anchor="middle" font-size="8" fill="#ddd6fe">days since service, alarm count</text>
 
-  <rect x="260" y="285" width="180" height="45" rx="4" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="350" y="303" text-anchor="middle" font-size="8" font-weight="bold" fill="#831843">LTV Features</text>
-  <text x="350" y="318" text-anchor="middle" font-size="7" fill="#9d174d">total_fees, account_age, tier, staking_amount</text>
+  <rect x="240" y="305" width="200" height="55" rx="8" fill="url(#featureGrad)" filter="url(#shadow3)"/>
+  <text x="340" y="326" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Demand Signals</text>
+  <text x="340" y="342" text-anchor="middle" font-size="8" fill="#ddd6fe">Historical orders, pipeline,</text>
+  <text x="340" y="354" text-anchor="middle" font-size="8" fill="#ddd6fe">seasonal patterns, backlog</text>
 
-  <rect x="260" y="340" width="180" height="45" rx="4" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="350" y="358" text-anchor="middle" font-size="8" font-weight="bold" fill="#831843">Risk Features</text>
-  <text x="350" y="373" text-anchor="middle" font-size="7" fill="#9d174d">leverage, concentration, volatility_exposure</text>
+  <!-- Arrows: Data to Features -->
+  <path d="M 190 110 L 235 120" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 190 160 L 235 170" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 190 260 L 235 260" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 190 310 L 235 330" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 190 360 L 235 340" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
 
-  <rect x="260" y="395" width="180" height="45" rx="4" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="350" y="413" text-anchor="middle" font-size="8" font-weight="bold" fill="#831843">Ticket NLP Features</text>
-  <text x="350" y="428" text-anchor="middle" font-size="7" fill="#9d174d">tfidf_vectors, sentiment, keyword_flags</text>
+  <!-- MODEL SCORING -->
+  <text x="590" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#059669">MODEL SCORING</text>
 
-  <!-- Models -->
-  <rect x="490" y="80" width="220" height="620" rx="8" fill="white" stroke="#f97316" stroke-width="1.5" filter="url(#shMl)"/>
-  <text x="600" y="105" text-anchor="middle" font-size="11" font-weight="bold" fill="#9a3412">MODEL TRAINING</text>
+  <rect x="490" y="90" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
+  <text x="590" y="112" text-anchor="middle" font-size="10" fill="white" font-weight="bold">PREDICT_PX_FAILURE</text>
+  <text x="590" y="130" text-anchor="middle" font-size="8" fill="#a7f3d0">Rule-based risk scoring (0-100)</text>
+  <text x="590" y="145" text-anchor="middle" font-size="8" fill="#a7f3d0">Weighted: vib 40% + eff 30% + temp 20%</text>
 
-  <rect x="500" y="120" width="200" height="55" rx="4" fill="#ffedd5" stroke="#fdba74"/>
-  <text x="600" y="140" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">1. Fraud/AML Detection</text>
-  <text x="600" y="155" text-anchor="middle" font-size="8" fill="#9a3412">Isolation Forest + Rules</text>
-  <text x="600" y="167" text-anchor="middle" font-size="7" fill="#64748b">Output: risk_score (0-100), flagged (bool)</text>
+  <rect x="490" y="170" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
+  <text x="590" y="192" text-anchor="middle" font-size="10" fill="white" font-weight="bold">SCORE_ENERGY_EFFICIENCY</text>
+  <text x="590" y="210" text-anchor="middle" font-size="8" fill="#a7f3d0">Actual vs design spec comparison</text>
+  <text x="590" y="225" text-anchor="middle" font-size="8" fill="#a7f3d0">Gap analysis + savings estimate</text>
 
-  <rect x="500" y="185" width="200" height="55" rx="4" fill="#ffedd5" stroke="#fdba74"/>
-  <text x="600" y="205" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">2. Customer Churn</text>
-  <text x="600" y="220" text-anchor="middle" font-size="8" fill="#9a3412">Gradient Boosted Trees</text>
-  <text x="600" y="232" text-anchor="middle" font-size="7" fill="#64748b">Output: churn_probability (0-1)</text>
+  <rect x="490" y="250" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
+  <text x="590" y="272" text-anchor="middle" font-size="10" fill="white" font-weight="bold">FORECAST_DEMAND</text>
+  <text x="590" y="290" text-anchor="middle" font-size="8" fill="#a7f3d0">Historical trend + 8% growth</text>
+  <text x="590" y="305" text-anchor="middle" font-size="8" fill="#a7f3d0">Pipeline-weighted adjustment</text>
 
-  <rect x="500" y="250" width="200" height="55" rx="4" fill="#ffedd5" stroke="#fdba74"/>
-  <text x="600" y="270" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">3. Volume Forecast</text>
-  <text x="600" y="285" text-anchor="middle" font-size="8" fill="#9a3412">Time-Series (ARIMA-like)</text>
-  <text x="600" y="297" text-anchor="middle" font-size="7" fill="#64748b">Output: 7-day forecast per pair</text>
+  <rect x="490" y="330" width="200" height="65" rx="8" fill="url(#modelGrad)" filter="url(#shadow3)"/>
+  <text x="590" y="352" text-anchor="middle" font-size="10" fill="white" font-weight="bold">CALCULATE_EQUIPMENT_HEALTH</text>
+  <text x="590" y="370" text-anchor="middle" font-size="8" fill="#a7f3d0">Composite: eff 35% + vib 30%</text>
+  <text x="590" y="385" text-anchor="middle" font-size="8" fill="#a7f3d0">+ maint 20% + age 15%</text>
 
-  <rect x="500" y="315" width="200" height="55" rx="4" fill="#ffedd5" stroke="#fdba74"/>
-  <text x="600" y="335" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">4. Customer LTV</text>
-  <text x="600" y="350" text-anchor="middle" font-size="8" fill="#9a3412">Linear Regression</text>
-  <text x="600" y="362" text-anchor="middle" font-size="7" fill="#64748b">Output: predicted_ltv_usd</text>
+  <!-- Arrows: Features to Models -->
+  <path d="M 440 122 L 485 122" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 440 192 L 485 200" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 440 262 L 485 270" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 440 332 L 485 350" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
 
-  <rect x="500" y="380" width="200" height="55" rx="4" fill="#ffedd5" stroke="#fdba74"/>
-  <text x="600" y="400" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">5. Market Risk Scoring</text>
-  <text x="600" y="415" text-anchor="middle" font-size="8" fill="#9a3412">Rules + Scoring Matrix</text>
-  <text x="600" y="427" text-anchor="middle" font-size="7" fill="#64748b">Output: risk_grade (A-F)</text>
+  <!-- DEPLOYMENT -->
+  <text x="840" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#d97706">DEPLOYMENT</text>
 
-  <rect x="500" y="445" width="200" height="55" rx="4" fill="#ffedd5" stroke="#fdba74"/>
-  <text x="600" y="465" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">6. Support Ticket Classifier</text>
-  <text x="600" y="480" text-anchor="middle" font-size="8" fill="#9a3412">Cortex LLM Classification</text>
-  <text x="600" y="492" text-anchor="middle" font-size="7" fill="#64748b">Output: category, confidence</text>
+  <rect x="740" y="90" width="210" height="60" rx="8" fill="url(#deployGrad)" filter="url(#shadow3)"/>
+  <text x="845" y="114" text-anchor="middle" font-size="10" fill="white" font-weight="bold">SQL UDF (RETURNS ARRAY)</text>
+  <text x="845" y="132" text-anchor="middle" font-size="8" fill="#fef3c7">Deployed to ML_MODELS schema</text>
+  <text x="845" y="144" text-anchor="middle" font-size="8" fill="#fef3c7">Executed via ENERGY_RECOVERY_WH</text>
 
-  <!-- Prediction UDFs -->
-  <rect x="750" y="80" width="200" height="620" rx="8" fill="white" stroke="#16a34a" stroke-width="1.5" filter="url(#shMl)"/>
-  <text x="850" y="105" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">PREDICTION UDFs</text>
+  <rect x="740" y="170" width="210" height="60" rx="8" fill="url(#deployGrad)" filter="url(#shadow3)"/>
+  <text x="845" y="194" text-anchor="middle" font-size="10" fill="white" font-weight="bold">Agent Tool (Generic)</text>
+  <text x="845" y="212" text-anchor="middle" font-size="8" fill="#fef3c7">Registered in Agent spec</text>
+  <text x="845" y="224" text-anchor="middle" font-size="8" fill="#fef3c7">type: function</text>
 
-  <rect x="760" y="120" width="180" height="40" rx="4" fill="#dcfce7" stroke="#86efac"/>
-  <text x="850" y="137" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">AGENT_GET_FRAUD_ALERTS()</text>
-  <text x="850" y="152" text-anchor="middle" font-size="7" fill="#15803d">Returns flagged transactions</text>
+  <rect x="740" y="250" width="210" height="60" rx="8" fill="url(#deployGrad)" filter="url(#shadow3)"/>
+  <text x="845" y="274" text-anchor="middle" font-size="10" fill="white" font-weight="bold">Natural Language Access</text>
+  <text x="845" y="292" text-anchor="middle" font-size="8" fill="#fef3c7">User asks → Agent routes →</text>
+  <text x="845" y="304" text-anchor="middle" font-size="8" fill="#fef3c7">Function executes → Results returned</text>
 
-  <rect x="760" y="170" width="180" height="40" rx="4" fill="#dcfce7" stroke="#86efac"/>
-  <text x="850" y="187" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">AGENT_GET_CHURN_RISK()</text>
-  <text x="850" y="202" text-anchor="middle" font-size="7" fill="#15803d">Returns high-risk customers</text>
+  <!-- Arrows: Models to Deploy -->
+  <path d="M 690 122 L 735 120" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 690 202 L 735 200" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M 690 280 L 735 280" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
 
-  <rect x="760" y="220" width="180" height="40" rx="4" fill="#dcfce7" stroke="#86efac"/>
-  <text x="850" y="237" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">AGENT_GET_VOLUME_FORECAST()</text>
-  <text x="850" y="252" text-anchor="middle" font-size="7" fill="#15803d">Returns 7-day predictions</text>
+  <!-- Output Examples -->
+  <rect x="50" y="420" width="900" height="110" rx="10" fill="white" stroke="#e2e8f0" filter="url(#shadow3)"/>
+  <text x="500" y="445" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b">Model Outputs (Example)</text>
 
-  <rect x="760" y="270" width="180" height="40" rx="4" fill="#dcfce7" stroke="#86efac"/>
-  <text x="850" y="287" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">AGENT_GET_CUSTOMER_LTV()</text>
-  <text x="850" y="302" text-anchor="middle" font-size="7" fill="#15803d">Returns LTV predictions</text>
+  <text x="80" y="470" font-size="9" fill="#475569" font-weight="bold">PredictFailure:</text>
+  <text x="175" y="470" font-size="9" fill="#475569">{device_id, risk_score: 82, risk_level: "Critical", primary_risk_factor: "High vibration", recommended_action: "..."}</text>
 
-  <rect x="760" y="320" width="180" height="40" rx="4" fill="#dcfce7" stroke="#86efac"/>
-  <text x="850" y="337" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">AGENT_GET_RISK_SCORES()</text>
-  <text x="850" y="352" text-anchor="middle" font-size="7" fill="#15803d">Returns position risk grades</text>
+  <text x="80" y="490" font-size="9" fill="#475569" font-weight="bold">ScoreEfficiency:</text>
+  <text x="175" y="490" font-size="9" fill="#475569">{device_model: "PX-Q650", avg_efficiency: 96.2, design: 98.7, gap: 2.5%, potential_savings_kwh: 125000}</text>
 
-  <rect x="760" y="370" width="180" height="40" rx="4" fill="#dcfce7" stroke="#86efac"/>
-  <text x="850" y="387" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">AGENT_CLASSIFY_TICKET()</text>
-  <text x="850" y="402" text-anchor="middle" font-size="7" fill="#15803d">Returns ticket category</text>
+  <text x="80" y="510" font-size="9" fill="#475569" font-weight="bold">ForecastDemand:</text>
+  <text x="175" y="510" font-size="9" fill="#475569">{product_line: "Desalination", region: "MENA", forecast_units: 180, forecast_revenue: $45.2M, confidence: "High"}</text>
 
-  <!-- Agent Integration -->
-  <rect x="990" y="80" width="180" height="620" rx="8" fill="white" stroke="#29b5e8" stroke-width="2" filter="url(#shMl)"/>
-  <text x="1080" y="105" text-anchor="middle" font-size="11" font-weight="bold" fill="#0369a1">AGENT TOOLS</text>
-
-  <rect x="1000" y="125" width="160" height="110" rx="4" fill="#e0f2fe" stroke="#7dd3fc"/>
-  <text x="1080" y="145" text-anchor="middle" font-size="9" font-weight="bold" fill="#0c4a6e">KRAKEN_AGENT</text>
-  <text x="1080" y="162" text-anchor="middle" font-size="8" fill="#0369a1">tool_spec: generic</text>
-  <text x="1080" y="178" text-anchor="middle" font-size="7" fill="#64748b">FraudAlerts → AGENT_GET_FRAUD_ALERTS</text>
-  <text x="1080" y="192" text-anchor="middle" font-size="7" fill="#64748b">ChurnRisk → AGENT_GET_CHURN_RISK</text>
-  <text x="1080" y="206" text-anchor="middle" font-size="7" fill="#64748b">VolumeForecast → AGENT_GET_VOL...</text>
-  <text x="1080" y="220" text-anchor="middle" font-size="7" fill="#64748b">+ 3 more functions</text>
-
-  <!-- Arrows -->
-  <path d="M210 200 L250 200" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrMl)"/>
-  <path d="M450 250 L490 250" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrMl)"/>
-  <path d="M710 300 L750 300" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrMl)"/>
-  <path d="M940 200 L990 200" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrMl)"/>
-
-  <!-- Footer -->
-  <text x="600" y="730" text-anchor="middle" font-size="10" fill="#94a3b8">ML Pipeline: Data Sources → Feature Engineering → Model Training → UDFs → Agent Integration</text>
+  <text x="80" y="530" font-size="9" fill="#475569" font-weight="bold">EquipmentHealth:</text>
+  <text x="175" y="530" font-size="9" fill="#475569">{device_id, health_score: 45, status: "Poor", top_concern: "High vibration - bearing inspection needed"}</text>
 </svg>

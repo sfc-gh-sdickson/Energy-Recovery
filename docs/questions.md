@@ -1,71 +1,182 @@
 <img src="Snowflake_Logo.svg" width="200">
 
-# Test Questions — Kraken Intelligence Agent
+# Energy Recovery - Test Questions (30+)
 
-30+ complex questions organized by persona and tool path. These questions validate that the agent correctly routes to the appropriate tool and synthesizes multi-source answers.
+## Financial Operations Questions
 
----
+1. **What was our total revenue for Q1 2026?**
+   - Expected tools: FinancialAnalyst
+   - Tests: Revenue aggregation by quarter
 
-## Executive / PM Persona (Cortex Analyst — Trading)
+2. **How does gross margin compare across product lines (Desalination vs Wastewater vs Refrigeration)?**
+   - Expected tools: FinancialAnalyst
+   - Tests: Revenue minus COGS by product line
 
-1. What was our total trading volume in USD for the past 7 days across all pairs?
-2. Which trading pair generated the most fee revenue this month?
-3. What percentage of our trades come from Mobile vs Web vs API vs Pro platforms?
-4. How many unique active traders do we have per day this week?
-5. What is the average trade size in USD for Institutional vs VIP vs Pro vs Standard tier customers?
-6. Show me daily revenue (fees collected) for the past 30 days broken down by account tier.
-7. Which country has the highest trading volume and how does it compare to the top 5?
-8. What is the buy/sell ratio for BTC/USD over the last 14 days?
+3. **What is our current AR aging breakdown by region?**
+   - Expected tools: FinancialAnalyst
+   - Tests: Aging bucket distribution with regional segmentation
 
-## Compliance Officer Persona (Cortex Analyst — Operations)
+4. **Show me month-over-month revenue trends for the last 12 months**
+   - Expected tools: FinancialAnalyst
+   - Tests: Time series aggregation with trend
 
-9. How many compliance events were flagged as Critical risk level this month?
-10. What is the breakdown of compliance event types (SAR, velocity alert, sanctions, etc.) in the last 30 days?
-11. How many regulatory reports have been filed this quarter, broken down by jurisdiction?
-12. Which customers have the highest cumulative risk scores across all their compliance events?
-13. What percentage of compliance events are still in Pending review status?
-14. Show me the trend of flagged events per week over the past 3 months.
-15. What is the average time from event creation to review completion?
+5. **What are our top 10 customers by revenue this year?**
+   - Expected tools: FinancialAnalyst
+   - Tests: Customer ranking by order total
 
-## Support Manager Persona (Cortex Analyst + Search)
+6. **What percentage of our invoices are overdue and what is the total overdue amount?**
+   - Expected tools: FinancialAnalyst
+   - Tests: Invoice status filtering and aggregation
 
-16. What is the average first response time and resolution time for Critical priority tickets this month?
-17. Which support category has the lowest CSAT (customer satisfaction) score?
-18. How many tickets are currently Open or In Progress, grouped by assigned team?
-19. What is the P95 resolution time for Tier1 vs Tier2 vs Tier3 teams?
-20. Show ticket volume trends by category for the past 30 days.
-21. Which day of the week has the highest ticket submission rate?
+7. **How much did we spend on R&D vs Sales & Marketing last quarter?**
+   - Expected tools: FinancialAnalyst
+   - Tests: GL account category filtering
 
-## Cortex Search Questions (Ticket/Compliance Search)
+8. **What is our average order value by product line and how has it changed year-over-year?**
+   - Expected tools: FinancialAnalyst
+   - Tests: AVG calculation with YoY comparison
 
-22. Find support tickets about failed withdrawals to Ledger hardware wallets.
-23. Search for compliance events related to sanctions screening failures.
-24. Find tickets where customers reported unexpected margin calls.
-25. Search for any compliance alerts involving politically exposed persons in the EU jurisdiction.
-26. Find support tickets about staking rewards not appearing.
-27. Search compliance events for large transactions over $100,000 from US customers.
+9. **Which sales rep has the highest total revenue this fiscal year?**
+   - Expected tools: FinancialAnalyst
+   - Tests: Sales rep ranking
 
-## ML Function Questions (Predictions)
+10. **What is our revenue concentration risk? How much revenue comes from the top 5 customers?**
+    - Expected tools: FinancialAnalyst
+    - Tests: Pareto/concentration analysis
 
-28. Which customers are showing the most suspicious transaction patterns right now?
-29. What is the predicted trading volume for BTC/USD and ETH/USD for next week?
-30. Show me the top 10 customers most likely to churn and what we could do to retain them.
-31. Who are our highest lifetime value customers and what segment are they in?
-32. Which open futures positions have the worst risk grades and why?
-33. Are there any recently submitted support tickets that appear to be misrouted to the wrong category?
+## CRM / Sales Pipeline Questions
 
-## Blockchain Ontology Questions (DLT Knowledge)
+11. **What is our current pipeline value by stage?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Pipeline segmentation excluding closed
 
-34. What consensus mechanism does Ethereum use and how does it differ from Bitcoin?
-35. How many active validators does Kraken operate across all supported chains?
-36. List all ERC-20 tokens in the system with their total supply.
-37. What is the difference between Proof of Work and Proof of Stake in terms of energy efficiency?
-38. Which blockchains use some form of BFT (Byzantine Fault Tolerance) consensus?
+12. **Which opportunities are expected to close this quarter with amount > $1M?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Date filtering and amount threshold
 
-## Multi-Tool Complex Questions
+13. **What is our win rate by region over the past year?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Win rate calculation (won / (won + lost))
 
-39. Show me high-LTV customers who also have open Critical support tickets — are we at risk of losing valuable customers?
-40. Compare the trading volume trend with support ticket volume — do volume spikes correlate with more tickets?
-41. Which customers have both high churn risk AND multiple compliance flags — could compliance friction be driving them away?
-42. What is the total staked value for chains that use Proof of Stake consensus?
-43. Find any VIP or Institutional customers with suspicious transaction patterns who also have unresolved compliance events.
+14. **Show me the pipeline for PX G1300 CO2 Refrigeration products**
+    - Expected tools: PipelineAnalyst
+    - Tests: Product interest filtering
+
+15. **Who are our top prospects in the MENA region by deal size?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Region + stage filtering + ranking
+
+16. **What is our average sales cycle length by product interest?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Date difference calculation
+
+17. **How does our win rate against Danfoss compare to Flowserve and Sulzer?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Competitor-specific win rate comparison
+
+18. **Which accounts have the most open opportunities right now?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Account grouping with open stage filter
+
+19. **What are the most common loss reasons for deals we lost this year?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Loss reason aggregation on closed-lost deals
+
+20. **What is our weighted pipeline forecast for next quarter?**
+    - Expected tools: PipelineAnalyst
+    - Tests: Amount * probability calculation with date filter
+
+## IoT / Device Performance Questions
+
+21. **Which PX devices are at risk of failure in the next 30 days?**
+    - Expected tools: PredictFailure
+    - Tests: ML function invocation and result interpretation
+
+22. **What is the average energy recovery efficiency across our installed base by device model?**
+    - Expected tools: DeviceAnalyst
+    - Tests: AVG efficiency grouped by model
+
+23. **Show me alarm frequency trends by severity for the past 6 months**
+    - Expected tools: DeviceAnalyst
+    - Tests: Time series alarm count by severity
+
+24. **Which installation sites have the highest uptime?**
+    - Expected tools: DeviceAnalyst
+    - Tests: Uptime calculation from device status
+
+25. **What is the equipment health score distribution across our fleet?**
+    - Expected tools: EquipmentHealth
+    - Tests: ML function with distribution analysis
+
+26. **How many devices have vibration levels above 5 mm/s (indicating bearing issues)?**
+    - Expected tools: DeviceAnalyst
+    - Tests: Threshold filtering on telemetry
+
+27. **What is the total maintenance cost by device model and maintenance type?**
+    - Expected tools: DeviceAnalyst
+    - Tests: Cost aggregation with two-level grouping
+
+28. **Which regions have the most critical alarms in the past month?**
+    - Expected tools: DeviceAnalyst
+    - Tests: Severity + date + region filtering
+
+29. **What is the average downtime per maintenance event by failure mode?**
+    - Expected tools: DeviceAnalyst
+    - Tests: AVG downtime grouped by failure mode
+
+30. **How does the PX-Q650 efficiency compare to the PX-Q400 across different regions?**
+    - Expected tools: DeviceAnalyst
+    - Tests: Model comparison with regional breakdown
+
+## Cross-Domain & Knowledge Questions
+
+31. **How does our sales pipeline correlate with installed base growth in MENA?**
+    - Expected tools: PipelineAnalyst + DeviceAnalyst
+    - Tests: Multi-tool cross-domain synthesis
+
+32. **What maintenance procedures apply to PX Q650 devices?**
+    - Expected tools: KnowledgeSearch
+    - Tests: Product-specific knowledge retrieval
+
+33. **What is the PX G1300 and what applications is it designed for?**
+    - Expected tools: KnowledgeSearch
+    - Tests: Product specification retrieval
+
+34. **How does our ISA-95 hierarchy map to production capacity at San Leandro?**
+    - Expected tools: KnowledgeSearch
+    - Tests: Ontology-specific query
+
+35. **What is the demand forecast for next quarter by product line?**
+    - Expected tools: ForecastDemand
+    - Tests: ML function for forecasting
+
+36. **What energy efficiency improvements could we achieve and what are the potential savings?**
+    - Expected tools: ScoreEfficiency
+    - Tests: Efficiency gap and savings calculation
+
+37. **Compare our financial performance to our FY2026 guidance of $135M-$145M**
+    - Expected tools: FinancialAnalyst + KnowledgeSearch
+    - Tests: Actual vs target comparison
+
+38. **What troubleshooting steps should I follow for a PX device showing low efficiency?**
+    - Expected tools: KnowledgeSearch
+    - Tests: Procedural knowledge retrieval
+
+## Tool Routing Verification
+
+<html>
+<table>
+<tr><th>Question Category</th><th>Expected Primary Tool</th><th>Uses Ontology?</th></tr>
+<tr><td>Revenue/Financial</td><td>FinancialAnalyst</td><td>No</td></tr>
+<tr><td>Pipeline/CRM</td><td>PipelineAnalyst</td><td>No</td></tr>
+<tr><td>Device Performance</td><td>DeviceAnalyst</td><td>No</td></tr>
+<tr><td>Failure Prediction</td><td>PredictFailure</td><td>No</td></tr>
+<tr><td>Efficiency Scoring</td><td>ScoreEfficiency</td><td>No</td></tr>
+<tr><td>Demand Forecast</td><td>ForecastDemand</td><td>No</td></tr>
+<tr><td>Equipment Health</td><td>EquipmentHealth</td><td>No</td></tr>
+<tr><td>Product Specs</td><td>KnowledgeSearch</td><td>Yes (via articles)</td></tr>
+<tr><td>Maintenance Procedures</td><td>KnowledgeSearch</td><td>Yes (via articles)</td></tr>
+<tr><td>Manufacturing Hierarchy</td><td>KnowledgeSearch</td><td>Yes (ISA-95 article)</td></tr>
+<tr><td>Cross-Domain</td><td>Multiple tools</td><td>Depends on question</td></tr>
+</table>
+</html>

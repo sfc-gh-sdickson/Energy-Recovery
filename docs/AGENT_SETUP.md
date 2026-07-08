@@ -1,159 +1,147 @@
 <img src="Snowflake_Logo.svg" width="200">
 
-# Agent Setup Guide — Kraken Intelligence Agent
-
-Step-by-step guide to deploy the Kraken Intelligence Agent on Snowflake.
-
----
+# Energy Recovery - Agent Setup Guide
 
 ## Prerequisites
 
 <html>
 <table>
 <tr><th>Requirement</th><th>Details</th></tr>
-<tr><td>Snowflake Account</td><td>Enterprise Edition or higher with Cortex features enabled</td></tr>
-<tr><td>Role</td><td>SYSADMIN (for database/warehouse creation) or equivalent</td></tr>
-<tr><td>Cortex Agent</td><td>Snowflake Intelligence / Cortex Agent preview enabled</td></tr>
-<tr><td>Cortex Search</td><td>Cortex Search Services enabled in your region</td></tr>
-<tr><td>Warehouse</td><td>KRAKEN_WH (created in Step 1, X-Small is sufficient)</td></tr>
+<tr><td>Snowflake Account</td><td>Enterprise edition or higher with Cortex AI enabled</td></tr>
+<tr><td>Role</td><td>ACCOUNTADMIN or custom role with CREATE DATABASE, CREATE WAREHOUSE, CREATE AGENT</td></tr>
+<tr><td>Warehouse</td><td>MEDIUM size recommended for data generation</td></tr>
+<tr><td>Region</td><td>AWS US-West-2 or US-East-1 (Cortex AI availability)</td></tr>
 </table>
 </html>
 
----
+## Step-by-Step Setup
 
-## Deployment Steps
+### Step 1: Create Database and Schemas
 
-### Step 1: Database and Schema Setup
+Execute `sql/setup/01_database_and_schema.sql`
 
-```sql
--- File: sql/setup/01_database_and_schema.sql
--- Creates: KRAKEN_DB database, RAW/ANALYTICS/ML/ONTOLOGY/SEARCH schemas, KRAKEN_WH warehouse
-```
+This creates:
+- `ENERGY_RECOVERY_DB` database
+- `ENERGY_RECOVERY_WH` warehouse (Medium, auto-suspend 5 min)
+- 9 schemas: RAW, DYNAMICS_CRM, DYNAMICS_FINANCE, SCADA_IOT, ORACLE_ERP, ONTOLOGY, ANALYTICS, ML_MODELS, AGENT
 
-Run this file first. It establishes the complete namespace for the project.
+### Step 2: Create Tables
 
-### Step 2: Create Operational Tables
+Execute `sql/setup/02_create_tables.sql`
 
-```sql
--- File: sql/setup/02_create_tables.sql
--- Creates: 9 tables in RAW schema (CUSTOMERS, TRADES, ORDERS, WALLETS, etc.)
-```
+Creates all table definitions organized by source system:
+- **DYNAMICS_CRM**: ACCOUNTS, CONTACTS, OPPORTUNITIES, ACTIVITIES
+- **DYNAMICS_FINANCE**: GENERAL_LEDGER, SALES_ORDERS, INVOICES, ACCOUNTS_RECEIVABLE, ACCOUNTS_PAYABLE
+- **SCADA_IOT**: DEVICE_REGISTRY, DEVICE_TELEMETRY, ALARMS, MAINTENANCE_LOGS
+- **ORACLE_ERP**: PRODUCTION_ORDERS, BILL_OF_MATERIALS, INVENTORY, SUPPLIERS, PURCHASE_ORDERS
 
-### Step 3: Load Blockchain Ontology
+### Step 3: Load ISA-95 Ontology
 
-```sql
--- File: sql/setup/03_Blockchain_Ontology.sql
--- Creates: 8 tables in ONTOLOGY schema with ISO/TS 23258 data
--- Loads: 10 blockchains, 6 consensus mechanisms, 14 tokens, validators, smart contracts
-```
+Execute `sql/setup/03_ISA_95_Ontology.sql`
+
+Creates and populates:
+- Physical hierarchy: ENTERPRISE → SITE → AREA → WORK_CENTER → WORK_UNIT
+- Material model: MATERIAL_CLASS, MATERIAL_DEFINITION
+- Equipment model: EQUIPMENT_CLASS
+- Personnel model: PERSONNEL_CLASS
+- Process segments: 12-step PX manufacturing flow
+- Knowledge articles: 10 base articles for Cortex Search
 
 ### Step 4: Generate Synthetic Data
 
-```sql
--- File: sql/data/04_generate_synthetic_data.sql
--- Generates: ~700K+ rows of realistic trading data
--- Runtime: ~2-5 minutes on X-Small warehouse
-```
+Execute `sql/data/04_generate_synthetic_data.sql`
 
-This step takes the longest. It generates:
-- 10,000 customers with varied tiers, geographies, and KYC statuses
-- 500,000 trade executions across 15 pairs
-- 50,000 orders (open + historical)
-- 30,000 wallet balances
-- 25,000 support tickets with realistic text
-- 15,000 compliance events
-- 8,000 staking positions
-- 50,000 market data OHLCV records
-- 20,000 futures positions
+Generates realistic data volumes:
+
+<html>
+<table>
+<tr><th>Table</th><th>Row Count</th><th>Notes</th></tr>
+<tr><td>ACCOUNTS</td><td>520+</td><td>Real desalination company names</td></tr>
+<tr><td>CONTACTS</td><td>1,500+</td><td>International names and roles</td></tr>
+<tr><td>OPPORTUNITIES</td><td>2,200+</td><td>All pipeline stages</td></tr>
+<tr><td>GENERAL_LEDGER</td><td>5,000+</td><td>2 years of financial data</td></tr>
+<tr><td>SALES_ORDERS</td><td>850+</td><td>All product lines</td></tr>
+<tr><td>INVOICES</td><td>700+</td><td>Various payment statuses</td></tr>
+<tr><td>DEVICE_REGISTRY</td><td>42,000+</td><td>Global installed base</td></tr>
+<tr><td>DEVICE_TELEMETRY</td><td>50,000+</td><td>Recent sensor readings</td></tr>
+<tr><td>ALARMS</td><td>2,500+</td><td>Various severity levels</td></tr>
+<tr><td>MAINTENANCE_LOGS</td><td>3,200+</td><td>All maintenance types</td></tr>
+<tr><td>PRODUCTION_ORDERS</td><td>1,200+</td><td>All product models</td></tr>
+<tr><td>INVENTORY</td><td>500+</td><td>Raw materials to finished goods</td></tr>
+<tr><td>SUPPLIERS</td><td>120+</td><td>Global supplier network</td></tr>
+</table>
+</html>
 
 ### Step 5: Create Analytical Views
 
-```sql
--- File: sql/views/05_create_views.sql
--- Creates: 7 views in ANALYTICS schema
-```
+Execute `sql/views/05_create_views.sql`
 
-These views pre-aggregate common analytical patterns used by the semantic views and agent.
+Creates cross-domain analytical views in the ANALYTICS schema.
 
 ### Step 6: Create Semantic Views
 
-```sql
--- File: sql/views/06_create_semantic_views.sql
--- Creates: 3 semantic views (KRAKEN_TRADING_SV, KRAKEN_OPERATIONS_SV, DLT_BLOCKCHAIN_ONTOLOGY_SV)
-```
+Execute `sql/views/06_create_semantic_views.sql`
 
-Semantic views enable Cortex Analyst to translate natural language to SQL. They include:
-- Column synonyms for flexible vocabulary
-- Business-friendly comments for context
-- Proper joins for multi-table queries
+Creates 3 semantic views in the AGENT schema:
+1. **SV_FINANCIAL_OPS** — Revenue, orders, invoices, AR, GL
+2. **SV_CRM_PIPELINE** — Opportunities, accounts, activities
+3. **SV_IOT_PERFORMANCE** — Devices, telemetry, alarms, maintenance
 
-### Step 7: Create Cortex Search Services
+### Step 7: Create Cortex Search
 
-```sql
--- File: sql/search/07_create_cortex_search.sql
--- Creates: 2 search services (SUPPORT_TICKET_SEARCH, COMPLIANCE_DOC_SEARCH)
--- Plus: 2 staging tables with combined searchable text
-```
+Execute `sql/search/07_create_cortex_search.sql`
 
-Search services provide semantic (vector) search over unstructured text content.
+Creates `ENERGY_RECOVERY_KNOWLEDGE_SEARCH` service indexing knowledge articles.
 
-### Step 8: ML Model Training (Optional)
+### Step 8: ML Models (Optional)
 
-```
--- File: notebooks/08_ml_models.ipynb
--- This notebook is optional — the UDFs in Step 9 use SQL-based scoring
-```
+Run `notebooks/08_ml_models.ipynb` if you want to train actual ML models. The UDFs in Step 9 use rule-based scoring that works without this step.
 
-### Step 9: ML Prediction Functions
+### Step 9: Create ML Functions
 
-```sql
--- File: sql/models/09_ml_model_functions.sql
--- Creates: 6 SQL UDFs in ML schema
-```
+Execute `sql/models/09_ml_model_functions.sql`
 
-These UDFs implement scoring logic directly in SQL for real-time agent access.
+Creates 4 UDF functions:
+1. `PREDICT_PX_FAILURE()` — Devices at risk of failure
+2. `SCORE_ENERGY_EFFICIENCY()` — Efficiency gap analysis
+3. `FORECAST_DEMAND()` — Next quarter demand forecast
+4. `CALCULATE_EQUIPMENT_HEALTH()` — Composite health scores
 
-### Step 10: Create the Agent
+### Step 10: Create Agent
 
-```sql
--- File: sql/agent/10_create_agent.sql
--- Creates: KRAKEN_AGENT with 11 tools (3 Analyst, 2 Search, 6 Functions)
-```
+Execute `sql/agent/10_create_agent.sql`
 
----
+Creates `ENERGY_RECOVERY_AGENT` with 8 tools:
+- 3 Cortex Analyst tools (text-to-SQL)
+- 1 Cortex Search tool (knowledge retrieval)
+- 4 Generic function tools (ML predictions)
 
 ## Verification
 
-After deployment, verify the agent works:
+After setup, verify the agent works:
 
 ```sql
--- Check tables exist
-SELECT TABLE_SCHEMA, TABLE_NAME, ROW_COUNT 
-FROM KRAKEN_DB.INFORMATION_SCHEMA.TABLES 
-WHERE TABLE_CATALOG = 'KRAKEN_DB' 
-ORDER BY TABLE_SCHEMA, TABLE_NAME;
+-- Check agent exists
+SHOW AGENTS IN SCHEMA ENERGY_RECOVERY_DB.AGENT;
 
--- Test a semantic view
-SELECT * FROM KRAKEN_DB.ANALYTICS.KRAKEN_TRADING_SV LIMIT 10;
+-- Describe agent configuration
+DESCRIBE AGENT ENERGY_RECOVERY_DB.AGENT.ENERGY_RECOVERY_AGENT;
 
--- Test a UDF
-SELECT KRAKEN_DB.ML.AGENT_GET_FRAUD_ALERTS();
-
--- Verify agent exists
-SHOW AGENTS IN SCHEMA KRAKEN_DB.RAW;
+-- Test the agent
+SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
+    'ENERGY_RECOVERY_DB.AGENT.ENERGY_RECOVERY_AGENT',
+    'What was our total revenue last quarter?'
+);
 ```
-
----
 
 ## Troubleshooting
 
 <html>
 <table>
 <tr><th>Issue</th><th>Solution</th></tr>
-<tr><td>Cortex Search fails to create</td><td>Verify your region supports Cortex Search. Check warehouse is not suspended.</td></tr>
-<tr><td>Semantic view errors</td><td>Ensure tables have data (run Step 4 first). Check column names match.</td></tr>
-<tr><td>Agent creation fails</td><td>Verify YAML syntax. Check all tool_resources reference valid objects.</td></tr>
-<tr><td>UDF returns NULL</td><td>Ensure data exists in source tables. Check date filters are not too restrictive.</td></tr>
-<tr><td>Slow data generation</td><td>Increase warehouse size to Small or Medium for Step 4.</td></tr>
+<tr><td>Agent creation fails</td><td>Verify Cortex Agent is enabled for your account region</td></tr>
+<tr><td>Semantic view errors</td><td>Ensure tables have data before creating semantic views</td></tr>
+<tr><td>Search returns no results</td><td>Wait for TARGET_LAG (1 hour) for search index to build</td></tr>
+<tr><td>ML functions return NULL</td><td>Verify telemetry data exists in DEVICE_TELEMETRY table</td></tr>
 </table>
 </html>

@@ -1,78 +1,79 @@
 <img src="Snowflake_Logo.svg" width="200">
 
-# Deployment Summary — Kraken Intelligence Agent
+# Energy Recovery - Deployment Summary
 
----
-
-## Project Status: DEPLOYING
+## Deployment Status
 
 <html>
 <table>
-<tr><th>Component</th><th>Status</th><th>Objects Created</th></tr>
-<tr><td>Database and Schemas</td><td>Pending</td><td>1 database, 5 schemas, 1 warehouse</td></tr>
-<tr><td>Operational Tables</td><td>Pending</td><td>9 tables in RAW schema</td></tr>
-<tr><td>Blockchain Ontology</td><td>Pending</td><td>8 tables in ONTOLOGY schema + seed data</td></tr>
-<tr><td>Synthetic Data</td><td>Pending</td><td>~700K rows across all tables</td></tr>
-<tr><td>Analytical Views</td><td>Pending</td><td>7 views in ANALYTICS schema</td></tr>
-<tr><td>Semantic Views</td><td>Pending</td><td>3 semantic views</td></tr>
-<tr><td>Cortex Search</td><td>Pending</td><td>2 search services + 2 staging tables</td></tr>
-<tr><td>ML Functions</td><td>Pending</td><td>6 UDFs in ML schema</td></tr>
-<tr><td>Agent</td><td>Pending</td><td>KRAKEN_AGENT (11 tools)</td></tr>
+<tr><th>Component</th><th>Status</th><th>Object Name</th></tr>
+<tr><td>Database</td><td>Ready</td><td>ENERGY_RECOVERY_DB</td></tr>
+<tr><td>Warehouse</td><td>Ready</td><td>ENERGY_RECOVERY_WH (Medium)</td></tr>
+<tr><td>Schemas (9)</td><td>Ready</td><td>RAW, DYNAMICS_CRM, DYNAMICS_FINANCE, SCADA_IOT, ORACLE_ERP, ONTOLOGY, ANALYTICS, ML_MODELS, AGENT</td></tr>
+<tr><td>Tables (22)</td><td>Ready</td><td>See table inventory below</td></tr>
+<tr><td>ISA-95 Ontology</td><td>Ready</td><td>8 tables with seed data</td></tr>
+<tr><td>Synthetic Data</td><td>Ready</td><td>~107,000+ rows across all tables</td></tr>
+<tr><td>Analytical Views (6)</td><td>Ready</td><td>V_FINANCIAL_SUMMARY, V_REVENUE_BY_PRODUCT, V_AR_AGING, V_SALES_PIPELINE, V_DEVICE_HEALTH, V_SUPPLY_CHAIN</td></tr>
+<tr><td>Semantic Views (3)</td><td>Ready</td><td>SV_FINANCIAL_OPS, SV_CRM_PIPELINE, SV_IOT_PERFORMANCE</td></tr>
+<tr><td>Cortex Search (1)</td><td>Ready</td><td>ENERGY_RECOVERY_KNOWLEDGE_SEARCH</td></tr>
+<tr><td>ML Functions (4)</td><td>Ready</td><td>PREDICT_PX_FAILURE, SCORE_ENERGY_EFFICIENCY, FORECAST_DEMAND, CALCULATE_EQUIPMENT_HEALTH</td></tr>
+<tr><td>Cortex Agent</td><td>Ready</td><td>ENERGY_RECOVERY_AGENT</td></tr>
 </table>
 </html>
 
----
+## Architecture Diagram
 
-## Connection Details
+![Architecture](images/architecture.svg)
+
+## Deployment Flow
+
+![Deployment Flow](images/deployment_flow.svg)
+
+## Data Volume Summary
 
 <html>
 <table>
-<tr><th>Parameter</th><th>Value</th></tr>
-<tr><td>Account</td><td>AWS161</td></tr>
-<tr><td>Database</td><td>KRAKEN_DB</td></tr>
-<tr><td>Warehouse</td><td>KRAKEN_WH</td></tr>
-<tr><td>Agent</td><td>KRAKEN_DB.RAW.KRAKEN_AGENT</td></tr>
-<tr><td>Schemas</td><td>RAW, ANALYTICS, ML, ONTOLOGY, SEARCH</td></tr>
+<tr><th>Schema</th><th>Table</th><th>Approximate Rows</th></tr>
+<tr><td>DYNAMICS_CRM</td><td>ACCOUNTS</td><td>520</td></tr>
+<tr><td>DYNAMICS_CRM</td><td>CONTACTS</td><td>1,500</td></tr>
+<tr><td>DYNAMICS_CRM</td><td>OPPORTUNITIES</td><td>2,200</td></tr>
+<tr><td>DYNAMICS_CRM</td><td>ACTIVITIES</td><td>0 (streaming ready)</td></tr>
+<tr><td>DYNAMICS_FINANCE</td><td>GENERAL_LEDGER</td><td>5,000</td></tr>
+<tr><td>DYNAMICS_FINANCE</td><td>SALES_ORDERS</td><td>850</td></tr>
+<tr><td>DYNAMICS_FINANCE</td><td>INVOICES</td><td>700</td></tr>
+<tr><td>DYNAMICS_FINANCE</td><td>ACCOUNTS_RECEIVABLE</td><td>~250</td></tr>
+<tr><td>DYNAMICS_FINANCE</td><td>ACCOUNTS_PAYABLE</td><td>0 (streaming ready)</td></tr>
+<tr><td>SCADA_IOT</td><td>DEVICE_REGISTRY</td><td>42,000</td></tr>
+<tr><td>SCADA_IOT</td><td>DEVICE_TELEMETRY</td><td>50,000</td></tr>
+<tr><td>SCADA_IOT</td><td>ALARMS</td><td>2,500</td></tr>
+<tr><td>SCADA_IOT</td><td>MAINTENANCE_LOGS</td><td>3,200</td></tr>
+<tr><td>ORACLE_ERP</td><td>PRODUCTION_ORDERS</td><td>1,200</td></tr>
+<tr><td>ORACLE_ERP</td><td>INVENTORY</td><td>500</td></tr>
+<tr><td>ORACLE_ERP</td><td>SUPPLIERS</td><td>120</td></tr>
+<tr><td>ONTOLOGY</td><td>KNOWLEDGE_ARTICLES</td><td>10</td></tr>
 </table>
 </html>
-
----
-
-## Data Summary
-
-<html>
-<table>
-<tr><th>Table</th><th>Row Count</th><th>Key Attributes</th></tr>
-<tr><td>CUSTOMERS</td><td>10,000</td><td>4 tiers, 20 countries, KYC levels 1-4</td></tr>
-<tr><td>TRADES</td><td>500,000</td><td>15 pairs, spot/margin, 4 platforms</td></tr>
-<tr><td>ORDERS</td><td>50,000</td><td>5 order types, 5 statuses</td></tr>
-<tr><td>WALLETS</td><td>30,000</td><td>10 assets, balance tracking</td></tr>
-<tr><td>SUPPORT_TICKETS</td><td>25,000</td><td>10 categories, full text descriptions</td></tr>
-<tr><td>COMPLIANCE_EVENTS</td><td>15,000</td><td>7 event types, 4 risk levels</td></tr>
-<tr><td>STAKING_POSITIONS</td><td>8,000</td><td>7 assets, flexible + locked</td></tr>
-<tr><td>MARKET_DATA</td><td>50,000</td><td>10 pairs, hourly OHLCV</td></tr>
-<tr><td>FUTURES_POSITIONS</td><td>20,000</td><td>8 contracts, 1-50x leverage</td></tr>
-<tr><td>ONTOLOGY (8 tables)</td><td>~100</td><td>10 chains, 14 tokens, ISO standard</td></tr>
-</table>
-</html>
-
----
 
 ## Agent Tool Configuration
 
 <html>
 <table>
-<tr><th>Tool Name</th><th>Type</th><th>Resource</th></tr>
-<tr><td>KrakenTrading</td><td>cortex_analyst_text_to_sql</td><td>KRAKEN_DB.ANALYTICS.KRAKEN_TRADING_SV</td></tr>
-<tr><td>KrakenOperations</td><td>cortex_analyst_text_to_sql</td><td>KRAKEN_DB.ANALYTICS.KRAKEN_OPERATIONS_SV</td></tr>
-<tr><td>BlockchainOntology</td><td>cortex_analyst_text_to_sql</td><td>KRAKEN_DB.ANALYTICS.DLT_BLOCKCHAIN_ONTOLOGY_SV</td></tr>
-<tr><td>TicketSearch</td><td>cortex_search</td><td>KRAKEN_DB.SEARCH.SUPPORT_TICKET_SEARCH</td></tr>
-<tr><td>ComplianceSearch</td><td>cortex_search</td><td>KRAKEN_DB.SEARCH.COMPLIANCE_DOC_SEARCH</td></tr>
-<tr><td>FraudAlerts</td><td>generic (function)</td><td>KRAKEN_DB.ML.AGENT_GET_FRAUD_ALERTS</td></tr>
-<tr><td>ChurnRisk</td><td>generic (function)</td><td>KRAKEN_DB.ML.AGENT_GET_CHURN_RISK</td></tr>
-<tr><td>VolumeForecast</td><td>generic (function)</td><td>KRAKEN_DB.ML.AGENT_GET_VOLUME_FORECAST</td></tr>
-<tr><td>CustomerLTV</td><td>generic (function)</td><td>KRAKEN_DB.ML.AGENT_GET_CUSTOMER_LTV</td></tr>
-<tr><td>RiskScores</td><td>generic (function)</td><td>KRAKEN_DB.ML.AGENT_GET_RISK_SCORES</td></tr>
-<tr><td>TicketClassifier</td><td>generic (function)</td><td>KRAKEN_DB.ML.AGENT_CLASSIFY_TICKETS</td></tr>
+<tr><th>Tool Name</th><th>Type</th><th>Target Object</th><th>Purpose</th></tr>
+<tr><td>FinancialAnalyst</td><td>cortex_analyst_text_to_sql</td><td>SV_FINANCIAL_OPS</td><td>Revenue, orders, invoices, AR/AP, GL</td></tr>
+<tr><td>PipelineAnalyst</td><td>cortex_analyst_text_to_sql</td><td>SV_CRM_PIPELINE</td><td>Opportunities, accounts, win rates</td></tr>
+<tr><td>DeviceAnalyst</td><td>cortex_analyst_text_to_sql</td><td>SV_IOT_PERFORMANCE</td><td>Device telemetry, alarms, maintenance</td></tr>
+<tr><td>KnowledgeSearch</td><td>cortex_search</td><td>ENERGY_RECOVERY_KNOWLEDGE_SEARCH</td><td>Product specs, procedures, ontology</td></tr>
+<tr><td>PredictFailure</td><td>generic (function)</td><td>PREDICT_PX_FAILURE()</td><td>30-day failure risk prediction</td></tr>
+<tr><td>ScoreEfficiency</td><td>generic (function)</td><td>SCORE_ENERGY_EFFICIENCY()</td><td>Efficiency gap analysis</td></tr>
+<tr><td>ForecastDemand</td><td>generic (function)</td><td>FORECAST_DEMAND()</td><td>Quarterly demand forecast</td></tr>
+<tr><td>EquipmentHealth</td><td>generic (function)</td><td>CALCULATE_EQUIPMENT_HEALTH()</td><td>Composite health scoring</td></tr>
 </table>
 </html>
+
+## ML Models Pipeline
+
+![ML Models](images/ml_models.svg)
+
+## Query Tool Chain
+
+![Query Tool Chain](images/query_tool_chain.svg)

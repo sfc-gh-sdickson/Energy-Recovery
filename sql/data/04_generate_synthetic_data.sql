@@ -1,589 +1,681 @@
--- =====================================================
--- Kraken Intelligence Agent
--- Step 4: Synthetic Data Generation
--- Generates realistic test data for all tables
--- =====================================================
+/*=============================================================================
+  ENERGY RECOVERY - SNOWFLAKE INTELLIGENCE AGENT
+  File: 04_generate_synthetic_data.sql
+  Purpose: Generate realistic synthetic data for all source systems
+  Execution Order: 4 of 10
+=============================================================================*/
 
-USE DATABASE KRAKEN_DB;
-USE SCHEMA RAW;
-USE WAREHOUSE KRAKEN_WH;
+USE DATABASE ENERGY_RECOVERY_DB;
+USE WAREHOUSE ENERGY_RECOVERY_WH;
 
--- =====================================================
--- CUSTOMERS (10,000 records)
--- =====================================================
-INSERT INTO CUSTOMERS (
-    CUSTOMER_ID, EMAIL, USERNAME, FULL_NAME, ACCOUNT_TIER, KYC_STATUS, KYC_LEVEL,
-    COUNTRY_CODE, STATE_PROVINCE, REGISTRATION_DATE, LAST_LOGIN_DATE, IS_ACTIVE,
-    TWO_FACTOR_ENABLED, PREFERRED_CURRENCY, REFERRAL_SOURCE,
-    TOTAL_DEPOSITS_USD, TOTAL_WITHDRAWALS_USD, ACCOUNT_BALANCE_USD
-)
+-- ============================================================================
+-- DYNAMICS CRM: Accounts (500+)
+-- ============================================================================
+USE SCHEMA DYNAMICS_CRM;
+
+INSERT INTO ACCOUNTS
 SELECT
-    UUID_STRING() AS CUSTOMER_ID,
-    LOWER(CONCAT(
-        ARRAY_CONSTRUCT('alex','sam','jordan','taylor','casey','morgan','riley','quinn','avery','blake','drew','logan','reese','sky','kai','nova','remy','sage','ari','cam')[MOD(SEQ4(), 20)],
-        '.',
-        ARRAY_CONSTRUCT('smith','johnson','williams','brown','jones','garcia','miller','davis','rodriguez','martinez','hernandez','lopez','gonzalez','wilson','anderson','thomas','taylor','moore','jackson','martin')[MOD(SEQ4() + 7, 20)],
-        SEQ4(),
-        '@',
-        ARRAY_CONSTRUCT('gmail.com','yahoo.com','outlook.com','protonmail.com','icloud.com')[MOD(SEQ4(), 5)]
-    )) AS EMAIL,
-    CONCAT(
-        ARRAY_CONSTRUCT('crypto','trader','hodl','moon','whale','degen','alpha','bull','bear','sat','stack','chain','block','node','validator','miner','yield','stake','swap','pool')[MOD(SEQ4(), 20)],
-        '_',
-        ARRAY_CONSTRUCT('king','master','pro','elite','guru','wizard','ninja','boss','chief','lord')[MOD(SEQ4() + 3, 10)],
-        MOD(SEQ4(), 9999)
-    ) AS USERNAME,
-    CONCAT(
-        ARRAY_CONSTRUCT('Alex','Sam','Jordan','Taylor','Casey','Morgan','Riley','Quinn','Avery','Blake','Drew','Logan','Reese','Sky','Kai','Nova','Remy','Sage','Ari','Cameron')[MOD(SEQ4(), 20)],
-        ' ',
-        ARRAY_CONSTRUCT('Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Rodriguez','Martinez','Hernandez','Lopez','Gonzalez','Wilson','Anderson','Thomas','Taylor','Moore','Jackson','Martin')[MOD(SEQ4() + 7, 20)]
-    ) AS FULL_NAME,
-    CASE 
-        WHEN MOD(SEQ4(), 100) < 60 THEN 'Standard'
-        WHEN MOD(SEQ4(), 100) < 85 THEN 'Pro'
-        WHEN MOD(SEQ4(), 100) < 97 THEN 'VIP'
-        ELSE 'Institutional'
-    END AS ACCOUNT_TIER,
-    CASE 
-        WHEN MOD(SEQ4(), 100) < 5 THEN 'Pending'
-        WHEN MOD(SEQ4(), 100) < 90 THEN 'Verified'
-        WHEN MOD(SEQ4(), 100) < 98 THEN 'Enhanced'
-        ELSE 'Rejected'
-    END AS KYC_STATUS,
-    CASE 
-        WHEN MOD(SEQ4(), 100) < 5 THEN 1
-        WHEN MOD(SEQ4(), 100) < 60 THEN 2
-        WHEN MOD(SEQ4(), 100) < 97 THEN 3
-        ELSE 4
-    END AS KYC_LEVEL,
-    ARRAY_CONSTRUCT('US','GB','DE','CA','AU','JP','SG','CH','NL','FR','KR','BR','IN','AE','HK','ES','IT','SE','NO','NZ')[MOD(SEQ4(), 20)] AS COUNTRY_CODE,
-    CASE 
-        WHEN MOD(SEQ4(), 20) = 0 THEN ARRAY_CONSTRUCT('California','New York','Texas','Florida','Illinois','Washington','Colorado','Massachusetts','Virginia','Georgia')[MOD(SEQ4(), 10)]
-        ELSE NULL
-    END AS STATE_PROVINCE,
-    DATEADD('day', -UNIFORM(30, 2000, RANDOM(SEQ4())), CURRENT_TIMESTAMP()) AS REGISTRATION_DATE,
-    DATEADD('hour', -UNIFORM(1, 720, RANDOM(SEQ4() + 1)), CURRENT_TIMESTAMP()) AS LAST_LOGIN_DATE,
-    CASE WHEN MOD(SEQ4(), 100) < 92 THEN TRUE ELSE FALSE END AS IS_ACTIVE,
-    CASE WHEN MOD(SEQ4(), 100) < 75 THEN TRUE ELSE FALSE END AS TWO_FACTOR_ENABLED,
-    ARRAY_CONSTRUCT('USD','EUR','GBP','CAD','AUD','JPY','CHF','SGD')[MOD(SEQ4(), 8)] AS PREFERRED_CURRENCY,
-    ARRAY_CONSTRUCT('Organic','Organic','Referral','Social','Affiliate','Paid','Organic','Referral')[MOD(SEQ4(), 8)] AS REFERRAL_SOURCE,
-    ROUND(UNIFORM(100, 5000000, RANDOM(SEQ4() + 2))::DECIMAL(18,2) * 
-        CASE 
-            WHEN MOD(SEQ4(), 100) >= 97 THEN 50  -- Institutional
-            WHEN MOD(SEQ4(), 100) >= 85 THEN 10  -- VIP
-            WHEN MOD(SEQ4(), 100) >= 60 THEN 3   -- Pro
-            ELSE 1
-        END, 2) AS TOTAL_DEPOSITS_USD,
-    ROUND(UNIFORM(50, 3000000, RANDOM(SEQ4() + 3))::DECIMAL(18,2) * 
-        CASE 
-            WHEN MOD(SEQ4(), 100) >= 97 THEN 40
-            WHEN MOD(SEQ4(), 100) >= 85 THEN 8
-            WHEN MOD(SEQ4(), 100) >= 60 THEN 2.5
-            ELSE 0.8
-        END, 2) AS TOTAL_WITHDRAWALS_USD,
-    ROUND(UNIFORM(0, 2000000, RANDOM(SEQ4() + 4))::DECIMAL(18,2) * 
-        CASE 
-            WHEN MOD(SEQ4(), 100) >= 97 THEN 20
-            WHEN MOD(SEQ4(), 100) >= 85 THEN 5
-            WHEN MOD(SEQ4(), 100) >= 60 THEN 2
-            ELSE 1
-        END, 2) AS ACCOUNT_BALANCE_USD
-FROM TABLE(GENERATOR(ROWCOUNT => 10000));
-
--- =====================================================
--- TRADES (500,000 records)
--- =====================================================
-INSERT INTO TRADES (
-    TRADE_ID, CUSTOMER_ID, TRADING_PAIR, TRADE_TYPE, SIDE, ORDER_TYPE,
-    PRICE, QUANTITY, TOTAL_VALUE_USD, FEE_USD, FEE_RATE, LEVERAGE,
-    EXECUTED_AT, SETTLEMENT_STATUS, PLATFORM
-)
-WITH CUSTOMER_POOL AS (
-    SELECT CUSTOMER_ID, ACCOUNT_TIER, ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS RN
-    FROM CUSTOMERS WHERE IS_ACTIVE = TRUE
-)
-SELECT
-    UUID_STRING() AS TRADE_ID,
-    CP.CUSTOMER_ID,
-    CASE MOD(SEQ4(), 15)
-        WHEN 0 THEN 'BTC/USD'
-        WHEN 1 THEN 'ETH/USD'
-        WHEN 2 THEN 'SOL/USD'
-        WHEN 3 THEN 'XRP/USD'
-        WHEN 4 THEN 'ADA/USD'
-        WHEN 5 THEN 'DOT/USD'
-        WHEN 6 THEN 'AVAX/USD'
-        WHEN 7 THEN 'LINK/USD'
-        WHEN 8 THEN 'BTC/EUR'
-        WHEN 9 THEN 'ETH/EUR'
-        WHEN 10 THEN 'SOL/USDT'
-        WHEN 11 THEN 'ATOM/USD'
-        WHEN 12 THEN 'MATIC/USD'
-        WHEN 13 THEN 'UNI/USD'
-        ELSE 'AAVE/USD'
-    END AS TRADING_PAIR,
-    CASE WHEN MOD(SEQ4(), 10) < 8 THEN 'Spot' ELSE 'Margin' END AS TRADE_TYPE,
-    CASE WHEN MOD(SEQ4(), 2) = 0 THEN 'Buy' ELSE 'Sell' END AS SIDE,
-    CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'Market'
-        WHEN 1 THEN 'Market'
-        WHEN 2 THEN 'Market'
-        WHEN 3 THEN 'Limit'
-        WHEN 4 THEN 'Limit'
-        WHEN 5 THEN 'Limit'
-        WHEN 6 THEN 'Limit'
-        WHEN 7 THEN 'StopLoss'
-        WHEN 8 THEN 'StopLoss'
-        ELSE 'TakeProfit'
-    END AS ORDER_TYPE,
-    CASE MOD(SEQ4(), 15)
-        WHEN 0 THEN UNIFORM(25000, 70000, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 1 THEN UNIFORM(1200, 4500, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 2 THEN UNIFORM(15, 250, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 3 THEN UNIFORM(0.3, 2.5, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 4 THEN UNIFORM(0.2, 1.2, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 5 THEN UNIFORM(3, 50, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 6 THEN UNIFORM(10, 100, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 7 THEN UNIFORM(5, 30, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 8 THEN UNIFORM(25000, 70000, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 9 THEN UNIFORM(1200, 4500, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 10 THEN UNIFORM(15, 250, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 11 THEN UNIFORM(5, 20, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 12 THEN UNIFORM(0.5, 2, RANDOM(SEQ4()))::DECIMAL(18,8)
-        WHEN 13 THEN UNIFORM(3, 15, RANDOM(SEQ4()))::DECIMAL(18,8)
-        ELSE UNIFORM(50, 400, RANDOM(SEQ4()))::DECIMAL(18,8)
-    END AS PRICE,
-    CASE 
-        WHEN CP.ACCOUNT_TIER = 'Institutional' THEN UNIFORM(1, 100, RANDOM(SEQ4() + 10))::DECIMAL(18,8)
-        WHEN CP.ACCOUNT_TIER = 'VIP' THEN UNIFORM(0.1, 20, RANDOM(SEQ4() + 10))::DECIMAL(18,8)
-        WHEN CP.ACCOUNT_TIER = 'Pro' THEN UNIFORM(0.01, 5, RANDOM(SEQ4() + 10))::DECIMAL(18,8)
-        ELSE UNIFORM(0.001, 1, RANDOM(SEQ4() + 10))::DECIMAL(18,8)
-    END AS QUANTITY,
-    0 AS TOTAL_VALUE_USD,  -- Will be calculated
-    0 AS FEE_USD,          -- Will be calculated
-    CASE 
-        WHEN CP.ACCOUNT_TIER = 'Institutional' THEN 0.0008
-        WHEN CP.ACCOUNT_TIER = 'VIP' THEN 0.0012
-        WHEN CP.ACCOUNT_TIER = 'Pro' THEN 0.0020
-        ELSE 0.0026
-    END AS FEE_RATE,
-    CASE WHEN MOD(SEQ4(), 10) >= 8 THEN UNIFORM(2, 5, RANDOM(SEQ4() + 5))::DECIMAL(5,2) ELSE 1.0 END AS LEVERAGE,
-    DATEADD('minute', -UNIFORM(1, 525600, RANDOM(SEQ4() + 6)), CURRENT_TIMESTAMP()) AS EXECUTED_AT,
-    CASE WHEN MOD(SEQ4(), 1000) < 998 THEN 'Settled' ELSE 'Failed' END AS SETTLEMENT_STATUS,
-    CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'Web'
-        WHEN 1 THEN 'Web'
-        WHEN 2 THEN 'Mobile'
-        WHEN 3 THEN 'Mobile'
-        WHEN 4 THEN 'Mobile'
-        WHEN 5 THEN 'API'
-        WHEN 6 THEN 'API'
-        WHEN 7 THEN 'API'
-        WHEN 8 THEN 'Pro'
-        ELSE 'Pro'
-    END AS PLATFORM
-FROM TABLE(GENERATOR(ROWCOUNT => 500000)) G
-JOIN CUSTOMER_POOL CP ON CP.RN = MOD(SEQ4(), (SELECT COUNT(*) FROM CUSTOMER_POOL)) + 1;
-
--- Update calculated fields
-UPDATE TRADES SET
-    TOTAL_VALUE_USD = ROUND(PRICE * QUANTITY, 2),
-    FEE_USD = ROUND(PRICE * QUANTITY * FEE_RATE, 4);
-
--- =====================================================
--- ORDERS (50,000 records)
--- =====================================================
-INSERT INTO ORDERS (
-    ORDER_ID, CUSTOMER_ID, TRADING_PAIR, ORDER_TYPE, SIDE, PRICE, QUANTITY,
-    FILLED_QUANTITY, STATUS, TIME_IN_FORCE, CREATED_AT, UPDATED_AT
-)
-WITH CUSTOMER_POOL AS (
-    SELECT CUSTOMER_ID, ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS RN
-    FROM CUSTOMERS WHERE IS_ACTIVE = TRUE
-)
-SELECT
-    UUID_STRING(),
-    CP.CUSTOMER_ID,
-    ARRAY_CONSTRUCT('BTC/USD','ETH/USD','SOL/USD','XRP/USD','ADA/USD','DOT/USD','AVAX/USD','LINK/USD','ATOM/USD','MATIC/USD')[MOD(SEQ4(), 10)] AS TRADING_PAIR,
-    ARRAY_CONSTRUCT('Limit','Limit','Limit','StopLoss','StopLoss','TakeProfit','TrailingStop','Market')[MOD(SEQ4(), 8)] AS ORDER_TYPE,
-    CASE WHEN MOD(SEQ4(), 2) = 0 THEN 'Buy' ELSE 'Sell' END AS SIDE,
-    UNIFORM(100, 70000, RANDOM(SEQ4()))::DECIMAL(18,8) AS PRICE,
-    UNIFORM(0.001, 10, RANDOM(SEQ4() + 1))::DECIMAL(18,8) AS QUANTITY,
-    CASE 
-        WHEN MOD(SEQ4(), 5) < 2 THEN UNIFORM(0.001, 10, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        WHEN MOD(SEQ4(), 5) = 2 THEN UNIFORM(0.0001, 5, RANDOM(SEQ4() + 2))::DECIMAL(18,8)
-        ELSE 0
-    END AS FILLED_QUANTITY,
-    CASE MOD(SEQ4(), 5)
-        WHEN 0 THEN 'Filled'
-        WHEN 1 THEN 'Filled'
-        WHEN 2 THEN 'Partially Filled'
-        WHEN 3 THEN 'Open'
-        ELSE 'Cancelled'
-    END AS STATUS,
-    ARRAY_CONSTRUCT('GTC','GTC','GTC','IOC','FOK','GTD')[MOD(SEQ4(), 6)] AS TIME_IN_FORCE,
-    DATEADD('minute', -UNIFORM(1, 43200, RANDOM(SEQ4() + 3)), CURRENT_TIMESTAMP()) AS CREATED_AT,
-    DATEADD('minute', -UNIFORM(1, 43000, RANDOM(SEQ4() + 4)), CURRENT_TIMESTAMP()) AS UPDATED_AT
-FROM TABLE(GENERATOR(ROWCOUNT => 50000)) G
-JOIN CUSTOMER_POOL CP ON CP.RN = MOD(SEQ4(), (SELECT COUNT(*) FROM CUSTOMER_POOL)) + 1;
-
--- =====================================================
--- WALLETS (30,000 records - ~3 assets per customer)
--- =====================================================
-INSERT INTO WALLETS (
-    WALLET_ID, CUSTOMER_ID, ASSET_SYMBOL, ASSET_NAME, BALANCE, AVAILABLE_BALANCE,
-    LOCKED_BALANCE, ESTIMATED_VALUE_USD
-)
-WITH CUSTOMER_POOL AS (
-    SELECT CUSTOMER_ID, ACCOUNT_TIER, ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS RN
-    FROM CUSTOMERS
-),
-ASSETS AS (
-    SELECT COLUMN1 AS ASSET_SYMBOL, COLUMN2 AS ASSET_NAME, COLUMN3 AS USD_PRICE
-    FROM VALUES 
-        ('BTC', 'Bitcoin', 60000), ('ETH', 'Ethereum', 3200), ('SOL', 'Solana', 150),
-        ('USD', 'US Dollar', 1), ('USDT', 'Tether', 1), ('XRP', 'XRP', 1.5),
-        ('ADA', 'Cardano', 0.6), ('DOT', 'Polkadot', 8), ('AVAX', 'Avalanche', 40),
-        ('LINK', 'Chainlink', 18)
-)
-SELECT
-    UUID_STRING(),
-    CP.CUSTOMER_ID,
-    A.ASSET_SYMBOL,
-    A.ASSET_NAME,
-    ROUND(UNIFORM(0.0001, 100, RANDOM(SEQ4()))::DECIMAL(24,8) * 
-        CASE WHEN CP.ACCOUNT_TIER IN ('VIP','Institutional') THEN 50 ELSE 1 END, 8) AS BALANCE,
-    ROUND(UNIFORM(0.0001, 80, RANDOM(SEQ4() + 1))::DECIMAL(24,8) * 
-        CASE WHEN CP.ACCOUNT_TIER IN ('VIP','Institutional') THEN 50 ELSE 1 END, 8) AS AVAILABLE_BALANCE,
-    ROUND(UNIFORM(0, 20, RANDOM(SEQ4() + 2))::DECIMAL(24,8), 8) AS LOCKED_BALANCE,
-    0 AS ESTIMATED_VALUE_USD
-FROM CUSTOMER_POOL CP
-CROSS JOIN ASSETS A
-WHERE MOD(HASH(CP.CUSTOMER_ID || A.ASSET_SYMBOL), 3) = 0
-LIMIT 30000;
-
--- =====================================================
--- SUPPORT_TICKETS (25,000 records)
--- =====================================================
-INSERT INTO SUPPORT_TICKETS (
-    TICKET_ID, CUSTOMER_ID, CATEGORY, SUBCATEGORY, PRIORITY, STATUS, SUBJECT,
-    DESCRIPTION, RESOLUTION_NOTES, ASSIGNED_TEAM, SATISFACTION_SCORE,
-    FIRST_RESPONSE_MINUTES, RESOLUTION_MINUTES, CREATED_AT, RESOLVED_AT, PLATFORM
-)
-WITH CUSTOMER_POOL AS (
-    SELECT CUSTOMER_ID, ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS RN
-    FROM CUSTOMERS
-)
-SELECT
-    UUID_STRING(),
-    CP.CUSTOMER_ID,
-    CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'Withdrawals'
-        WHEN 1 THEN 'Withdrawals'
-        WHEN 2 THEN 'Trading'
-        WHEN 3 THEN 'Trading'
-        WHEN 4 THEN 'Account'
-        WHEN 5 THEN 'Verification'
-        WHEN 6 THEN 'Security'
-        WHEN 7 THEN 'Deposits'
-        WHEN 8 THEN 'Staking'
-        ELSE 'API'
-    END AS CATEGORY,
-    CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'Withdrawal Pending'
-        WHEN 1 THEN 'Withdrawal Failed'
-        WHEN 2 THEN 'Order Not Executing'
-        WHEN 3 THEN 'Margin Call'
-        WHEN 4 THEN 'Account Locked'
-        WHEN 5 THEN 'KYC Document Issues'
-        WHEN 6 THEN '2FA Lost'
-        WHEN 7 THEN 'Deposit Not Credited'
-        WHEN 8 THEN 'Staking Rewards Missing'
-        ELSE 'API Key Issues'
-    END AS SUBCATEGORY,
-    CASE MOD(SEQ4(), 20)
-        WHEN 0 THEN 'Critical'
-        WHEN 1 THEN 'Critical'
-        WHEN 2 THEN 'High'
-        WHEN 3 THEN 'High'
-        WHEN 4 THEN 'High'
-        ELSE CASE WHEN MOD(SEQ4(), 3) = 0 THEN 'Medium' ELSE 'Low' END
-    END AS PRIORITY,
-    CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'Open'
-        WHEN 1 THEN 'In Progress'
-        WHEN 2 THEN 'Waiting'
-        ELSE CASE WHEN MOD(SEQ4(), 2) = 0 THEN 'Resolved' ELSE 'Closed' END
-    END AS STATUS,
-    CASE MOD(SEQ4(), 20)
-        WHEN 0 THEN 'My BTC withdrawal has been pending for 48 hours'
-        WHEN 1 THEN 'Cannot withdraw ETH to my Ledger hardware wallet'
-        WHEN 2 THEN 'Limit order not filling despite price being met'
-        WHEN 3 THEN 'Unexpected margin call on my SOL position'
-        WHEN 4 THEN 'Account locked after password reset attempt'
-        WHEN 5 THEN 'KYC verification rejected but documents are valid'
-        WHEN 6 THEN 'Lost my 2FA device and cannot access account'
-        WHEN 7 THEN 'Wire transfer deposit not credited after 5 business days'
-        WHEN 8 THEN 'Staking rewards not appearing for DOT position'
-        WHEN 9 THEN 'API key permissions not working for trading'
-        WHEN 10 THEN 'Futures position liquidated without proper notification'
-        WHEN 11 THEN 'Withdrawal to wrong network - need recovery'
-        WHEN 12 THEN 'Trading fees seem higher than my tier should allow'
-        WHEN 13 THEN 'Mobile app crashing when trying to place orders'
-        WHEN 14 THEN 'Need to increase withdrawal limits for business account'
-        WHEN 15 THEN 'Suspicious login notification but it was me'
-        WHEN 16 THEN 'Cannot find my ATOM staking rewards from last month'
-        WHEN 17 THEN 'Price execution was significantly different from displayed'
-        WHEN 18 THEN 'Need to link new bank account for fiat deposits'
-        ELSE 'General inquiry about platform features and fees'
-    END AS SUBJECT,
-    CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'I initiated a BTC withdrawal to my external wallet but it has been stuck in pending status for over 48 hours. The transaction hash is not showing on the blockchain explorer. My account is fully verified and I have not exceeded any daily limits. Please investigate and process this withdrawal urgently.'
-        WHEN 1 THEN 'I am trying to withdraw ETH to my Ledger Nano X hardware wallet but the transaction keeps failing with error code WD-403. I have verified the address multiple times and the network is Ethereum mainnet. Previous withdrawals to this same address worked fine last month.'
-        WHEN 2 THEN 'I placed a limit buy order for SOL at $145.00 three hours ago. The price has dropped to $143.50 multiple times since then but my order has not been filled. The order shows as Open in my order history. This is affecting my trading strategy.'
-        WHEN 3 THEN 'I received a margin call notification on my SOL/USD position but the market has not moved significantly. My margin ratio should still be above maintenance requirements. Please review the liquidation engine calculations for my account.'
-        WHEN 4 THEN 'My account was locked after I attempted to reset my password. I am receiving an error that says access is temporarily restricted. I need urgent access as I have open positions that need management.'
-        WHEN 5 THEN 'My KYC verification was rejected stating document quality issues but I submitted high-resolution scans of my valid passport. The document is not expired and all details are clearly visible. This is my third attempt and I need to resolve this to increase my trading limits.'
-        WHEN 6 THEN 'I lost my phone which had my Google Authenticator 2FA. I cannot access my account at all. I have my recovery codes but they are not being accepted. I need assistance to disable 2FA so I can set it up on my new device.'
-        WHEN 7 THEN 'I sent a wire transfer of $50,000 from my bank to Kraken 5 business days ago. The funds have left my bank account but are not showing as credited in my Kraken balance. Wire reference number: WR-2024-08-12345.'
-        WHEN 8 THEN 'I staked 500 DOT in the flexible staking program 30 days ago but I have not received any staking rewards. The dashboard shows my position is active but the rewards earned column shows zero. Other users in forums report receiving rewards within the first week.'
-        ELSE 'I am having issues with my API key configuration. I created a key with trading permissions but when I try to place orders via the API I get a permission denied error. I have verified the key and secret are correct in my application.'
-    END AS DESCRIPTION,
-    CASE 
-        WHEN MOD(SEQ4(), 10) >= 3 THEN 'Issue has been resolved. ' || 
-            ARRAY_CONSTRUCT(
-                'Withdrawal was processed after blockchain confirmation.',
-                'Network congestion cleared and transaction went through.',
-                'Order filled after market conditions were met.',
-                'Margin calculation was corrected and position restored.',
-                'Account unlocked after identity verification.',
-                'Documents re-reviewed and verification approved.',
-                '2FA reset completed with identity verification.',
-                'Wire deposit credited after bank confirmation received.',
-                'Staking rewards recalculated and credited retroactively.',
-                'API permissions updated and tested successfully.'
-            )[MOD(SEQ4(), 10)]
-        ELSE NULL
-    END AS RESOLUTION_NOTES,
+    UUID_STRING() AS ACCOUNT_ID,
+    CASE MOD(SEQ4(), 50)
+        WHEN 0 THEN 'ACWA Power' WHEN 1 THEN 'IDE Technologies' WHEN 2 THEN 'Veolia Water'
+        WHEN 3 THEN 'SUEZ Water' WHEN 4 THEN 'Doosan Heavy Industries' WHEN 5 THEN 'Fisia Italimpianti'
+        WHEN 6 THEN 'Acciona Agua' WHEN 7 THEN 'Abengoa Water' WHEN 8 THEN 'Hyflux'
+        WHEN 9 THEN 'Tedagua' WHEN 10 THEN 'Metito' WHEN 11 THEN 'Aqualia'
+        WHEN 12 THEN 'Saline Water Conversion Corp' WHEN 13 THEN 'Dubai Electricity & Water'
+        WHEN 14 THEN 'Abu Dhabi National Energy' WHEN 15 THEN 'Samsung Engineering'
+        WHEN 16 THEN 'Hitachi Zosen' WHEN 17 THEN 'Toray Industries' WHEN 18 THEN 'Nitto Denko'
+        WHEN 19 THEN 'Koch Membrane Systems' WHEN 20 THEN 'Porifera' WHEN 21 THEN 'Consolidated Water'
+        WHEN 22 THEN 'Cadagua' WHEN 23 THEN 'Befesa' WHEN 24 THEN 'Valoriza Agua'
+        WHEN 25 THEN 'Biwater' WHEN 26 THEN 'Hyflux Engineering' WHEN 27 THEN 'Xylem Inc'
+        WHEN 28 THEN 'Pentair' WHEN 29 THEN 'Evoqua Water' WHEN 30 THEN 'Pall Corporation'
+        WHEN 31 THEN 'GE Water' WHEN 32 THEN 'Dow Water Solutions' WHEN 33 THEN 'LG Water Solutions'
+        WHEN 34 THEN 'Lanxess' WHEN 35 THEN 'Grundfos' WHEN 36 THEN 'Danfoss HPP'
+        WHEN 37 THEN 'Flowserve Corporation' WHEN 38 THEN 'Sulzer Pumps' WHEN 39 THEN 'KSB Group'
+        WHEN 40 THEN 'Carrier Global' WHEN 41 THEN 'Johnson Controls' WHEN 42 THEN 'Emerson Electric'
+        WHEN 43 THEN 'Alfa Laval' WHEN 44 THEN 'SPX Flow' WHEN 45 THEN 'IDEX Corporation'
+        WHEN 46 THEN 'Roper Technologies' WHEN 47 THEN 'Watts Water' WHEN 48 THEN 'Mueller Water'
+        WHEN 49 THEN 'Aegion Corporation'
+    END || ' - ' || LPAD(SEQ4()::VARCHAR, 3, '0') AS ACCOUNT_NAME,
+    'ACC-' || LPAD(SEQ4()::VARCHAR, 6, '0') AS ACCOUNT_NUMBER,
     CASE MOD(SEQ4(), 8)
-        WHEN 0 THEN 'Tier1'
-        WHEN 1 THEN 'Tier1'
-        WHEN 2 THEN 'Tier1'
-        WHEN 3 THEN 'Tier2'
-        WHEN 4 THEN 'Tier2'
-        WHEN 5 THEN 'Tier3'
-        WHEN 6 THEN 'Compliance'
-        ELSE 'Engineering'
-    END AS ASSIGNED_TEAM,
-    CASE WHEN MOD(SEQ4(), 10) >= 3 THEN UNIFORM(1, 5, RANDOM(SEQ4())) ELSE NULL END AS SATISFACTION_SCORE,
-    UNIFORM(5, 1440, RANDOM(SEQ4() + 1)) AS FIRST_RESPONSE_MINUTES,
-    CASE WHEN MOD(SEQ4(), 10) >= 3 THEN UNIFORM(60, 10080, RANDOM(SEQ4() + 2)) ELSE NULL END AS RESOLUTION_MINUTES,
-    DATEADD('minute', -UNIFORM(1, 262800, RANDOM(SEQ4() + 3)), CURRENT_TIMESTAMP()) AS CREATED_AT,
-    CASE WHEN MOD(SEQ4(), 10) >= 3 THEN DATEADD('minute', -UNIFORM(1, 200000, RANDOM(SEQ4() + 4)), CURRENT_TIMESTAMP()) ELSE NULL END AS RESOLVED_AT,
-    ARRAY_CONSTRUCT('Web','Web','Email','Email','Chat','Chat','Chat','Phone')[MOD(SEQ4(), 8)] AS PLATFORM
-FROM TABLE(GENERATOR(ROWCOUNT => 25000)) G
-JOIN CUSTOMER_POOL CP ON CP.RN = MOD(SEQ4(), (SELECT COUNT(*) FROM CUSTOMER_POOL)) + 1;
-
--- =====================================================
--- COMPLIANCE_EVENTS (15,000 records)
--- =====================================================
-INSERT INTO COMPLIANCE_EVENTS (
-    EVENT_ID, CUSTOMER_ID, EVENT_TYPE, RISK_SCORE, RISK_LEVEL, IS_FLAGGED,
-    DESCRIPTION, REVIEW_STATUS, REVIEWED_BY, REGULATORY_REPORT_FILED,
-    JURISDICTION, CREATED_AT, REVIEWED_AT
-)
-WITH CUSTOMER_POOL AS (
-    SELECT CUSTOMER_ID, ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS RN
-    FROM CUSTOMERS
-)
-SELECT
-    UUID_STRING(),
-    CP.CUSTOMER_ID,
-    CASE MOD(SEQ4(), 7)
-        WHEN 0 THEN 'Large_Transaction'
-        WHEN 1 THEN 'Velocity_Alert'
-        WHEN 2 THEN 'Sanctions_Screen'
-        WHEN 3 THEN 'PEP_Check'
-        WHEN 4 THEN 'Identity_Mismatch'
-        WHEN 5 THEN 'Unusual_Pattern'
-        ELSE 'SAR_Filed'
-    END AS EVENT_TYPE,
-    UNIFORM(1, 100, RANDOM(SEQ4())) AS RISK_SCORE,
-    CASE 
-        WHEN UNIFORM(1, 100, RANDOM(SEQ4())) <= 40 THEN 'Low'
-        WHEN UNIFORM(1, 100, RANDOM(SEQ4())) <= 70 THEN 'Medium'
-        WHEN UNIFORM(1, 100, RANDOM(SEQ4())) <= 90 THEN 'High'
-        ELSE 'Critical'
-    END AS RISK_LEVEL,
-    CASE WHEN UNIFORM(1, 100, RANDOM(SEQ4() + 1)) > 75 THEN TRUE ELSE FALSE END AS IS_FLAGGED,
-    CASE MOD(SEQ4(), 7)
-        WHEN 0 THEN 'Transaction exceeding $10,000 threshold detected. Customer initiated single transfer of ' || UNIFORM(10000, 500000, RANDOM(SEQ4()))::VARCHAR || ' USD equivalent.'
-        WHEN 1 THEN 'Multiple rapid transactions detected within 1-hour window. ' || UNIFORM(5, 50, RANDOM(SEQ4()))::VARCHAR || ' transactions totaling significant volume.'
-        WHEN 2 THEN 'Automated sanctions screening flagged potential match with OFAC/EU sanctions list entity. Requires manual review of customer identity.'
-        WHEN 3 THEN 'Politically Exposed Person (PEP) screening returned positive result. Enhanced due diligence required per regulatory guidelines.'
-        WHEN 4 THEN 'Identity document metadata inconsistency detected during periodic re-verification process. Document hash differs from original submission.'
-        WHEN 5 THEN 'Unusual trading pattern identified: customer typically trades spot but initiated multiple high-leverage futures positions outside normal behavior.'
-        ELSE 'Suspicious Activity Report criteria met. Multiple risk indicators triggered simultaneously. Filing SAR with FinCEN per BSA requirements.'
-    END AS DESCRIPTION,
+        WHEN 0 THEN 'Water & Desalination' WHEN 1 THEN 'Utilities' WHEN 2 THEN 'Industrial Manufacturing'
+        WHEN 3 THEN 'Oil & Gas' WHEN 4 THEN 'Food & Beverage' WHEN 5 THEN 'Refrigeration & HVAC'
+        WHEN 6 THEN 'Mining' WHEN 7 THEN 'Chemical Processing'
+    END AS INDUSTRY,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Customer' WHEN 1 THEN 'Customer' WHEN 2 THEN 'Prospect' WHEN 3 THEN 'Partner'
+    END AS ACCOUNT_TYPE,
+    CASE MOD(SEQ4(), 3)
+        WHEN 0 THEN 'Tier 1' WHEN 1 THEN 'Tier 2' WHEN 2 THEN 'Tier 3'
+    END AS ACCOUNT_TIER,
+    ROUND(UNIFORM(5000000, 500000000, RANDOM())::NUMBER, 2) AS ANNUAL_REVENUE,
+    UNIFORM(50, 50000, RANDOM()) AS EMPLOYEE_COUNT,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'MENA' WHEN 1 THEN 'Asia-Pacific' WHEN 2 THEN 'Europe'
+        WHEN 3 THEN 'Americas' WHEN 4 THEN 'Africa' WHEN 5 THEN 'MENA'
+    END AS REGION,
+    CASE MOD(SEQ4(), 12)
+        WHEN 0 THEN 'Saudi Arabia' WHEN 1 THEN 'UAE' WHEN 2 THEN 'China'
+        WHEN 3 THEN 'India' WHEN 4 THEN 'Spain' WHEN 5 THEN 'USA'
+        WHEN 6 THEN 'Australia' WHEN 7 THEN 'Israel' WHEN 8 THEN 'South Korea'
+        WHEN 9 THEN 'Singapore' WHEN 10 THEN 'Chile' WHEN 11 THEN 'Oman'
+    END AS COUNTRY,
+    CASE MOD(SEQ4(), 12)
+        WHEN 0 THEN 'Riyadh' WHEN 1 THEN 'Dubai' WHEN 2 THEN 'Shanghai'
+        WHEN 3 THEN 'Mumbai' WHEN 4 THEN 'Madrid' WHEN 5 THEN 'Houston'
+        WHEN 6 THEN 'Perth' WHEN 7 THEN 'Tel Aviv' WHEN 8 THEN 'Seoul'
+        WHEN 9 THEN 'Singapore' WHEN 10 THEN 'Santiago' WHEN 11 THEN 'Muscat'
+    END AS CITY,
+    NULL AS WEBSITE,
     CASE MOD(SEQ4(), 5)
-        WHEN 0 THEN 'Pending'
-        WHEN 1 THEN 'Under Review'
-        WHEN 2 THEN 'Cleared'
-        WHEN 3 THEN 'Cleared'
-        ELSE 'Escalated'
-    END AS REVIEW_STATUS,
-    CASE WHEN MOD(SEQ4(), 5) >= 2 THEN 
-        ARRAY_CONSTRUCT('ComplianceAnalyst_A','ComplianceAnalyst_B','ComplianceOfficer_1','ComplianceOfficer_2','MLRO')[MOD(SEQ4(), 5)]
-    ELSE NULL END AS REVIEWED_BY,
-    CASE WHEN MOD(SEQ4(), 20) = 0 THEN TRUE ELSE FALSE END AS REGULATORY_REPORT_FILED,
-    ARRAY_CONSTRUCT('US','UK','EU','SG','JP','AU','CA','CH')[MOD(SEQ4(), 8)] AS JURISDICTION,
-    DATEADD('minute', -UNIFORM(1, 525600, RANDOM(SEQ4() + 5)), CURRENT_TIMESTAMP()) AS CREATED_AT,
-    CASE WHEN MOD(SEQ4(), 5) >= 2 THEN DATEADD('minute', -UNIFORM(1, 400000, RANDOM(SEQ4() + 6)), CURRENT_TIMESTAMP()) ELSE NULL END AS REVIEWED_AT
-FROM TABLE(GENERATOR(ROWCOUNT => 15000)) G
-JOIN CUSTOMER_POOL CP ON CP.RN = MOD(SEQ4(), (SELECT COUNT(*) FROM CUSTOMER_POOL)) + 1;
+        WHEN 0 THEN 'Sarah Chen' WHEN 1 THEN 'Ahmed Al-Rashid' WHEN 2 THEN 'Marcus Weber'
+        WHEN 3 THEN 'Priya Sharma' WHEN 4 THEN 'James Morrison'
+    END AS OWNER_NAME,
+    NULL AS PARENT_ACCOUNT_ID,
+    DATEADD('day', -UNIFORM(30, 2000, RANDOM()), CURRENT_TIMESTAMP()) AS CREATED_DATE,
+    DATEADD('day', -UNIFORM(1, 30, RANDOM()), CURRENT_TIMESTAMP()) AS MODIFIED_DATE,
+    TRUE AS IS_ACTIVE
+FROM TABLE(GENERATOR(ROWCOUNT => 520));
 
--- =====================================================
--- STAKING_POSITIONS (8,000 records)
--- =====================================================
-INSERT INTO STAKING_POSITIONS (
-    POSITION_ID, CUSTOMER_ID, ASSET_SYMBOL, STAKED_AMOUNT, STAKED_VALUE_USD,
-    APY_RATE, REWARDS_EARNED, REWARDS_VALUE_USD, STATUS, LOCK_PERIOD_DAYS,
-    STARTED_AT, COMPLETED_AT
-)
-WITH CUSTOMER_POOL AS (
-    SELECT CUSTOMER_ID, ACCOUNT_TIER, ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS RN
-    FROM CUSTOMERS WHERE IS_ACTIVE = TRUE
-)
+-- ============================================================================
+-- DYNAMICS CRM: Contacts (1500+)
+-- ============================================================================
+INSERT INTO CONTACTS
 SELECT
-    UUID_STRING(),
-    CP.CUSTOMER_ID,
-    CASE MOD(SEQ4(), 7)
-        WHEN 0 THEN 'ETH'
-        WHEN 1 THEN 'SOL'
-        WHEN 2 THEN 'DOT'
-        WHEN 3 THEN 'ADA'
-        WHEN 4 THEN 'ATOM'
-        WHEN 5 THEN 'AVAX'
-        ELSE 'MATIC'
-    END AS ASSET_SYMBOL,
-    ROUND(UNIFORM(10, 100000, RANDOM(SEQ4()))::DECIMAL(24,8) *
-        CASE WHEN CP.ACCOUNT_TIER IN ('VIP','Institutional') THEN 10 ELSE 1 END, 8) AS STAKED_AMOUNT,
-    ROUND(UNIFORM(100, 5000000, RANDOM(SEQ4() + 1))::DECIMAL(18,2), 2) AS STAKED_VALUE_USD,
-    CASE MOD(SEQ4(), 7)
-        WHEN 0 THEN 3.5
-        WHEN 1 THEN 6.8
-        WHEN 2 THEN 12.0
-        WHEN 3 THEN 3.2
-        WHEN 4 THEN 15.5
-        WHEN 5 THEN 8.2
-        ELSE 4.5
-    END AS APY_RATE,
-    ROUND(UNIFORM(0.1, 5000, RANDOM(SEQ4() + 2))::DECIMAL(24,8), 8) AS REWARDS_EARNED,
-    ROUND(UNIFORM(1, 50000, RANDOM(SEQ4() + 3))::DECIMAL(18,2), 2) AS REWARDS_VALUE_USD,
+    UUID_STRING() AS CONTACT_ID,
+    (SELECT ACCOUNT_ID FROM ACCOUNTS ORDER BY RANDOM() LIMIT 1) AS ACCOUNT_ID,
+    CASE MOD(SEQ4(), 20)
+        WHEN 0 THEN 'Mohammed' WHEN 1 THEN 'Chen' WHEN 2 THEN 'David' WHEN 3 THEN 'Maria'
+        WHEN 4 THEN 'Raj' WHEN 5 THEN 'Sophie' WHEN 6 THEN 'Ahmed' WHEN 7 THEN 'Jun'
+        WHEN 8 THEN 'Carlos' WHEN 9 THEN 'Anna' WHEN 10 THEN 'Robert' WHEN 11 THEN 'Fatima'
+        WHEN 12 THEN 'Wei' WHEN 13 THEN 'James' WHEN 14 THEN 'Aisha' WHEN 15 THEN 'Thomas'
+        WHEN 16 THEN 'Yuki' WHEN 17 THEN 'Omar' WHEN 18 THEN 'Priya' WHEN 19 THEN 'Hans'
+    END AS FIRST_NAME,
+    CASE MOD(SEQ4(), 15)
+        WHEN 0 THEN 'Al-Rashid' WHEN 1 THEN 'Wong' WHEN 2 THEN 'Schmidt' WHEN 3 THEN 'Garcia'
+        WHEN 4 THEN 'Patel' WHEN 5 THEN 'Martin' WHEN 6 THEN 'Hassan' WHEN 7 THEN 'Nakamura'
+        WHEN 8 THEN 'Rodriguez' WHEN 9 THEN 'Jensen' WHEN 10 THEN 'Kumar' WHEN 11 THEN 'Kim'
+        WHEN 12 THEN 'Santos' WHEN 13 THEN 'Mueller' WHEN 14 THEN 'Singh'
+    END AS LAST_NAME,
+    NULL AS EMAIL,
+    NULL AS PHONE,
     CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'Unbonding'
-        WHEN 1 THEN 'Completed'
+        WHEN 0 THEN 'VP Engineering' WHEN 1 THEN 'Chief Technology Officer' WHEN 2 THEN 'Plant Manager'
+        WHEN 3 THEN 'Procurement Director' WHEN 4 THEN 'Process Engineer'
+        WHEN 5 THEN 'Operations Manager' WHEN 6 THEN 'Project Director'
+        WHEN 7 THEN 'Maintenance Manager' WHEN 8 THEN 'Technical Director'
+        WHEN 9 THEN 'CEO'
+    END AS JOB_TITLE,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'Engineering' WHEN 1 THEN 'Operations' WHEN 2 THEN 'Procurement'
+        WHEN 3 THEN 'Executive' WHEN 4 THEN 'Maintenance' WHEN 5 THEN 'Project Management'
+    END AS DEPARTMENT,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Decision Maker' WHEN 1 THEN 'Influencer' WHEN 2 THEN 'Champion' WHEN 3 THEN 'End User'
+    END AS DECISION_ROLE,
+    CASE WHEN MOD(SEQ4(), 5) = 0 THEN TRUE ELSE FALSE END AS IS_PRIMARY,
+    DATEADD('day', -UNIFORM(30, 1500, RANDOM()), CURRENT_TIMESTAMP()) AS CREATED_DATE,
+    DATEADD('day', -UNIFORM(1, 60, RANDOM()), CURRENT_TIMESTAMP()) AS MODIFIED_DATE
+FROM TABLE(GENERATOR(ROWCOUNT => 1500));
+
+-- Fix account references to be valid
+UPDATE CONTACTS c
+SET ACCOUNT_ID = (SELECT ACCOUNT_ID FROM ACCOUNTS ORDER BY RANDOM() LIMIT 1)
+WHERE NOT EXISTS (SELECT 1 FROM ACCOUNTS a WHERE a.ACCOUNT_ID = c.ACCOUNT_ID);
+
+-- ============================================================================
+-- DYNAMICS CRM: Opportunities (2000+)
+-- ============================================================================
+INSERT INTO OPPORTUNITIES
+SELECT
+    UUID_STRING() AS OPPORTUNITY_ID,
+    a.ACCOUNT_ID,
+    a.ACCOUNT_NAME || ' - ' ||
+    CASE MOD(SEQ4(), 8)
+        WHEN 0 THEN 'SWRO Plant ERD Package' WHEN 1 THEN 'PX Upgrade Project'
+        WHEN 2 THEN 'New Desalination Facility' WHEN 3 THEN 'Aftermarket Service Contract'
+        WHEN 4 THEN 'Wastewater Treatment ERD' WHEN 5 THEN 'CO2 Refrigeration Pilot'
+        WHEN 6 THEN 'Expansion Phase II' WHEN 7 THEN 'Replacement Units'
+    END AS OPPORTUNITY_NAME,
+    CASE MOD(SEQ4(), 7)
+        WHEN 0 THEN 'Qualify' WHEN 1 THEN 'Develop' WHEN 2 THEN 'Develop'
+        WHEN 3 THEN 'Propose' WHEN 4 THEN 'Negotiate' WHEN 5 THEN 'Close Won' WHEN 6 THEN 'Close Lost'
+    END AS STAGE,
+    ROUND(UNIFORM(50000, 15000000, RANDOM())::NUMBER, 2) AS AMOUNT,
+    DATEADD('day', UNIFORM(-90, 365, RANDOM()), CURRENT_DATE()) AS CLOSE_DATE,
+    CASE MOD(SEQ4(), 7)
+        WHEN 0 THEN 10 WHEN 1 THEN 25 WHEN 2 THEN 25 WHEN 3 THEN 50
+        WHEN 4 THEN 75 WHEN 5 THEN 100 WHEN 6 THEN 0
+    END AS PROBABILITY,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'PX Pressure Exchanger' WHEN 1 THEN 'PX Q650'
+        WHEN 2 THEN 'PX G1300' WHEN 3 THEN 'Aftermarket Services' WHEN 4 THEN 'Wastewater PX'
+    END AS PRODUCT_INTEREST,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Desalination' WHEN 1 THEN 'Wastewater' WHEN 2 THEN 'CO2 Refrigeration' WHEN 3 THEN 'Desalination'
+    END AS APPLICATION,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Trade Show' WHEN 1 THEN 'Referral' WHEN 2 THEN 'Web Inquiry'
+        WHEN 3 THEN 'Existing Customer' WHEN 4 THEN 'Partner'
+    END AS LEAD_SOURCE,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Danfoss' WHEN 1 THEN 'Flowserve' WHEN 2 THEN 'Sulzer' WHEN 3 THEN NULL
+    END AS COMPETITOR,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Sarah Chen' WHEN 1 THEN 'Ahmed Al-Rashid' WHEN 2 THEN 'Marcus Weber'
+        WHEN 3 THEN 'Priya Sharma' WHEN 4 THEN 'James Morrison'
+    END AS SALES_REP,
+    a.REGION,
+    DATEADD('day', -UNIFORM(30, 730, RANDOM()), CURRENT_TIMESTAMP()) AS CREATED_DATE,
+    DATEADD('day', -UNIFORM(1, 30, RANDOM()), CURRENT_TIMESTAMP()) AS MODIFIED_DATE,
+    CASE
+        WHEN MOD(SEQ4(), 7) IN (5, 6) THEN DATEADD('day', -UNIFORM(1, 180, RANDOM()), CURRENT_TIMESTAMP())
+        ELSE NULL
+    END AS CLOSED_DATE,
+    CASE
+        WHEN MOD(SEQ4(), 7) = 6 THEN
+            CASE MOD(SEQ4(), 4)
+                WHEN 0 THEN 'Price - competitor offered lower price'
+                WHEN 1 THEN 'Timing - project delayed indefinitely'
+                WHEN 2 THEN 'Technical - chose alternative technology'
+                WHEN 3 THEN 'Budget - funding not approved'
+            END
+        ELSE NULL
+    END AS LOSS_REASON,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Schedule technical review meeting'
+        WHEN 1 THEN 'Send revised proposal'
+        WHEN 2 THEN 'Arrange site visit'
+        WHEN 3 THEN 'Follow up on RFQ response'
+        WHEN 4 THEN 'Executive sponsor meeting'
+    END AS NEXT_STEP
+FROM TABLE(GENERATOR(ROWCOUNT => 2200)) g
+JOIN (SELECT ACCOUNT_ID, ACCOUNT_NAME, REGION, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM ACCOUNTS) a
+    ON MOD(SEQ4(), 520) + 1 = a.RN;
+
+-- ============================================================================
+-- DYNAMICS FINANCE: General Ledger (5000+ entries)
+-- ============================================================================
+USE SCHEMA DYNAMICS_FINANCE;
+
+INSERT INTO GENERAL_LEDGER
+SELECT
+    UUID_STRING() AS JOURNAL_ENTRY_ID,
+    DATEADD('day', -UNIFORM(0, 730, RANDOM()), CURRENT_DATE()) AS POSTING_DATE,
+    YEAR(DATEADD('day', -UNIFORM(0, 730, RANDOM()), CURRENT_DATE())) AS FISCAL_YEAR,
+    QUARTER(DATEADD('day', -UNIFORM(0, 730, RANDOM()), CURRENT_DATE())) AS FISCAL_QUARTER,
+    MONTH(DATEADD('day', -UNIFORM(0, 730, RANDOM()), CURRENT_DATE())) AS FISCAL_PERIOD,
+    CASE MOD(SEQ4(), 12)
+        WHEN 0 THEN '4100-001' WHEN 1 THEN '4100-002' WHEN 2 THEN '4100-003'
+        WHEN 3 THEN '5100-001' WHEN 4 THEN '5100-002' WHEN 5 THEN '6100-001'
+        WHEN 6 THEN '6200-001' WHEN 7 THEN '6300-001' WHEN 8 THEN '6400-001'
+        WHEN 9 THEN '4200-001' WHEN 10 THEN '5200-001' WHEN 11 THEN '6500-001'
+    END AS ACCOUNT_NUMBER,
+    CASE MOD(SEQ4(), 12)
+        WHEN 0 THEN 'Product Revenue - Desalination' WHEN 1 THEN 'Product Revenue - Wastewater'
+        WHEN 2 THEN 'Product Revenue - Refrigeration' WHEN 3 THEN 'Cost of Goods Sold - Materials'
+        WHEN 4 THEN 'Cost of Goods Sold - Labor' WHEN 5 THEN 'Research & Development'
+        WHEN 6 THEN 'Sales & Marketing' WHEN 7 THEN 'General & Administrative'
+        WHEN 8 THEN 'Depreciation & Amortization' WHEN 9 THEN 'Service Revenue'
+        WHEN 10 THEN 'Manufacturing Overhead' WHEN 11 THEN 'Facilities & Utilities'
+    END AS ACCOUNT_NAME,
+    CASE MOD(SEQ4(), 12)
+        WHEN 0 THEN 'Revenue' WHEN 1 THEN 'Revenue' WHEN 2 THEN 'Revenue'
+        WHEN 3 THEN 'COGS' WHEN 4 THEN 'COGS' WHEN 5 THEN 'Operating Expense'
+        WHEN 6 THEN 'Operating Expense' WHEN 7 THEN 'Operating Expense'
+        WHEN 8 THEN 'Operating Expense' WHEN 9 THEN 'Revenue' WHEN 10 THEN 'COGS'
+        WHEN 11 THEN 'Operating Expense'
+    END AS ACCOUNT_CATEGORY,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Engineering' WHEN 1 THEN 'Manufacturing' WHEN 2 THEN 'Sales'
+        WHEN 3 THEN 'Corporate' WHEN 4 THEN 'Service'
+    END AS DEPARTMENT,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'CC-100' WHEN 1 THEN 'CC-200' WHEN 2 THEN 'CC-300' WHEN 3 THEN 'CC-400'
+    END AS COST_CENTER,
+    CASE WHEN MOD(SEQ4(), 12) IN (0,1,2,9) THEN 0 ELSE ROUND(UNIFORM(1000, 2000000, RANDOM())::NUMBER, 2) END AS DEBIT_AMOUNT,
+    CASE WHEN MOD(SEQ4(), 12) IN (0,1,2,9) THEN ROUND(UNIFORM(50000, 5000000, RANDOM())::NUMBER, 2) ELSE 0 END AS CREDIT_AMOUNT,
+    CASE
+        WHEN MOD(SEQ4(), 12) IN (0,1,2,9) THEN ROUND(UNIFORM(50000, 5000000, RANDOM())::NUMBER, 2)
+        ELSE -ROUND(UNIFORM(1000, 2000000, RANDOM())::NUMBER, 2)
+    END AS NET_AMOUNT,
+    'USD' AS CURRENCY,
+    'Monthly posting - ' || CASE MOD(SEQ4(), 12)
+        WHEN 0 THEN 'Desalination product revenue' WHEN 1 THEN 'Wastewater product revenue'
+        WHEN 2 THEN 'Refrigeration product revenue' WHEN 3 THEN 'Raw material costs'
+        WHEN 4 THEN 'Direct labor costs' WHEN 5 THEN 'R&D expenses'
+        WHEN 6 THEN 'Sales & marketing spend' WHEN 7 THEN 'G&A expenses'
+        WHEN 8 THEN 'Depreciation' WHEN 9 THEN 'Service contract revenue'
+        WHEN 10 THEN 'Manufacturing overhead' WHEN 11 THEN 'Facilities costs'
+    END AS DESCRIPTION,
+    'Microsoft Dynamics 365 F&O' AS SOURCE_SYSTEM,
+    CURRENT_TIMESTAMP() AS CREATED_DATE
+FROM TABLE(GENERATOR(ROWCOUNT => 5000));
+
+-- ============================================================================
+-- DYNAMICS FINANCE: Sales Orders (800+)
+-- ============================================================================
+INSERT INTO SALES_ORDERS
+SELECT
+    UUID_STRING() AS ORDER_ID,
+    'SO-' || LPAD(SEQ4()::VARCHAR, 7, '0') AS ORDER_NUMBER,
+    UUID_STRING() AS CUSTOMER_ID,
+    CASE MOD(SEQ4(), 20)
+        WHEN 0 THEN 'ACWA Power' WHEN 1 THEN 'IDE Technologies' WHEN 2 THEN 'Veolia Water'
+        WHEN 3 THEN 'SUEZ Water' WHEN 4 THEN 'Doosan Heavy Industries'
+        WHEN 5 THEN 'Saline Water Conversion Corp' WHEN 6 THEN 'Dubai Electricity & Water'
+        WHEN 7 THEN 'Samsung Engineering' WHEN 8 THEN 'Hitachi Zosen' WHEN 9 THEN 'Acciona Agua'
+        WHEN 10 THEN 'Metito' WHEN 11 THEN 'Abengoa Water' WHEN 12 THEN 'Biwater'
+        WHEN 13 THEN 'Consolidated Water' WHEN 14 THEN 'Carrier Global'
+        WHEN 15 THEN 'Johnson Controls' WHEN 16 THEN 'Xylem Inc' WHEN 17 THEN 'Toray Industries'
+        WHEN 18 THEN 'Koch Membrane Systems' WHEN 19 THEN 'Befesa'
+    END AS CUSTOMER_NAME,
+    DATEADD('day', -UNIFORM(0, 730, RANDOM()), CURRENT_DATE()) AS ORDER_DATE,
+    DATEADD('day', UNIFORM(30, 180, RANDOM()), CURRENT_DATE()) AS REQUESTED_DATE,
+    CASE WHEN MOD(SEQ4(), 4) IN (2,3) THEN DATEADD('day', -UNIFORM(0, 90, RANDOM()), CURRENT_DATE()) ELSE NULL END AS SHIP_DATE,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Open' WHEN 1 THEN 'Confirmed' WHEN 2 THEN 'Shipped'
+        WHEN 3 THEN 'Invoiced' WHEN 4 THEN 'Open'
+    END AS STATUS,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Desalination' WHEN 1 THEN 'Desalination' WHEN 2 THEN 'Aftermarket' WHEN 3 THEN 'Wastewater'
+    END AS PRODUCT_LINE,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'PX Q650 Pressure Exchanger' WHEN 1 THEN 'PX Q400 Pressure Exchanger'
+        WHEN 2 THEN 'PX-220 Pressure Exchanger' WHEN 3 THEN 'Aftermarket Seal Kit'
+        WHEN 4 THEN 'PX G1300 CO2 Unit' WHEN 5 THEN 'Wastewater PX System'
+    END AS PRODUCT_NAME,
+    UNIFORM(1, 48, RANDOM()) AS QUANTITY,
+    ROUND(UNIFORM(5000, 350000, RANDOM())::NUMBER, 2) AS UNIT_PRICE,
+    NULL AS TOTAL_AMOUNT,
+    ROUND(UNIFORM(0, 15, RANDOM())::NUMBER, 2) AS DISCOUNT_PERCENT,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'MENA' WHEN 1 THEN 'Asia-Pacific' WHEN 2 THEN 'Europe'
+        WHEN 3 THEN 'Americas' WHEN 4 THEN 'Africa' WHEN 5 THEN 'MENA'
+    END AS REGION,
+    CASE MOD(SEQ4(), 8)
+        WHEN 0 THEN 'Saudi Arabia' WHEN 1 THEN 'UAE' WHEN 2 THEN 'China'
+        WHEN 3 THEN 'Australia' WHEN 4 THEN 'Spain' WHEN 5 THEN 'USA'
+        WHEN 6 THEN 'India' WHEN 7 THEN 'Oman'
+    END AS COUNTRY,
+    'USD' AS CURRENCY,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Sarah Chen' WHEN 1 THEN 'Ahmed Al-Rashid' WHEN 2 THEN 'Marcus Weber'
+        WHEN 3 THEN 'Priya Sharma' WHEN 4 THEN 'James Morrison'
+    END AS SALES_REP,
+    CURRENT_TIMESTAMP() AS CREATED_DATE
+FROM TABLE(GENERATOR(ROWCOUNT => 850));
+
+UPDATE SALES_ORDERS SET TOTAL_AMOUNT = QUANTITY * UNIT_PRICE * (1 - DISCOUNT_PERCENT/100);
+
+-- ============================================================================
+-- DYNAMICS FINANCE: Invoices (700+)
+-- ============================================================================
+INSERT INTO INVOICES
+SELECT
+    UUID_STRING() AS INVOICE_ID,
+    'INV-' || LPAD(SEQ4()::VARCHAR, 7, '0') AS INVOICE_NUMBER,
+    ORDER_ID,
+    CUSTOMER_ID,
+    CUSTOMER_NAME,
+    DATEADD('day', UNIFORM(1, 30, RANDOM()), ORDER_DATE) AS INVOICE_DATE,
+    DATEADD('day', UNIFORM(30, 90, RANDOM()), ORDER_DATE) AS DUE_DATE,
+    CASE WHEN MOD(SEQ4(), 3) IN (0,1) THEN DATEADD('day', UNIFORM(20, 75, RANDOM()), ORDER_DATE) ELSE NULL END AS PAYMENT_DATE,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Paid' WHEN 1 THEN 'Paid' WHEN 2 THEN 'Open' WHEN 3 THEN 'Overdue'
+    END AS STATUS,
+    TOTAL_AMOUNT AS SUBTOTAL,
+    ROUND(TOTAL_AMOUNT * 0.05, 2) AS TAX_AMOUNT,
+    ROUND(TOTAL_AMOUNT * 1.05, 2) AS TOTAL_AMOUNT,
+    CASE WHEN MOD(SEQ4(), 4) IN (0,1) THEN ROUND(TOTAL_AMOUNT * 1.05, 2) ELSE ROUND(TOTAL_AMOUNT * UNIFORM(0, 80, RANDOM()) / 100.0, 2) END AS AMOUNT_PAID,
+    NULL AS BALANCE_DUE,
+    PRODUCT_LINE,
+    'USD' AS CURRENCY,
+    CASE MOD(SEQ4(), 3) WHEN 0 THEN 'Net 30' WHEN 1 THEN 'Net 60' WHEN 2 THEN 'Net 90' END AS PAYMENT_TERMS,
+    CURRENT_TIMESTAMP() AS CREATED_DATE
+FROM SALES_ORDERS
+WHERE STATUS IN ('Shipped', 'Invoiced')
+LIMIT 700;
+
+UPDATE INVOICES SET BALANCE_DUE = TOTAL_AMOUNT - AMOUNT_PAID;
+
+-- ============================================================================
+-- DYNAMICS FINANCE: Accounts Receivable
+-- ============================================================================
+INSERT INTO ACCOUNTS_RECEIVABLE
+SELECT
+    UUID_STRING() AS AR_ID,
+    CUSTOMER_ID,
+    CUSTOMER_NAME,
+    INVOICE_ID,
+    INVOICE_DATE,
+    DUE_DATE,
+    TOTAL_AMOUNT AS ORIGINAL_AMOUNT,
+    BALANCE_DUE AS BALANCE,
+    CASE
+        WHEN BALANCE_DUE <= 0 THEN 'Current'
+        WHEN DATEDIFF('day', DUE_DATE, CURRENT_DATE()) <= 0 THEN 'Current'
+        WHEN DATEDIFF('day', DUE_DATE, CURRENT_DATE()) <= 30 THEN '1-30 Days'
+        WHEN DATEDIFF('day', DUE_DATE, CURRENT_DATE()) <= 60 THEN '31-60 Days'
+        WHEN DATEDIFF('day', DUE_DATE, CURRENT_DATE()) <= 90 THEN '61-90 Days'
+        ELSE '90+ Days'
+    END AS AGING_BUCKET,
+    STATUS,
+    CASE MOD(ABS(HASH(INVOICE_ID)), 5)
+        WHEN 0 THEN 'MENA' WHEN 1 THEN 'Asia-Pacific' WHEN 2 THEN 'Europe'
+        WHEN 3 THEN 'Americas' WHEN 4 THEN 'MENA'
+    END AS REGION,
+    'USD' AS CURRENCY,
+    CURRENT_DATE() AS AS_OF_DATE
+FROM INVOICES
+WHERE STATUS IN ('Open', 'Overdue');
+
+-- ============================================================================
+-- SCADA/IoT: Device Registry (40,000+ devices)
+-- ============================================================================
+USE SCHEMA SCADA_IOT;
+
+INSERT INTO DEVICE_REGISTRY
+SELECT
+    UUID_STRING() AS DEVICE_ID,
+    'PX-' || LPAD(SEQ4()::VARCHAR, 7, '0') AS SERIAL_NUMBER,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'PX-Q650' WHEN 1 THEN 'PX-Q400' WHEN 2 THEN 'PX-Q400'
+        WHEN 3 THEN 'PX-220' WHEN 4 THEN 'PX-G1300'
+    END AS DEVICE_MODEL,
+    'Pressure Exchanger' AS DEVICE_TYPE,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Desalination' WHEN 1 THEN 'Desalination' WHEN 2 THEN 'Desalination'
+        WHEN 3 THEN 'Wastewater' WHEN 4 THEN 'Refrigeration'
+    END AS PRODUCT_LINE,
+    CASE MOD(SEQ4(), 25)
+        WHEN 0 THEN 'Rabigh 3 IWP' WHEN 1 THEN 'Jubail 3A IWP' WHEN 2 THEN 'Taweelah IWP'
+        WHEN 3 THEN 'Hassyan IWP' WHEN 4 THEN 'Shuaibah 3 IWPP' WHEN 5 THEN 'Sorek B'
+        WHEN 6 THEN 'Carlsbad Desalination' WHEN 7 THEN 'Perth SWRO' WHEN 8 THEN 'Barcelona SWRO'
+        WHEN 9 THEN 'Chennai SWRO' WHEN 10 THEN 'Barka 5 IWP' WHEN 11 THEN 'Al Ghubrah 3'
+        WHEN 12 THEN 'Yanbu 4' WHEN 13 THEN 'Umm Al Quwain' WHEN 14 THEN 'Dammam West'
+        WHEN 15 THEN 'Shoaiba 4' WHEN 16 THEN 'Jubail 2' WHEN 17 THEN 'Ras Al Khair'
+        WHEN 18 THEN 'Fujairah F3' WHEN 19 THEN 'Ain Sokhna' WHEN 20 THEN 'Tianjin Dagang'
+        WHEN 21 THEN 'Qingdao Baifa' WHEN 22 THEN 'Nemmeli SWRO' WHEN 23 THEN 'Adelaide SWRO'
+        WHEN 24 THEN 'Gold Coast SWRO'
+    END AS INSTALLATION_SITE,
+    CASE MOD(SEQ4(), 12)
+        WHEN 0 THEN 'Saudi Arabia' WHEN 1 THEN 'Saudi Arabia' WHEN 2 THEN 'UAE'
+        WHEN 3 THEN 'UAE' WHEN 4 THEN 'Saudi Arabia' WHEN 5 THEN 'Israel'
+        WHEN 6 THEN 'USA' WHEN 7 THEN 'Australia' WHEN 8 THEN 'Spain'
+        WHEN 9 THEN 'India' WHEN 10 THEN 'Oman' WHEN 11 THEN 'China'
+    END AS SITE_COUNTRY,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'MENA' WHEN 1 THEN 'MENA' WHEN 2 THEN 'MENA'
+        WHEN 3 THEN 'Asia-Pacific' WHEN 4 THEN 'Americas' WHEN 5 THEN 'Europe'
+    END AS SITE_REGION,
+    UUID_STRING() AS CUSTOMER_ID,
+    CASE MOD(SEQ4(), 10)
+        WHEN 0 THEN 'ACWA Power' WHEN 1 THEN 'SWCC' WHEN 2 THEN 'DEWA'
+        WHEN 3 THEN 'IDE Technologies' WHEN 4 THEN 'Veolia' WHEN 5 THEN 'Acciona Agua'
+        WHEN 6 THEN 'Poseidon Water' WHEN 7 THEN 'Water Corp Australia'
+        WHEN 8 THEN 'Doosan' WHEN 9 THEN 'Metito'
+    END AS CUSTOMER_NAME,
+    DATEADD('day', -UNIFORM(365, 7300, RANDOM()), CURRENT_DATE()) AS INSTALLATION_DATE,
+    DATEADD('year', 5, DATEADD('day', -UNIFORM(365, 7300, RANDOM()), CURRENT_DATE())) AS WARRANTY_EXPIRY,
+    DATEADD('day', -UNIFORM(300, 7200, RANDOM()), CURRENT_DATE()) AS COMMISSIONING_DATE,
+    UNIFORM(1000, 150000, RANDOM()) AS OPERATING_HOURS,
+    CASE MOD(SEQ4(), 20)
+        WHEN 19 THEN 'Maintenance' WHEN 18 THEN 'Standby'
         ELSE 'Active'
     END AS STATUS,
-    CASE WHEN MOD(SEQ4(), 3) = 0 THEN NULL ELSE ARRAY_CONSTRUCT(30, 60, 90, 120)[MOD(SEQ4(), 4)] END AS LOCK_PERIOD_DAYS,
-    DATEADD('day', -UNIFORM(7, 365, RANDOM(SEQ4() + 4)), CURRENT_TIMESTAMP()) AS STARTED_AT,
-    CASE WHEN MOD(SEQ4(), 10) = 1 THEN DATEADD('day', -UNIFORM(1, 30, RANDOM(SEQ4() + 5)), CURRENT_TIMESTAMP()) ELSE NULL END AS COMPLETED_AT
-FROM TABLE(GENERATOR(ROWCOUNT => 8000)) G
-JOIN CUSTOMER_POOL CP ON CP.RN = MOD(SEQ4(), (SELECT COUNT(*) FROM CUSTOMER_POOL)) + 1;
+    'v' || UNIFORM(2, 5, RANDOM()) || '.' || UNIFORM(0, 9, RANDOM()) || '.' || UNIFORM(0, 9, RANDOM()) AS FIRMWARE_VERSION,
+    DATEADD('day', -UNIFORM(30, 365, RANDOM()), CURRENT_DATE()) AS LAST_SERVICE_DATE,
+    DATEADD('day', UNIFORM(30, 365, RANDOM()), CURRENT_DATE()) AS NEXT_SERVICE_DATE,
+    CURRENT_TIMESTAMP() AS CREATED_DATE
+FROM TABLE(GENERATOR(ROWCOUNT => 42000));
 
--- =====================================================
--- MARKET_DATA (hourly for top pairs, ~50,000 records)
--- =====================================================
-INSERT INTO MARKET_DATA (
-    MARKET_DATA_ID, TRADING_PAIR, TIMESTAMP, INTERVAL, OPEN_PRICE, HIGH_PRICE,
-    LOW_PRICE, CLOSE_PRICE, VOLUME, VOLUME_USD, TRADE_COUNT, VWAP
-)
-WITH PAIRS AS (
-    SELECT COLUMN1 AS PAIR, COLUMN2 AS BASE_PRICE
-    FROM VALUES ('BTC/USD', 60000), ('ETH/USD', 3200), ('SOL/USD', 150),
-               ('XRP/USD', 1.5), ('ADA/USD', 0.6), ('DOT/USD', 8),
-               ('AVAX/USD', 40), ('LINK/USD', 18), ('ATOM/USD', 10), ('MATIC/USD', 1)
-),
-HOURS AS (
-    SELECT DATEADD('hour', -SEQ4(), CURRENT_TIMESTAMP()) AS TS
-    FROM TABLE(GENERATOR(ROWCOUNT => 5000))
-)
+-- ============================================================================
+-- SCADA/IoT: Device Telemetry (sample - latest readings, 50K rows)
+-- ============================================================================
+INSERT INTO DEVICE_TELEMETRY
 SELECT
-    UUID_STRING(),
-    P.PAIR,
-    H.TS,
-    '1h' AS INTERVAL,
-    ROUND(P.BASE_PRICE * (1 + UNIFORM(-5, 5, RANDOM(HASH(P.PAIR || H.TS::VARCHAR)))/100.0), 8) AS OPEN_PRICE,
-    ROUND(P.BASE_PRICE * (1 + UNIFORM(0, 8, RANDOM(HASH(P.PAIR || H.TS::VARCHAR) + 1))/100.0), 8) AS HIGH_PRICE,
-    ROUND(P.BASE_PRICE * (1 - UNIFORM(0, 8, RANDOM(HASH(P.PAIR || H.TS::VARCHAR) + 2))/100.0), 8) AS LOW_PRICE,
-    ROUND(P.BASE_PRICE * (1 + UNIFORM(-5, 5, RANDOM(HASH(P.PAIR || H.TS::VARCHAR) + 3))/100.0), 8) AS CLOSE_PRICE,
-    ROUND(UNIFORM(100, 50000, RANDOM(HASH(P.PAIR || H.TS::VARCHAR) + 4))::DECIMAL(24,8), 8) AS VOLUME,
-    ROUND(UNIFORM(100, 50000, RANDOM(HASH(P.PAIR || H.TS::VARCHAR) + 4)) * P.BASE_PRICE, 2) AS VOLUME_USD,
-    UNIFORM(500, 50000, RANDOM(HASH(P.PAIR || H.TS::VARCHAR) + 5)) AS TRADE_COUNT,
-    ROUND(P.BASE_PRICE * (1 + UNIFORM(-3, 3, RANDOM(HASH(P.PAIR || H.TS::VARCHAR) + 6))/100.0), 8) AS VWAP
-FROM PAIRS P
-CROSS JOIN HOURS H;
-
--- =====================================================
--- FUTURES_POSITIONS (20,000 records)
--- =====================================================
-INSERT INTO FUTURES_POSITIONS (
-    POSITION_ID, CUSTOMER_ID, CONTRACT_PAIR, CONTRACT_TYPE, SIDE, LEVERAGE,
-    ENTRY_PRICE, MARK_PRICE, LIQUIDATION_PRICE, POSITION_SIZE,
-    NOTIONAL_VALUE_USD, UNREALIZED_PNL_USD, REALIZED_PNL_USD, MARGIN_USED_USD,
-    STATUS, OPENED_AT, CLOSED_AT
-)
-WITH CUSTOMER_POOL AS (
-    SELECT CUSTOMER_ID, ACCOUNT_TIER, ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS RN
-    FROM CUSTOMERS WHERE ACCOUNT_TIER IN ('Pro', 'VIP', 'Institutional')
-)
-SELECT
-    UUID_STRING(),
-    CP.CUSTOMER_ID,
-    CASE MOD(SEQ4(), 8)
-        WHEN 0 THEN 'BTC-PERP'
-        WHEN 1 THEN 'ETH-PERP'
-        WHEN 2 THEN 'SOL-PERP'
-        WHEN 3 THEN 'XRP-PERP'
-        WHEN 4 THEN 'BTC-0930'
-        WHEN 5 THEN 'ETH-0930'
-        WHEN 6 THEN 'AVAX-PERP'
-        ELSE 'DOT-PERP'
-    END AS CONTRACT_PAIR,
-    CASE WHEN MOD(SEQ4(), 8) >= 4 AND MOD(SEQ4(), 8) <= 5 THEN 'Quarterly' ELSE 'Perpetual' END AS CONTRACT_TYPE,
-    CASE WHEN MOD(SEQ4(), 2) = 0 THEN 'Long' ELSE 'Short' END AS SIDE,
-    CASE 
-        WHEN CP.ACCOUNT_TIER = 'Institutional' THEN UNIFORM(1, 20, RANDOM(SEQ4()))::DECIMAL(5,2)
-        WHEN CP.ACCOUNT_TIER = 'VIP' THEN UNIFORM(1, 25, RANDOM(SEQ4()))::DECIMAL(5,2)
-        ELSE UNIFORM(2, 50, RANDOM(SEQ4()))::DECIMAL(5,2)
-    END AS LEVERAGE,
-    CASE MOD(SEQ4(), 8)
-        WHEN 0 THEN UNIFORM(25000, 70000, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        WHEN 1 THEN UNIFORM(1200, 4500, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        WHEN 2 THEN UNIFORM(15, 250, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        WHEN 3 THEN UNIFORM(0.3, 2.5, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        WHEN 4 THEN UNIFORM(25000, 70000, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        WHEN 5 THEN UNIFORM(1200, 4500, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        WHEN 6 THEN UNIFORM(10, 100, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-        ELSE UNIFORM(3, 50, RANDOM(SEQ4() + 1))::DECIMAL(18,8)
-    END AS ENTRY_PRICE,
-    NULL AS MARK_PRICE,
-    NULL AS LIQUIDATION_PRICE,
-    UNIFORM(0.01, 50, RANDOM(SEQ4() + 2))::DECIMAL(18,8) AS POSITION_SIZE,
-    ROUND(UNIFORM(1000, 5000000, RANDOM(SEQ4() + 3))::DECIMAL(18,2), 2) AS NOTIONAL_VALUE_USD,
-    ROUND(UNIFORM(-100000, 200000, RANDOM(SEQ4() + 4))::DECIMAL(18,2), 2) AS UNREALIZED_PNL_USD,
-    ROUND(UNIFORM(-50000, 100000, RANDOM(SEQ4() + 5))::DECIMAL(18,2), 2) AS REALIZED_PNL_USD,
-    ROUND(UNIFORM(100, 500000, RANDOM(SEQ4() + 6))::DECIMAL(18,2), 2) AS MARGIN_USED_USD,
+    UUID_STRING() AS TELEMETRY_ID,
+    d.DEVICE_ID,
+    DATEADD('minute', -UNIFORM(0, 43200, RANDOM()), CURRENT_TIMESTAMP()) AS TIMESTAMP,
+    CURRENT_DATE() AS READING_DATE,
+    ROUND(UNIFORM(55, 82, RANDOM()) + RANDOM() / 1e18, 2) AS INLET_PRESSURE_BAR,
+    ROUND(UNIFORM(54, 81, RANDOM()) + RANDOM() / 1e18, 2) AS OUTLET_PRESSURE_BAR,
+    ROUND(UNIFORM(0.5, 3.0, RANDOM()) + RANDOM() / 1e18, 2) AS PRESSURE_DIFFERENTIAL,
+    ROUND(UNIFORM(20, 70, RANDOM()) + RANDOM() / 1e18, 2) AS FLOW_RATE_M3H,
+    ROUND(UNIFORM(92, 99, RANDOM()) + RANDOM() / 1e18, 2) AS ENERGY_RECOVERY_PCT,
+    ROUND(UNIFORM(0.5, 8.0, RANDOM()) + RANDOM() / 1e18, 3) AS VIBRATION_MM_S,
+    ROUND(UNIFORM(18, 42, RANDOM()) + RANDOM() / 1e18, 2) AS TEMPERATURE_C,
+    UNIFORM(800, 1800, RANDOM()) AS ROTOR_SPEED_RPM,
+    ROUND(UNIFORM(0.5, 5.0, RANDOM()) + RANDOM() / 1e18, 2) AS POWER_CONSUMPTION_KW,
+    UNIFORM(25000, 45000, RANDOM()) AS SALINITY_PPM,
     CASE MOD(SEQ4(), 10)
-        WHEN 0 THEN 'Liquidated'
-        WHEN 1 THEN 'Closed'
-        WHEN 2 THEN 'Closed'
-        WHEN 3 THEN 'Closed'
-        ELSE 'Open'
-    END AS STATUS,
-    DATEADD('minute', -UNIFORM(1, 262800, RANDOM(SEQ4() + 7)), CURRENT_TIMESTAMP()) AS OPENED_AT,
-    CASE WHEN MOD(SEQ4(), 10) BETWEEN 0 AND 3 THEN DATEADD('minute', -UNIFORM(1, 100000, RANDOM(SEQ4() + 8)), CURRENT_TIMESTAMP()) ELSE NULL END AS CLOSED_AT
-FROM TABLE(GENERATOR(ROWCOUNT => 20000)) G
-JOIN CUSTOMER_POOL CP ON CP.RN = MOD(SEQ4(), (SELECT COUNT(*) FROM CUSTOMER_POOL)) + 1;
+        WHEN 0 THEN 'High Load' WHEN 9 THEN 'Low Load' WHEN 8 THEN 'Startup'
+        ELSE 'Normal'
+    END AS OPERATING_MODE,
+    CASE WHEN UNIFORM(1, 100, RANDOM()) <= 95 THEN 'Good' WHEN UNIFORM(1, 100, RANDOM()) <= 98 THEN 'Suspect' ELSE 'Bad' END AS DATA_QUALITY
+FROM TABLE(GENERATOR(ROWCOUNT => 50000)) g
+JOIN (SELECT DEVICE_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM DEVICE_REGISTRY WHERE STATUS = 'Active' LIMIT 5000) d
+    ON MOD(SEQ4(), 5000) + 1 = d.RN;
 
-SELECT 'Step 4 Complete: Synthetic data generated - 10K customers, 500K trades, 50K orders, 30K wallets, 25K tickets, 15K compliance events, 8K staking positions, 50K market data, 20K futures.' AS STATUS;
+-- ============================================================================
+-- SCADA/IoT: Alarms (2000+)
+-- ============================================================================
+INSERT INTO ALARMS
+SELECT
+    UUID_STRING() AS ALARM_ID,
+    d.DEVICE_ID,
+    DATEADD('hour', -UNIFORM(0, 8760, RANDOM()), CURRENT_TIMESTAMP()) AS ALARM_TIMESTAMP,
+    CASE MOD(SEQ4(), 8)
+        WHEN 0 THEN 'VIB-HIGH' WHEN 1 THEN 'PRESS-DIFF-HIGH' WHEN 2 THEN 'TEMP-HIGH'
+        WHEN 3 THEN 'FLOW-LOW' WHEN 4 THEN 'EFF-LOW' WHEN 5 THEN 'ROTOR-SPEED'
+        WHEN 6 THEN 'SEAL-LEAK' WHEN 7 THEN 'COMM-FAIL'
+    END AS ALARM_CODE,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Critical' WHEN 1 THEN 'High' WHEN 2 THEN 'Medium'
+        WHEN 3 THEN 'Medium' WHEN 4 THEN 'Low'
+    END AS ALARM_SEVERITY,
+    CASE MOD(SEQ4(), 8)
+        WHEN 0 THEN 'Vibration' WHEN 1 THEN 'Pressure' WHEN 2 THEN 'Temperature'
+        WHEN 3 THEN 'Flow' WHEN 4 THEN 'Efficiency' WHEN 5 THEN 'Mechanical'
+        WHEN 6 THEN 'Seal Integrity' WHEN 7 THEN 'Communication'
+    END AS ALARM_TYPE,
+    CASE MOD(SEQ4(), 8)
+        WHEN 0 THEN 'Vibration level exceeded threshold - possible bearing wear or rotor imbalance'
+        WHEN 1 THEN 'Pressure differential across PX exceeded normal operating range'
+        WHEN 2 THEN 'Outlet temperature above normal - check cooling system'
+        WHEN 3 THEN 'Flow rate below minimum threshold - possible blockage or valve issue'
+        WHEN 4 THEN 'Energy recovery efficiency below 94% threshold'
+        WHEN 5 THEN 'Rotor speed outside normal operating range'
+        WHEN 6 THEN 'Possible seal leak detected - increased mixing observed'
+        WHEN 7 THEN 'Communication timeout with device controller'
+    END AS DESCRIPTION,
+    CASE WHEN UNIFORM(1, 100, RANDOM()) <= 80 THEN TRUE ELSE FALSE END AS ACKNOWLEDGED,
+    CASE WHEN UNIFORM(1, 100, RANDOM()) <= 80 THEN 'Operations Control Center' ELSE NULL END AS ACKNOWLEDGED_BY,
+    CASE WHEN UNIFORM(1, 100, RANDOM()) <= 70 THEN DATEADD('hour', UNIFORM(1, 48, RANDOM()), DATEADD('hour', -UNIFORM(0, 8760, RANDOM()), CURRENT_TIMESTAMP())) ELSE NULL END AS RESOLVED_TIMESTAMP,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Bearing wear' WHEN 1 THEN 'Fouling' WHEN 2 THEN 'Seal degradation'
+        WHEN 3 THEN 'Process upset' WHEN 4 THEN 'Sensor drift'
+    END AS ROOT_CAUSE,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Scheduled maintenance for bearing replacement'
+        WHEN 1 THEN 'Chemical cleaning performed'
+        WHEN 2 THEN 'Seal kit replaced during next service window'
+        WHEN 3 THEN 'Operating parameters adjusted'
+        WHEN 4 THEN 'Sensor recalibrated'
+    END AS ACTION_TAKEN
+FROM TABLE(GENERATOR(ROWCOUNT => 2500)) g
+JOIN (SELECT DEVICE_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM DEVICE_REGISTRY LIMIT 1000) d
+    ON MOD(SEQ4(), 1000) + 1 = d.RN;
+
+-- ============================================================================
+-- SCADA/IoT: Maintenance Logs (3000+)
+-- ============================================================================
+INSERT INTO MAINTENANCE_LOGS
+SELECT
+    UUID_STRING() AS MAINTENANCE_ID,
+    d.DEVICE_ID,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Preventive' WHEN 1 THEN 'Corrective' WHEN 2 THEN 'Preventive' WHEN 3 THEN 'Predictive'
+    END AS MAINTENANCE_TYPE,
+    'WO-' || LPAD(SEQ4()::VARCHAR, 7, '0') AS WORK_ORDER_NUMBER,
+    DATEADD('day', -UNIFORM(1, 730, RANDOM()), CURRENT_TIMESTAMP()) AS START_DATE,
+    DATEADD('hour', UNIFORM(4, 72, RANDOM()), DATEADD('day', -UNIFORM(1, 730, RANDOM()), CURRENT_TIMESTAMP())) AS END_DATE,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'Annual preventive maintenance - seal and bearing inspection and replacement'
+        WHEN 1 THEN 'Corrective maintenance - vibration alarm investigation and bearing replacement'
+        WHEN 2 THEN 'Scheduled rotor inspection and clearance measurement'
+        WHEN 3 THEN 'Predictive maintenance - bearing replacement based on vibration trend analysis'
+        WHEN 4 THEN 'Seal kit replacement per maintenance schedule'
+        WHEN 5 THEN 'Performance optimization - rotor rebalancing and seal replacement'
+    END AS DESCRIPTION,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Seal kit, thrust bearings' WHEN 1 THEN 'Thrust bearings, O-rings'
+        WHEN 2 THEN 'Seal kit only' WHEN 3 THEN 'Rotor, seals, bearings'
+        WHEN 4 THEN 'End cover gaskets, seals'
+    END AS PARTS_REPLACED,
+    ROUND(UNIFORM(4, 40, RANDOM())::NUMBER, 2) AS LABOR_HOURS,
+    ROUND(UNIFORM(500, 15000, RANDOM())::NUMBER, 2) AS PARTS_COST,
+    ROUND(UNIFORM(400, 8000, RANDOM())::NUMBER, 2) AS LABOR_COST,
+    NULL AS TOTAL_COST,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'John Smith' WHEN 1 THEN 'Ahmed Khalil' WHEN 2 THEN 'Wei Zhang'
+        WHEN 3 THEN 'Carlos Ruiz' WHEN 4 THEN 'Raj Patel' WHEN 5 THEN 'Tom Anderson'
+    END AS TECHNICIAN,
+    CASE MOD(SEQ4(), 5)
+        WHEN 4 THEN 'Planned' ELSE 'Completed'
+    END AS STATUS,
+    ROUND(UNIFORM(4, 72, RANDOM())::NUMBER, 2) AS DOWNTIME_HOURS,
+    CASE MOD(SEQ4(), 6)
+        WHEN 0 THEN 'Seal wear' WHEN 1 THEN 'Bearing failure' WHEN 2 THEN 'Normal wear'
+        WHEN 3 THEN 'Vibration anomaly' WHEN 4 THEN 'Scheduled replacement' WHEN 5 THEN 'Efficiency degradation'
+    END AS FAILURE_MODE
+FROM TABLE(GENERATOR(ROWCOUNT => 3200)) g
+JOIN (SELECT DEVICE_ID, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS RN FROM DEVICE_REGISTRY LIMIT 2000) d
+    ON MOD(SEQ4(), 2000) + 1 = d.RN;
+
+UPDATE MAINTENANCE_LOGS SET TOTAL_COST = PARTS_COST + LABOR_COST;
+
+-- ============================================================================
+-- ORACLE ERP: Production Orders (1200+)
+-- ============================================================================
+USE SCHEMA ORACLE_ERP;
+
+INSERT INTO PRODUCTION_ORDERS
+SELECT
+    UUID_STRING() AS PRODUCTION_ORDER_ID,
+    'PO-' || LPAD(SEQ4()::VARCHAR, 7, '0') AS ORDER_NUMBER,
+    UUID_STRING() AS PRODUCT_ID,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'PX Q650 Pressure Exchanger' WHEN 1 THEN 'PX Q400 Pressure Exchanger'
+        WHEN 2 THEN 'PX-220 Pressure Exchanger' WHEN 3 THEN 'PX G1300 CO2 Unit'
+        WHEN 4 THEN 'Aftermarket Seal Kit'
+    END AS PRODUCT_NAME,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'PX-Q650' WHEN 1 THEN 'PX-Q400' WHEN 2 THEN 'PX-220'
+        WHEN 3 THEN 'PX-G1300' WHEN 4 THEN 'AMS-KIT'
+    END AS PRODUCT_MODEL,
+    UNIFORM(1, 24, RANDOM()) AS QUANTITY_ORDERED,
+    UNIFORM(0, 20, RANDOM()) AS QUANTITY_COMPLETED,
+    UNIFORM(0, 2, RANDOM()) AS QUANTITY_SCRAPPED,
+    DATEADD('day', -UNIFORM(0, 365, RANDOM()), CURRENT_DATE()) AS START_DATE,
+    DATEADD('day', UNIFORM(14, 90, RANDOM()), CURRENT_DATE()) AS END_DATE,
+    DATEADD('day', UNIFORM(30, 120, RANDOM()), CURRENT_DATE()) AS DUE_DATE,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Planned' WHEN 1 THEN 'Released' WHEN 2 THEN 'In Progress'
+        WHEN 3 THEN 'Completed' WHEN 4 THEN 'In Progress'
+    END AS STATUS,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Ceramic Forming' WHEN 1 THEN 'CNC Machining' WHEN 2 THEN 'Assembly'
+        WHEN 3 THEN 'Final Assembly' WHEN 4 THEN 'Packaging'
+    END AS WORK_CENTER,
+    CASE MOD(SEQ4(), 3) WHEN 0 THEN 'High' WHEN 1 THEN 'Medium' WHEN 2 THEN 'Low' END AS PRIORITY,
+    ROUND(UNIFORM(85, 99, RANDOM()) + RANDOM() / 1e18, 2) AS YIELD_PERCENT,
+    ROUND(UNIFORM(8, 120, RANDOM()) + RANDOM() / 1e18, 2) AS CYCLE_TIME_HOURS,
+    'San Leandro' AS SITE,
+    CURRENT_TIMESTAMP() AS CREATED_DATE
+FROM TABLE(GENERATOR(ROWCOUNT => 1200));
+
+-- ============================================================================
+-- ORACLE ERP: Inventory (500+ items)
+-- ============================================================================
+INSERT INTO INVENTORY
+SELECT
+    UUID_STRING() AS INVENTORY_ID,
+    UUID_STRING() AS ITEM_ID,
+    CASE MOD(SEQ4(), 20)
+        WHEN 0 THEN 'Alumina Ceramic Powder - 99.7%' WHEN 1 THEN 'Duplex Steel Bar - SAF 2507'
+        WHEN 2 THEN 'EPDM O-Ring Set' WHEN 3 THEN 'Silicon Carbide Bearing'
+        WHEN 4 THEN 'Ceramic Rotor - Q650' WHEN 5 THEN 'Ceramic Rotor - Q400'
+        WHEN 6 THEN 'End Cover Assembly - Q650' WHEN 7 THEN 'End Cover Assembly - Q400'
+        WHEN 8 THEN 'Ceramic Sleeve - Q650' WHEN 9 THEN 'Ceramic Sleeve - Q400'
+        WHEN 10 THEN 'Stainless Steel Housing' WHEN 11 THEN 'Viton Seal Kit'
+        WHEN 12 THEN 'Thrust Ring Assembly' WHEN 13 THEN 'PX Q650 (Finished)'
+        WHEN 14 THEN 'PX Q400 (Finished)' WHEN 15 THEN 'PX G1300 (Finished)'
+        WHEN 16 THEN 'Aftermarket Seal Kit - Standard' WHEN 17 THEN 'Packaging Crate - Large'
+        WHEN 18 THEN 'Diamond Grinding Wheel' WHEN 19 THEN 'Lubricant - Food Grade'
+    END AS ITEM_NAME,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Raw Material' WHEN 1 THEN 'WIP' WHEN 2 THEN 'Finished Good' WHEN 3 THEN 'Spare Part'
+    END AS ITEM_CATEGORY,
+    CASE MOD(SEQ4(), 3)
+        WHEN 0 THEN 'Main Warehouse' WHEN 1 THEN 'Production Floor' WHEN 2 THEN 'Finished Goods'
+    END AS WAREHOUSE,
+    'BIN-' || LPAD(MOD(SEQ4(), 200)::VARCHAR, 4, '0') AS LOCATION,
+    UNIFORM(10, 5000, RANDOM()) AS QUANTITY_ON_HAND,
+    UNIFORM(0, 500, RANDOM()) AS QUANTITY_RESERVED,
+    NULL AS QUANTITY_AVAILABLE,
+    UNIFORM(5, 1000, RANDOM()) AS REORDER_POINT,
+    UNIFORM(50, 2000, RANDOM()) AS REORDER_QUANTITY,
+    ROUND(UNIFORM(5, 50000, RANDOM())::NUMBER / 100.0, 4) AS UNIT_COST,
+    NULL AS TOTAL_VALUE,
+    DATEADD('day', -UNIFORM(1, 90, RANDOM()), CURRENT_DATE()) AS LAST_RECEIPT_DATE,
+    DATEADD('day', -UNIFORM(1, 30, RANDOM()), CURRENT_DATE()) AS LAST_ISSUE_DATE,
+    CURRENT_DATE() AS AS_OF_DATE
+FROM TABLE(GENERATOR(ROWCOUNT => 500));
+
+UPDATE INVENTORY SET
+    QUANTITY_AVAILABLE = QUANTITY_ON_HAND - QUANTITY_RESERVED,
+    TOTAL_VALUE = QUANTITY_ON_HAND * UNIT_COST;
+
+-- ============================================================================
+-- ORACLE ERP: Suppliers (100+)
+-- ============================================================================
+INSERT INTO SUPPLIERS
+SELECT
+    UUID_STRING() AS SUPPLIER_ID,
+    CASE MOD(SEQ4(), 20)
+        WHEN 0 THEN 'CeramTec GmbH' WHEN 1 THEN 'Kyocera Corporation'
+        WHEN 2 THEN 'Morgan Advanced Materials' WHEN 3 THEN 'Sandvik AB'
+        WHEN 4 THEN 'Outokumpu Oyj' WHEN 5 THEN 'Parker Hannifin'
+        WHEN 6 THEN 'Trelleborg Sealing Solutions' WHEN 7 THEN 'SKF Group'
+        WHEN 8 THEN 'Saint-Gobain Ceramics' WHEN 9 THEN 'CoorsTek Inc'
+        WHEN 10 THEN 'Kennametal Inc' WHEN 11 THEN 'Regal Rexnord'
+        WHEN 12 THEN 'Gates Corporation' WHEN 13 THEN 'Freudenberg Group'
+        WHEN 14 THEN 'NOK Corporation' WHEN 15 THEN 'Precision Castparts'
+        WHEN 16 THEN 'Bodycote plc' WHEN 17 THEN 'Materion Corporation'
+        WHEN 18 THEN 'II-VI Incorporated' WHEN 19 THEN 'Corning Incorporated'
+    END || ' - ' || LPAD(SEQ4()::VARCHAR, 3, '0') AS SUPPLIER_NAME,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Raw Material' WHEN 1 THEN 'Component' WHEN 2 THEN 'Service' WHEN 3 THEN 'Logistics'
+    END AS SUPPLIER_TYPE,
+    CASE MOD(SEQ4(), 5)
+        WHEN 0 THEN 'Ceramics' WHEN 1 THEN 'Metals' WHEN 2 THEN 'Seals'
+        WHEN 3 THEN 'Electronics' WHEN 4 THEN 'Packaging'
+    END AS CATEGORY,
+    CASE MOD(SEQ4(), 8)
+        WHEN 0 THEN 'Germany' WHEN 1 THEN 'Japan' WHEN 2 THEN 'USA' WHEN 3 THEN 'Sweden'
+        WHEN 4 THEN 'Finland' WHEN 5 THEN 'UK' WHEN 6 THEN 'France' WHEN 7 THEN 'China'
+    END AS COUNTRY,
+    CASE MOD(SEQ4(), 4)
+        WHEN 0 THEN 'Europe' WHEN 1 THEN 'Asia-Pacific' WHEN 2 THEN 'Americas' WHEN 3 THEN 'Europe'
+    END AS REGION,
+    UNIFORM(14, 90, RANDOM()) AS LEAD_TIME_DAYS,
+    ROUND(UNIFORM(80, 99, RANDOM()) + RANDOM() / 1e18, 2) AS ON_TIME_DELIVERY_PCT,
+    ROUND(UNIFORM(30, 50, RANDOM()) / 10.0, 1) AS QUALITY_RATING,
+    CASE MOD(SEQ4(), 3) WHEN 0 THEN 'Net 30' WHEN 1 THEN 'Net 45' WHEN 2 THEN 'Net 60' END AS PAYMENT_TERMS,
+    ROUND(UNIFORM(100000, 10000000, RANDOM())::NUMBER, 2) AS ANNUAL_SPEND,
+    TRUE AS IS_CERTIFIED,
+    DATEADD('day', UNIFORM(90, 730, RANDOM()), CURRENT_DATE()) AS CONTRACT_EXPIRY,
+    CURRENT_TIMESTAMP() AS CREATED_DATE
+FROM TABLE(GENERATOR(ROWCOUNT => 120));

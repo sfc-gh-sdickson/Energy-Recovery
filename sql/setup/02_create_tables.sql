@@ -1,194 +1,364 @@
--- =====================================================
--- Kraken Intelligence Agent
--- Step 2: Create Operational Tables
--- =====================================================
+/*=============================================================================
+  ENERGY RECOVERY - SNOWFLAKE INTELLIGENCE AGENT
+  File: 02_create_tables.sql
+  Purpose: Create all table definitions organized by source system
+  Execution Order: 2 of 10
+=============================================================================*/
 
-USE DATABASE KRAKEN_DB;
-USE SCHEMA RAW;
-USE WAREHOUSE KRAKEN_WH;
+USE DATABASE ENERGY_RECOVERY_DB;
+USE WAREHOUSE ENERGY_RECOVERY_WH;
 
--- =====================================================
--- CUSTOMERS - Trader profiles and account information
--- =====================================================
-CREATE OR REPLACE TABLE CUSTOMERS (
-    CUSTOMER_ID VARCHAR(36) PRIMARY KEY,
-    EMAIL VARCHAR(255) NOT NULL,
-    USERNAME VARCHAR(100) NOT NULL,
-    FULL_NAME VARCHAR(200),
-    ACCOUNT_TIER VARCHAR(20) NOT NULL,          -- 'Standard', 'Pro', 'VIP', 'Institutional'
-    KYC_STATUS VARCHAR(20) NOT NULL,            -- 'Pending', 'Verified', 'Enhanced', 'Rejected'
-    KYC_LEVEL INT DEFAULT 1,                    -- 1=Basic, 2=Intermediate, 3=Pro, 4=Institutional
-    COUNTRY_CODE VARCHAR(3),
-    STATE_PROVINCE VARCHAR(100),
-    REGISTRATION_DATE TIMESTAMP_NTZ NOT NULL,
-    LAST_LOGIN_DATE TIMESTAMP_NTZ,
-    IS_ACTIVE BOOLEAN DEFAULT TRUE,
-    TWO_FACTOR_ENABLED BOOLEAN DEFAULT FALSE,
-    PREFERRED_CURRENCY VARCHAR(10) DEFAULT 'USD',
-    REFERRAL_SOURCE VARCHAR(50),                -- 'Organic', 'Referral', 'Social', 'Affiliate', 'Paid'
-    TOTAL_DEPOSITS_USD DECIMAL(18,2) DEFAULT 0,
-    TOTAL_WITHDRAWALS_USD DECIMAL(18,2) DEFAULT 0,
-    ACCOUNT_BALANCE_USD DECIMAL(18,2) DEFAULT 0,
-    CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
+-- ============================================================================
+-- DYNAMICS CRM TABLES (Microsoft Dynamics 365 CRM)
+-- ============================================================================
+USE SCHEMA DYNAMICS_CRM;
+
+CREATE OR REPLACE TABLE ACCOUNTS (
+    ACCOUNT_ID          VARCHAR(36) PRIMARY KEY,
+    ACCOUNT_NAME        VARCHAR(255) NOT NULL,
+    ACCOUNT_NUMBER      VARCHAR(50),
+    INDUSTRY            VARCHAR(100),
+    ACCOUNT_TYPE        VARCHAR(50),       -- Customer, Prospect, Partner
+    ACCOUNT_TIER        VARCHAR(20),       -- Tier 1, Tier 2, Tier 3
+    ANNUAL_REVENUE      NUMBER(18,2),
+    EMPLOYEE_COUNT      NUMBER(10,0),
+    REGION              VARCHAR(100),
+    COUNTRY             VARCHAR(100),
+    CITY                VARCHAR(100),
+    WEBSITE             VARCHAR(500),
+    OWNER_NAME          VARCHAR(255),
+    PARENT_ACCOUNT_ID   VARCHAR(36),
+    CREATED_DATE        TIMESTAMP_NTZ,
+    MODIFIED_DATE       TIMESTAMP_NTZ,
+    IS_ACTIVE           BOOLEAN DEFAULT TRUE
 );
 
--- =====================================================
--- TRADES - Spot and margin trade execution records
--- =====================================================
-CREATE OR REPLACE TABLE TRADES (
-    TRADE_ID VARCHAR(36) PRIMARY KEY,
-    CUSTOMER_ID VARCHAR(36) NOT NULL,
-    TRADING_PAIR VARCHAR(20) NOT NULL,           -- e.g., 'BTC/USD', 'ETH/USD', 'SOL/USDT'
-    TRADE_TYPE VARCHAR(10) NOT NULL,             -- 'Spot', 'Margin'
-    SIDE VARCHAR(4) NOT NULL,                    -- 'Buy', 'Sell'
-    ORDER_TYPE VARCHAR(15) NOT NULL,             -- 'Market', 'Limit', 'StopLoss', 'TakeProfit'
-    PRICE DECIMAL(18,8) NOT NULL,
-    QUANTITY DECIMAL(18,8) NOT NULL,
-    TOTAL_VALUE_USD DECIMAL(18,2) NOT NULL,
-    FEE_USD DECIMAL(18,4) NOT NULL,
-    FEE_RATE DECIMAL(8,6),                      -- Fee percentage (e.g., 0.0026 = 0.26%)
-    LEVERAGE DECIMAL(5,2) DEFAULT 1.0,          -- 1.0 for spot, up to 5x margin
-    EXECUTED_AT TIMESTAMP_NTZ NOT NULL,
-    SETTLEMENT_STATUS VARCHAR(15) DEFAULT 'Settled',  -- 'Pending', 'Settled', 'Failed'
-    PLATFORM VARCHAR(20) DEFAULT 'Web',         -- 'Web', 'Mobile', 'API', 'Pro'
-    CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
+CREATE OR REPLACE TABLE CONTACTS (
+    CONTACT_ID          VARCHAR(36) PRIMARY KEY,
+    ACCOUNT_ID          VARCHAR(36) REFERENCES ACCOUNTS(ACCOUNT_ID),
+    FIRST_NAME          VARCHAR(100),
+    LAST_NAME           VARCHAR(100),
+    EMAIL               VARCHAR(255),
+    PHONE               VARCHAR(50),
+    JOB_TITLE           VARCHAR(200),
+    DEPARTMENT          VARCHAR(100),
+    DECISION_ROLE       VARCHAR(50),       -- Decision Maker, Influencer, Champion, End User
+    IS_PRIMARY          BOOLEAN DEFAULT FALSE,
+    CREATED_DATE        TIMESTAMP_NTZ,
+    MODIFIED_DATE       TIMESTAMP_NTZ
 );
 
--- =====================================================
--- ORDERS - Open and historical order book
--- =====================================================
-CREATE OR REPLACE TABLE ORDERS (
-    ORDER_ID VARCHAR(36) PRIMARY KEY,
-    CUSTOMER_ID VARCHAR(36) NOT NULL,
-    TRADING_PAIR VARCHAR(20) NOT NULL,
-    ORDER_TYPE VARCHAR(15) NOT NULL,             -- 'Market', 'Limit', 'StopLoss', 'TakeProfit', 'TrailingStop'
-    SIDE VARCHAR(4) NOT NULL,                    -- 'Buy', 'Sell'
-    PRICE DECIMAL(18,8),
-    QUANTITY DECIMAL(18,8) NOT NULL,
-    FILLED_QUANTITY DECIMAL(18,8) DEFAULT 0,
-    STATUS VARCHAR(15) NOT NULL,                 -- 'Open', 'Filled', 'Partially Filled', 'Cancelled', 'Expired'
-    TIME_IN_FORCE VARCHAR(10) DEFAULT 'GTC',    -- 'GTC', 'IOC', 'FOK', 'GTD'
-    CREATED_AT TIMESTAMP_NTZ NOT NULL,
-    UPDATED_AT TIMESTAMP_NTZ,
-    EXPIRES_AT TIMESTAMP_NTZ
+CREATE OR REPLACE TABLE OPPORTUNITIES (
+    OPPORTUNITY_ID      VARCHAR(36) PRIMARY KEY,
+    ACCOUNT_ID          VARCHAR(36) REFERENCES ACCOUNTS(ACCOUNT_ID),
+    OPPORTUNITY_NAME    VARCHAR(500),
+    STAGE               VARCHAR(100),      -- Qualify, Develop, Propose, Negotiate, Close Won, Close Lost
+    AMOUNT              NUMBER(18,2),
+    CLOSE_DATE          DATE,
+    PROBABILITY         NUMBER(5,2),
+    PRODUCT_INTEREST    VARCHAR(200),      -- PX Pressure Exchanger, PX G1300, Aftermarket, Wastewater
+    APPLICATION         VARCHAR(200),      -- Desalination, Wastewater, CO2 Refrigeration
+    LEAD_SOURCE         VARCHAR(100),
+    COMPETITOR          VARCHAR(200),
+    SALES_REP           VARCHAR(255),
+    REGION              VARCHAR(100),
+    CREATED_DATE        TIMESTAMP_NTZ,
+    MODIFIED_DATE       TIMESTAMP_NTZ,
+    CLOSED_DATE         TIMESTAMP_NTZ,
+    LOSS_REASON         VARCHAR(500),
+    NEXT_STEP           VARCHAR(500)
 );
 
--- =====================================================
--- WALLETS - Customer asset balances
--- =====================================================
-CREATE OR REPLACE TABLE WALLETS (
-    WALLET_ID VARCHAR(36) PRIMARY KEY,
-    CUSTOMER_ID VARCHAR(36) NOT NULL,
-    ASSET_SYMBOL VARCHAR(20) NOT NULL,          -- 'BTC', 'ETH', 'USD', 'USDT', etc.
-    ASSET_NAME VARCHAR(100),
-    BALANCE DECIMAL(24,8) NOT NULL DEFAULT 0,
-    AVAILABLE_BALANCE DECIMAL(24,8) NOT NULL DEFAULT 0,
-    LOCKED_BALANCE DECIMAL(24,8) DEFAULT 0,     -- In open orders or staking
-    ESTIMATED_VALUE_USD DECIMAL(18,2),
-    LAST_UPDATED TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
+CREATE OR REPLACE TABLE ACTIVITIES (
+    ACTIVITY_ID         VARCHAR(36) PRIMARY KEY,
+    ACCOUNT_ID          VARCHAR(36) REFERENCES ACCOUNTS(ACCOUNT_ID),
+    CONTACT_ID          VARCHAR(36),
+    OPPORTUNITY_ID      VARCHAR(36),
+    ACTIVITY_TYPE       VARCHAR(50),       -- Email, Call, Meeting, Demo, Site Visit
+    SUBJECT             VARCHAR(500),
+    DESCRIPTION         VARCHAR(4000),
+    ACTIVITY_DATE       TIMESTAMP_NTZ,
+    DURATION_MINUTES    NUMBER(10,0),
+    STATUS              VARCHAR(50),       -- Completed, Scheduled, Cancelled
+    OWNER_NAME          VARCHAR(255),
+    CREATED_DATE        TIMESTAMP_NTZ
 );
 
--- =====================================================
--- SUPPORT_TICKETS - Customer support interactions
--- =====================================================
-CREATE OR REPLACE TABLE SUPPORT_TICKETS (
-    TICKET_ID VARCHAR(36) PRIMARY KEY,
-    CUSTOMER_ID VARCHAR(36) NOT NULL,
-    CATEGORY VARCHAR(50) NOT NULL,              -- 'Account', 'Trading', 'Deposits', 'Withdrawals', 'Security', 'Staking', 'Verification', 'Billing', 'API', 'Other'
-    SUBCATEGORY VARCHAR(100),
-    PRIORITY VARCHAR(10) NOT NULL,             -- 'Critical', 'High', 'Medium', 'Low'
-    STATUS VARCHAR(15) NOT NULL,               -- 'Open', 'In Progress', 'Waiting', 'Resolved', 'Closed'
-    SUBJECT VARCHAR(500) NOT NULL,
-    DESCRIPTION VARCHAR(5000) NOT NULL,
-    RESOLUTION_NOTES VARCHAR(5000),
-    ASSIGNED_TEAM VARCHAR(50),                 -- 'Tier1', 'Tier2', 'Tier3', 'Compliance', 'Engineering'
-    SATISFACTION_SCORE INT,                    -- 1-5 CSAT
-    FIRST_RESPONSE_MINUTES INT,
-    RESOLUTION_MINUTES INT,
-    CREATED_AT TIMESTAMP_NTZ NOT NULL,
-    RESOLVED_AT TIMESTAMP_NTZ,
-    PLATFORM VARCHAR(20) DEFAULT 'Web'         -- 'Web', 'Email', 'Chat', 'Phone'
+-- ============================================================================
+-- DYNAMICS FINANCE TABLES (Microsoft Dynamics 365 Finance & Operations)
+-- ============================================================================
+USE SCHEMA DYNAMICS_FINANCE;
+
+CREATE OR REPLACE TABLE GENERAL_LEDGER (
+    JOURNAL_ENTRY_ID    VARCHAR(36) PRIMARY KEY,
+    POSTING_DATE        DATE NOT NULL,
+    FISCAL_YEAR         NUMBER(4,0),
+    FISCAL_QUARTER      NUMBER(1,0),
+    FISCAL_PERIOD       NUMBER(2,0),
+    ACCOUNT_NUMBER      VARCHAR(50),
+    ACCOUNT_NAME        VARCHAR(255),
+    ACCOUNT_CATEGORY    VARCHAR(100),      -- Revenue, COGS, Operating Expense, Asset, Liability
+    DEPARTMENT          VARCHAR(100),
+    COST_CENTER         VARCHAR(50),
+    DEBIT_AMOUNT        NUMBER(18,2) DEFAULT 0,
+    CREDIT_AMOUNT       NUMBER(18,2) DEFAULT 0,
+    NET_AMOUNT          NUMBER(18,2),
+    CURRENCY            VARCHAR(3) DEFAULT 'USD',
+    DESCRIPTION         VARCHAR(1000),
+    SOURCE_SYSTEM       VARCHAR(50),
+    CREATED_DATE        TIMESTAMP_NTZ
 );
 
--- =====================================================
--- COMPLIANCE_EVENTS - AML/KYC compliance monitoring
--- =====================================================
-CREATE OR REPLACE TABLE COMPLIANCE_EVENTS (
-    EVENT_ID VARCHAR(36) PRIMARY KEY,
-    CUSTOMER_ID VARCHAR(36) NOT NULL,
-    EVENT_TYPE VARCHAR(50) NOT NULL,            -- 'SAR_Filed', 'Large_Transaction', 'Velocity_Alert', 'Sanctions_Screen', 'PEP_Check', 'Identity_Mismatch', 'Unusual_Pattern'
-    RISK_SCORE INT NOT NULL,                   -- 0-100
-    RISK_LEVEL VARCHAR(10) NOT NULL,           -- 'Low', 'Medium', 'High', 'Critical'
-    IS_FLAGGED BOOLEAN DEFAULT FALSE,
-    DESCRIPTION VARCHAR(2000),
-    TRANSACTION_IDS ARRAY,                     -- Related transaction IDs
-    REVIEW_STATUS VARCHAR(20) NOT NULL,        -- 'Pending', 'Under Review', 'Escalated', 'Cleared', 'Confirmed'
-    REVIEWED_BY VARCHAR(100),
-    REVIEW_NOTES VARCHAR(2000),
-    REGULATORY_REPORT_FILED BOOLEAN DEFAULT FALSE,
-    JURISDICTION VARCHAR(50),
-    CREATED_AT TIMESTAMP_NTZ NOT NULL,
-    REVIEWED_AT TIMESTAMP_NTZ
+CREATE OR REPLACE TABLE SALES_ORDERS (
+    ORDER_ID            VARCHAR(36) PRIMARY KEY,
+    ORDER_NUMBER        VARCHAR(50) NOT NULL,
+    CUSTOMER_ID         VARCHAR(36),
+    CUSTOMER_NAME       VARCHAR(255),
+    ORDER_DATE          DATE,
+    REQUESTED_DATE      DATE,
+    SHIP_DATE           DATE,
+    STATUS              VARCHAR(50),       -- Open, Confirmed, Shipped, Invoiced, Cancelled
+    PRODUCT_LINE        VARCHAR(100),      -- Desalination, Wastewater, Refrigeration, Aftermarket
+    PRODUCT_NAME        VARCHAR(255),
+    QUANTITY            NUMBER(10,0),
+    UNIT_PRICE          NUMBER(18,2),
+    TOTAL_AMOUNT        NUMBER(18,2),
+    DISCOUNT_PERCENT    NUMBER(5,2) DEFAULT 0,
+    REGION              VARCHAR(100),
+    COUNTRY             VARCHAR(100),
+    CURRENCY            VARCHAR(3) DEFAULT 'USD',
+    SALES_REP           VARCHAR(255),
+    CREATED_DATE        TIMESTAMP_NTZ
 );
 
--- =====================================================
--- STAKING_POSITIONS - Staking and earn positions
--- =====================================================
-CREATE OR REPLACE TABLE STAKING_POSITIONS (
-    POSITION_ID VARCHAR(36) PRIMARY KEY,
-    CUSTOMER_ID VARCHAR(36) NOT NULL,
-    ASSET_SYMBOL VARCHAR(20) NOT NULL,         -- 'ETH', 'SOL', 'DOT', 'ADA', 'ATOM'
-    STAKED_AMOUNT DECIMAL(24,8) NOT NULL,
-    STAKED_VALUE_USD DECIMAL(18,2),
-    APY_RATE DECIMAL(8,4) NOT NULL,            -- e.g., 4.5000 = 4.5%
-    REWARDS_EARNED DECIMAL(24,8) DEFAULT 0,
-    REWARDS_VALUE_USD DECIMAL(18,2) DEFAULT 0,
-    STATUS VARCHAR(15) NOT NULL,               -- 'Active', 'Unbonding', 'Completed', 'Cancelled'
-    LOCK_PERIOD_DAYS INT,                      -- NULL for flexible, else 30/60/90/120
-    STARTED_AT TIMESTAMP_NTZ NOT NULL,
-    UNBONDING_AT TIMESTAMP_NTZ,
-    COMPLETED_AT TIMESTAMP_NTZ
+CREATE OR REPLACE TABLE INVOICES (
+    INVOICE_ID          VARCHAR(36) PRIMARY KEY,
+    INVOICE_NUMBER      VARCHAR(50) NOT NULL,
+    ORDER_ID            VARCHAR(36),
+    CUSTOMER_ID         VARCHAR(36),
+    CUSTOMER_NAME       VARCHAR(255),
+    INVOICE_DATE        DATE,
+    DUE_DATE            DATE,
+    PAYMENT_DATE        DATE,
+    STATUS              VARCHAR(50),       -- Open, Paid, Overdue, Partially Paid
+    SUBTOTAL            NUMBER(18,2),
+    TAX_AMOUNT          NUMBER(18,2),
+    TOTAL_AMOUNT        NUMBER(18,2),
+    AMOUNT_PAID         NUMBER(18,2) DEFAULT 0,
+    BALANCE_DUE         NUMBER(18,2),
+    PRODUCT_LINE        VARCHAR(100),
+    CURRENCY            VARCHAR(3) DEFAULT 'USD',
+    PAYMENT_TERMS       VARCHAR(50),       -- Net 30, Net 60, Net 90
+    CREATED_DATE        TIMESTAMP_NTZ
 );
 
--- =====================================================
--- MARKET_DATA - OHLCV price data for trading pairs
--- =====================================================
-CREATE OR REPLACE TABLE MARKET_DATA (
-    MARKET_DATA_ID VARCHAR(36) PRIMARY KEY,
-    TRADING_PAIR VARCHAR(20) NOT NULL,
-    TIMESTAMP TIMESTAMP_NTZ NOT NULL,
-    INTERVAL VARCHAR(5) NOT NULL,              -- '1h', '4h', '1d'
-    OPEN_PRICE DECIMAL(18,8) NOT NULL,
-    HIGH_PRICE DECIMAL(18,8) NOT NULL,
-    LOW_PRICE DECIMAL(18,8) NOT NULL,
-    CLOSE_PRICE DECIMAL(18,8) NOT NULL,
-    VOLUME DECIMAL(24,8) NOT NULL,
-    VOLUME_USD DECIMAL(18,2),
-    TRADE_COUNT INT,
-    VWAP DECIMAL(18,8)                         -- Volume-weighted average price
+CREATE OR REPLACE TABLE ACCOUNTS_RECEIVABLE (
+    AR_ID               VARCHAR(36) PRIMARY KEY,
+    CUSTOMER_ID         VARCHAR(36),
+    CUSTOMER_NAME       VARCHAR(255),
+    INVOICE_ID          VARCHAR(36),
+    INVOICE_DATE        DATE,
+    DUE_DATE            DATE,
+    ORIGINAL_AMOUNT     NUMBER(18,2),
+    BALANCE             NUMBER(18,2),
+    AGING_BUCKET        VARCHAR(50),       -- Current, 1-30 Days, 31-60 Days, 61-90 Days, 90+ Days
+    STATUS              VARCHAR(50),
+    REGION              VARCHAR(100),
+    CURRENCY            VARCHAR(3) DEFAULT 'USD',
+    AS_OF_DATE          DATE
 );
 
--- =====================================================
--- FUTURES_POSITIONS - Derivatives/futures trading
--- =====================================================
-CREATE OR REPLACE TABLE FUTURES_POSITIONS (
-    POSITION_ID VARCHAR(36) PRIMARY KEY,
-    CUSTOMER_ID VARCHAR(36) NOT NULL,
-    CONTRACT_PAIR VARCHAR(30) NOT NULL,         -- 'BTC-PERP', 'ETH-PERP', 'SOL-0930'
-    CONTRACT_TYPE VARCHAR(15) NOT NULL,         -- 'Perpetual', 'Quarterly', 'Monthly'
-    SIDE VARCHAR(5) NOT NULL,                   -- 'Long', 'Short'
-    LEVERAGE DECIMAL(5,2) NOT NULL,             -- 1x to 50x
-    ENTRY_PRICE DECIMAL(18,8) NOT NULL,
-    MARK_PRICE DECIMAL(18,8),
-    LIQUIDATION_PRICE DECIMAL(18,8),
-    POSITION_SIZE DECIMAL(18,8) NOT NULL,
-    NOTIONAL_VALUE_USD DECIMAL(18,2),
-    UNREALIZED_PNL_USD DECIMAL(18,2),
-    REALIZED_PNL_USD DECIMAL(18,2) DEFAULT 0,
-    MARGIN_USED_USD DECIMAL(18,2),
-    STATUS VARCHAR(10) NOT NULL,                -- 'Open', 'Closed', 'Liquidated'
-    OPENED_AT TIMESTAMP_NTZ NOT NULL,
-    CLOSED_AT TIMESTAMP_NTZ
+CREATE OR REPLACE TABLE ACCOUNTS_PAYABLE (
+    AP_ID               VARCHAR(36) PRIMARY KEY,
+    SUPPLIER_ID         VARCHAR(36),
+    SUPPLIER_NAME       VARCHAR(255),
+    INVOICE_NUMBER      VARCHAR(50),
+    INVOICE_DATE        DATE,
+    DUE_DATE            DATE,
+    PAYMENT_DATE        DATE,
+    AMOUNT              NUMBER(18,2),
+    BALANCE             NUMBER(18,2),
+    STATUS              VARCHAR(50),       -- Open, Paid, Overdue
+    CATEGORY            VARCHAR(100),      -- Raw Materials, Services, Equipment, Utilities
+    CURRENCY            VARCHAR(3) DEFAULT 'USD',
+    AS_OF_DATE          DATE
 );
 
-SELECT 'Step 2 Complete: All operational tables created in KRAKEN_DB.RAW schema.' AS STATUS;
+-- ============================================================================
+-- SCADA / IoT TABLES (SCADA Systems & IoT Sensors)
+-- ============================================================================
+USE SCHEMA SCADA_IOT;
+
+CREATE OR REPLACE TABLE DEVICE_REGISTRY (
+    DEVICE_ID           VARCHAR(36) PRIMARY KEY,
+    SERIAL_NUMBER       VARCHAR(50) NOT NULL,
+    DEVICE_MODEL        VARCHAR(100),      -- PX-Q400, PX-Q650, PX-G1300, PX-220
+    DEVICE_TYPE         VARCHAR(50),       -- Pressure Exchanger, Turbocharger, Pump
+    PRODUCT_LINE        VARCHAR(100),      -- Desalination, Wastewater, Refrigeration
+    INSTALLATION_SITE   VARCHAR(255),
+    SITE_COUNTRY        VARCHAR(100),
+    SITE_REGION         VARCHAR(100),
+    CUSTOMER_ID         VARCHAR(36),
+    CUSTOMER_NAME       VARCHAR(255),
+    INSTALLATION_DATE   DATE,
+    WARRANTY_EXPIRY     DATE,
+    COMMISSIONING_DATE  DATE,
+    OPERATING_HOURS     NUMBER(12,0) DEFAULT 0,
+    STATUS              VARCHAR(50),       -- Active, Maintenance, Decommissioned, Standby
+    FIRMWARE_VERSION    VARCHAR(50),
+    LAST_SERVICE_DATE   DATE,
+    NEXT_SERVICE_DATE   DATE,
+    CREATED_DATE        TIMESTAMP_NTZ
+);
+
+CREATE OR REPLACE TABLE DEVICE_TELEMETRY (
+    TELEMETRY_ID        VARCHAR(36) PRIMARY KEY,
+    DEVICE_ID           VARCHAR(36) REFERENCES DEVICE_REGISTRY(DEVICE_ID),
+    TIMESTAMP           TIMESTAMP_NTZ NOT NULL,
+    READING_DATE        DATE,
+    INLET_PRESSURE_BAR  NUMBER(8,2),
+    OUTLET_PRESSURE_BAR NUMBER(8,2),
+    PRESSURE_DIFFERENTIAL NUMBER(8,2),
+    FLOW_RATE_M3H       NUMBER(8,2),
+    ENERGY_RECOVERY_PCT NUMBER(5,2),
+    VIBRATION_MM_S      NUMBER(8,3),
+    TEMPERATURE_C       NUMBER(6,2),
+    ROTOR_SPEED_RPM     NUMBER(8,0),
+    POWER_CONSUMPTION_KW NUMBER(8,2),
+    SALINITY_PPM        NUMBER(10,0),
+    OPERATING_MODE      VARCHAR(50),       -- Normal, High Load, Low Load, Standby, Startup
+    DATA_QUALITY        VARCHAR(20)        -- Good, Suspect, Bad
+);
+
+CREATE OR REPLACE TABLE ALARMS (
+    ALARM_ID            VARCHAR(36) PRIMARY KEY,
+    DEVICE_ID           VARCHAR(36) REFERENCES DEVICE_REGISTRY(DEVICE_ID),
+    ALARM_TIMESTAMP     TIMESTAMP_NTZ NOT NULL,
+    ALARM_CODE          VARCHAR(50),
+    ALARM_SEVERITY      VARCHAR(20),       -- Critical, High, Medium, Low, Info
+    ALARM_TYPE          VARCHAR(100),      -- Vibration, Pressure, Temperature, Flow, System
+    DESCRIPTION         VARCHAR(1000),
+    ACKNOWLEDGED        BOOLEAN DEFAULT FALSE,
+    ACKNOWLEDGED_BY     VARCHAR(255),
+    RESOLVED_TIMESTAMP  TIMESTAMP_NTZ,
+    ROOT_CAUSE          VARCHAR(500),
+    ACTION_TAKEN        VARCHAR(1000)
+);
+
+CREATE OR REPLACE TABLE MAINTENANCE_LOGS (
+    MAINTENANCE_ID      VARCHAR(36) PRIMARY KEY,
+    DEVICE_ID           VARCHAR(36) REFERENCES DEVICE_REGISTRY(DEVICE_ID),
+    MAINTENANCE_TYPE    VARCHAR(50),       -- Preventive, Corrective, Predictive, Emergency
+    WORK_ORDER_NUMBER   VARCHAR(50),
+    START_DATE          TIMESTAMP_NTZ,
+    END_DATE            TIMESTAMP_NTZ,
+    DESCRIPTION         VARCHAR(2000),
+    PARTS_REPLACED      VARCHAR(1000),
+    LABOR_HOURS         NUMBER(6,2),
+    PARTS_COST          NUMBER(12,2),
+    LABOR_COST          NUMBER(12,2),
+    TOTAL_COST          NUMBER(12,2),
+    TECHNICIAN          VARCHAR(255),
+    STATUS              VARCHAR(50),       -- Planned, In Progress, Completed, Cancelled
+    DOWNTIME_HOURS      NUMBER(8,2),
+    FAILURE_MODE        VARCHAR(200)
+);
+
+-- ============================================================================
+-- ORACLE ERP TABLES (Manufacturing & Supply Chain)
+-- ============================================================================
+USE SCHEMA ORACLE_ERP;
+
+CREATE OR REPLACE TABLE PRODUCTION_ORDERS (
+    PRODUCTION_ORDER_ID VARCHAR(36) PRIMARY KEY,
+    ORDER_NUMBER        VARCHAR(50) NOT NULL,
+    PRODUCT_ID          VARCHAR(36),
+    PRODUCT_NAME        VARCHAR(255),
+    PRODUCT_MODEL       VARCHAR(100),      -- PX-Q400, PX-Q650, PX-G1300
+    QUANTITY_ORDERED    NUMBER(10,0),
+    QUANTITY_COMPLETED  NUMBER(10,0) DEFAULT 0,
+    QUANTITY_SCRAPPED   NUMBER(10,0) DEFAULT 0,
+    START_DATE          DATE,
+    END_DATE            DATE,
+    DUE_DATE            DATE,
+    STATUS              VARCHAR(50),       -- Planned, Released, In Progress, Completed, Closed
+    WORK_CENTER         VARCHAR(100),
+    PRIORITY            VARCHAR(20),       -- High, Medium, Low
+    YIELD_PERCENT       NUMBER(5,2),
+    CYCLE_TIME_HOURS    NUMBER(8,2),
+    SITE                VARCHAR(100),
+    CREATED_DATE        TIMESTAMP_NTZ
+);
+
+CREATE OR REPLACE TABLE BILL_OF_MATERIALS (
+    BOM_ID              VARCHAR(36) PRIMARY KEY,
+    PRODUCT_ID          VARCHAR(36),
+    PRODUCT_NAME        VARCHAR(255),
+    PRODUCT_MODEL       VARCHAR(100),
+    COMPONENT_ID        VARCHAR(36),
+    COMPONENT_NAME      VARCHAR(255),
+    COMPONENT_CATEGORY  VARCHAR(100),      -- Ceramic, Metal, Seal, Bearing, Electronic
+    QUANTITY_PER_UNIT   NUMBER(8,3),
+    UNIT_OF_MEASURE     VARCHAR(20),
+    UNIT_COST           NUMBER(12,4),
+    LEAD_TIME_DAYS      NUMBER(5,0),
+    SUPPLIER_ID         VARCHAR(36),
+    IS_CRITICAL         BOOLEAN DEFAULT FALSE,
+    REVISION            VARCHAR(20),
+    EFFECTIVE_DATE      DATE
+);
+
+CREATE OR REPLACE TABLE INVENTORY (
+    INVENTORY_ID        VARCHAR(36) PRIMARY KEY,
+    ITEM_ID             VARCHAR(36),
+    ITEM_NAME           VARCHAR(255),
+    ITEM_CATEGORY       VARCHAR(100),      -- Raw Material, WIP, Finished Good, Spare Part
+    WAREHOUSE           VARCHAR(100),
+    LOCATION            VARCHAR(50),
+    QUANTITY_ON_HAND    NUMBER(12,0),
+    QUANTITY_RESERVED   NUMBER(12,0) DEFAULT 0,
+    QUANTITY_AVAILABLE  NUMBER(12,0),
+    REORDER_POINT       NUMBER(12,0),
+    REORDER_QUANTITY    NUMBER(12,0),
+    UNIT_COST           NUMBER(12,4),
+    TOTAL_VALUE         NUMBER(18,2),
+    LAST_RECEIPT_DATE   DATE,
+    LAST_ISSUE_DATE     DATE,
+    AS_OF_DATE          DATE
+);
+
+CREATE OR REPLACE TABLE SUPPLIERS (
+    SUPPLIER_ID         VARCHAR(36) PRIMARY KEY,
+    SUPPLIER_NAME       VARCHAR(255) NOT NULL,
+    SUPPLIER_TYPE       VARCHAR(100),      -- Raw Material, Component, Service, Logistics
+    CATEGORY            VARCHAR(100),      -- Ceramics, Metals, Seals, Electronics, Packaging
+    COUNTRY             VARCHAR(100),
+    REGION              VARCHAR(100),
+    LEAD_TIME_DAYS      NUMBER(5,0),
+    ON_TIME_DELIVERY_PCT NUMBER(5,2),
+    QUALITY_RATING      NUMBER(3,1),       -- 1.0 to 5.0
+    PAYMENT_TERMS       VARCHAR(50),
+    ANNUAL_SPEND        NUMBER(18,2),
+    IS_CERTIFIED        BOOLEAN DEFAULT TRUE,
+    CONTRACT_EXPIRY     DATE,
+    CREATED_DATE        TIMESTAMP_NTZ
+);
+
+CREATE OR REPLACE TABLE PURCHASE_ORDERS (
+    PO_ID               VARCHAR(36) PRIMARY KEY,
+    PO_NUMBER           VARCHAR(50) NOT NULL,
+    SUPPLIER_ID         VARCHAR(36) REFERENCES SUPPLIERS(SUPPLIER_ID),
+    ITEM_ID             VARCHAR(36),
+    ITEM_NAME           VARCHAR(255),
+    QUANTITY_ORDERED    NUMBER(10,0),
+    QUANTITY_RECEIVED   NUMBER(10,0) DEFAULT 0,
+    UNIT_PRICE          NUMBER(12,4),
+    TOTAL_AMOUNT        NUMBER(18,2),
+    ORDER_DATE          DATE,
+    EXPECTED_DATE       DATE,
+    RECEIVED_DATE       DATE,
+    STATUS              VARCHAR(50),       -- Draft, Approved, Sent, Partially Received, Received, Closed
+    CATEGORY            VARCHAR(100),
+    WAREHOUSE           VARCHAR(100),
+    CREATED_DATE        TIMESTAMP_NTZ
+);

@@ -1,299 +1,300 @@
--- =====================================================
--- Kraken Intelligence Agent
--- Step 9: ML Model Prediction Functions (UDFs)
--- These functions are called by the agent for predictions
--- =====================================================
+/*=============================================================================
+  ENERGY RECOVERY - SNOWFLAKE INTELLIGENCE AGENT
+  File: 09_ml_model_functions.sql
+  Purpose: ML prediction functions for the Cortex Agent
+  Execution Order: 9 of 10
+  
+  Functions:
+    1. PREDICT_PX_FAILURE() - Predict device failures within 30 days
+    2. SCORE_ENERGY_EFFICIENCY() - Score device energy recovery efficiency
+    3. FORECAST_DEMAND() - Forecast product demand by region/quarter
+    4. CALCULATE_EQUIPMENT_HEALTH() - Composite equipment health score
+=============================================================================*/
 
-USE DATABASE KRAKEN_DB;
-USE SCHEMA ML;
-USE WAREHOUSE KRAKEN_WH;
+USE DATABASE ENERGY_RECOVERY_DB;
+USE SCHEMA ML_MODELS;
+USE WAREHOUSE ENERGY_RECOVERY_WH;
 
--- =====================================================
--- 1. FRAUD/AML DETECTION
--- Returns customers with suspicious transaction patterns
--- =====================================================
-CREATE OR REPLACE FUNCTION AGENT_GET_FRAUD_ALERTS()
+-- ============================================================================
+-- FUNCTION 1: Predict PX Device Failure (next 30 days)
+-- Returns devices at risk based on vibration, efficiency, temperature trends
+-- ============================================================================
+CREATE OR REPLACE FUNCTION PREDICT_PX_FAILURE()
 RETURNS ARRAY
 AS
 $$
 SELECT ARRAY_AGG(OBJECT_CONSTRUCT(
-    'customer_id', CUSTOMER_ID,
-    'username', USERNAME,
+    'device_id', DEVICE_ID,
+    'serial_number', SERIAL_NUMBER,
+    'device_model', DEVICE_MODEL,
+    'installation_site', INSTALLATION_SITE,
+    'customer_name', CUSTOMER_NAME,
     'risk_score', RISK_SCORE,
-    'alert_reason', ALERT_REASON,
-    'transaction_count_24h', TX_COUNT_24H,
-    'volume_24h_usd', VOLUME_24H_USD,
-    'country', COUNTRY_CODE
+    'risk_level', CASE
+        WHEN RISK_SCORE >= 80 THEN 'Critical'
+        WHEN RISK_SCORE >= 60 THEN 'High'
+        WHEN RISK_SCORE >= 40 THEN 'Medium'
+        ELSE 'Low'
+    END,
+    'primary_risk_factor', PRIMARY_RISK_FACTOR,
+    'recommended_action', RECOMMENDED_ACTION,
+    'operating_hours', OPERATING_HOURS,
+    'days_since_last_service', DAYS_SINCE_SERVICE
 )) FROM (
-    SELECT 
-        C.CUSTOMER_ID,
-        C.USERNAME,
-        GREATEST(
-            -- Velocity score: many trades in short time
-            LEAST(100, (COUNT(T.TRADE_ID) / 50.0) * 100),
-            -- Large single transaction score
-            LEAST(100, (MAX(T.TOTAL_VALUE_USD) / 100000.0) * 100),
-            -- High leverage + volume
-            LEAST(100, (AVG(T.LEVERAGE) * SUM(T.TOTAL_VALUE_USD) / 500000.0) * 100)
-        )::INT AS RISK_SCORE,
-        CASE 
-            WHEN COUNT(T.TRADE_ID) > 100 THEN 'High-velocity trading: ' || COUNT(T.TRADE_ID) || ' trades in 24h'
-            WHEN MAX(T.TOTAL_VALUE_USD) > 100000 THEN 'Large single transaction: $' || ROUND(MAX(T.TOTAL_VALUE_USD), 2)
-            WHEN AVG(T.LEVERAGE) > 3 THEN 'High-leverage pattern with elevated volume'
-            ELSE 'Multiple minor risk indicators'
-        END AS ALERT_REASON,
-        COUNT(T.TRADE_ID) AS TX_COUNT_24H,
-        ROUND(SUM(T.TOTAL_VALUE_USD), 2) AS VOLUME_24H_USD,
-        C.COUNTRY_CODE
-    FROM KRAKEN_DB.RAW.CUSTOMERS C
-    JOIN KRAKEN_DB.RAW.TRADES T ON C.CUSTOMER_ID = T.CUSTOMER_ID
-    WHERE T.EXECUTED_AT >= DATEADD('hour', -24, CURRENT_TIMESTAMP())
-    GROUP BY C.CUSTOMER_ID, C.USERNAME, C.COUNTRY_CODE
-    HAVING RISK_SCORE > 60
+    SELECT
+        dr.DEVICE_ID,
+        dr.SERIAL_NUMBER,
+        dr.DEVICE_MODEL,
+        dr.INSTALLATION_SITE,
+        dr.CUSTOMER_NAME,
+        dr.OPERATING_HOURS,
+        DATEDIFF('day', dr.LAST_SERVICE_DATE, CURRENT_DATE()) AS DAYS_SINCE_SERVICE,
+        ROUND(
+            LEAST(100,
+                CASE WHEN t.AVG_VIBRATION > 5.0 THEN 40 WHEN t.AVG_VIBRATION > 3.5 THEN 20 ELSE 0 END +
+                CASE WHEN t.AVG_EFFICIENCY < 94 THEN 30 WHEN t.AVG_EFFICIENCY < 96 THEN 15 ELSE 0 END +
+                CASE WHEN t.AVG_TEMP > 38 THEN 20 WHEN t.AVG_TEMP > 35 THEN 10 ELSE 0 END +
+                CASE WHEN dr.OPERATING_HOURS > 100000 THEN 15 WHEN dr.OPERATING_HOURS > 75000 THEN 8 ELSE 0 END +
+                CASE WHEN DAYS_SINCE_SERVICE > 365 THEN 10 ELSE 0 END
+            ), 2
+        ) AS RISK_SCORE,
+        CASE
+            WHEN t.AVG_VIBRATION > 5.0 THEN 'High vibration - possible bearing wear'
+            WHEN t.AVG_EFFICIENCY < 94 THEN 'Low efficiency - possible seal degradation'
+            WHEN t.AVG_TEMP > 38 THEN 'Elevated temperature - cooling issue'
+            WHEN dr.OPERATING_HOURS > 100000 THEN 'High operating hours - scheduled overhaul needed'
+            ELSE 'Multiple minor factors'
+        END AS PRIMARY_RISK_FACTOR,
+        CASE
+            WHEN t.AVG_VIBRATION > 5.0 THEN 'Schedule bearing inspection and replacement within 14 days'
+            WHEN t.AVG_EFFICIENCY < 94 THEN 'Schedule seal kit replacement within 30 days'
+            WHEN t.AVG_TEMP > 38 THEN 'Inspect cooling system and verify operating conditions'
+            WHEN dr.OPERATING_HOURS > 100000 THEN 'Plan major overhaul during next scheduled shutdown'
+            ELSE 'Continue monitoring, increase inspection frequency'
+        END AS RECOMMENDED_ACTION
+    FROM ENERGY_RECOVERY_DB.SCADA_IOT.DEVICE_REGISTRY dr
+    JOIN (
+        SELECT
+            DEVICE_ID,
+            AVG(VIBRATION_MM_S) AS AVG_VIBRATION,
+            AVG(ENERGY_RECOVERY_PCT) AS AVG_EFFICIENCY,
+            AVG(TEMPERATURE_C) AS AVG_TEMP
+        FROM ENERGY_RECOVERY_DB.SCADA_IOT.DEVICE_TELEMETRY
+        GROUP BY DEVICE_ID
+    ) t ON dr.DEVICE_ID = t.DEVICE_ID
+    WHERE dr.STATUS = 'Active'
+    QUALIFY RISK_SCORE >= 40
     ORDER BY RISK_SCORE DESC
-    LIMIT 25
-)
-$$;
-
--- =====================================================
--- 2. CUSTOMER CHURN PREDICTION
--- Returns customers at high risk of becoming inactive
--- =====================================================
-CREATE OR REPLACE FUNCTION AGENT_GET_CHURN_RISK()
-RETURNS ARRAY
-AS
-$$
-SELECT ARRAY_AGG(OBJECT_CONSTRUCT(
-    'customer_id', CUSTOMER_ID,
-    'username', USERNAME,
-    'account_tier', ACCOUNT_TIER,
-    'churn_probability', CHURN_PROBABILITY,
-    'churn_reason', CHURN_REASON,
-    'days_since_last_trade', DAYS_INACTIVE,
-    'total_lifetime_volume_usd', LIFETIME_VOLUME,
-    'open_support_tickets', OPEN_TICKETS
-)) FROM (
-    SELECT
-        C.CUSTOMER_ID,
-        C.USERNAME,
-        C.ACCOUNT_TIER,
-        ROUND(
-            (LEAST(1.0, COALESCE(DATEDIFF('day', MAX(T.EXECUTED_AT), CURRENT_TIMESTAMP()), 365) / 90.0) * 0.4) +
-            (CASE WHEN COALESCE(COUNT(ST.TICKET_ID), 0) > 3 THEN 0.3 ELSE COALESCE(COUNT(ST.TICKET_ID), 0) * 0.1 END) +
-            (CASE WHEN C.TWO_FACTOR_ENABLED = FALSE THEN 0.15 ELSE 0 END) +
-            (CASE WHEN DATEDIFF('day', C.LAST_LOGIN_DATE, CURRENT_TIMESTAMP()) > 30 THEN 0.15 ELSE 0 END)
-        , 2) AS CHURN_PROBABILITY,
-        CASE 
-            WHEN COALESCE(DATEDIFF('day', MAX(T.EXECUTED_AT), CURRENT_TIMESTAMP()), 365) > 60 THEN 'Extended inactivity: ' || COALESCE(DATEDIFF('day', MAX(T.EXECUTED_AT), CURRENT_TIMESTAMP()), 365) || ' days since last trade'
-            WHEN COALESCE(COUNT(ST.TICKET_ID), 0) > 3 THEN 'High support friction: ' || COUNT(ST.TICKET_ID) || ' tickets filed'
-            WHEN DATEDIFF('day', C.LAST_LOGIN_DATE, CURRENT_TIMESTAMP()) > 30 THEN 'Login abandonment: ' || DATEDIFF('day', C.LAST_LOGIN_DATE, CURRENT_TIMESTAMP()) || ' days since login'
-            ELSE 'Multiple disengagement signals'
-        END AS CHURN_REASON,
-        COALESCE(DATEDIFF('day', MAX(T.EXECUTED_AT), CURRENT_TIMESTAMP()), 365) AS DAYS_INACTIVE,
-        ROUND(COALESCE(SUM(T.TOTAL_VALUE_USD), 0), 2) AS LIFETIME_VOLUME,
-        SUM(CASE WHEN ST.STATUS IN ('Open','In Progress','Waiting') THEN 1 ELSE 0 END) AS OPEN_TICKETS
-    FROM KRAKEN_DB.RAW.CUSTOMERS C
-    LEFT JOIN KRAKEN_DB.RAW.TRADES T ON C.CUSTOMER_ID = T.CUSTOMER_ID
-    LEFT JOIN KRAKEN_DB.RAW.SUPPORT_TICKETS ST ON C.CUSTOMER_ID = ST.CUSTOMER_ID
-    WHERE C.IS_ACTIVE = TRUE
-    GROUP BY C.CUSTOMER_ID, C.USERNAME, C.ACCOUNT_TIER, C.TWO_FACTOR_ENABLED, C.LAST_LOGIN_DATE
-    HAVING CHURN_PROBABILITY > 0.60
-    ORDER BY CHURN_PROBABILITY DESC
-    LIMIT 30
-)
-$$;
-
--- =====================================================
--- 3. TRADING VOLUME FORECAST
--- Returns 7-day volume predictions for top pairs
--- =====================================================
-CREATE OR REPLACE FUNCTION AGENT_GET_VOLUME_FORECAST()
-RETURNS ARRAY
-AS
-$$
-SELECT ARRAY_AGG(OBJECT_CONSTRUCT(
-    'trading_pair', TRADING_PAIR,
-    'avg_daily_volume_30d_usd', AVG_DAILY_VOLUME,
-    'volume_trend', VOLUME_TREND,
-    'predicted_next_7d_volume_usd', PREDICTED_7D_VOLUME,
-    'confidence', CONFIDENCE
-)) FROM (
-    SELECT
-        T.TRADING_PAIR,
-        ROUND(SUM(T.TOTAL_VALUE_USD) / 30.0, 2) AS AVG_DAILY_VOLUME,
-        CASE 
-            WHEN SUM(CASE WHEN T.EXECUTED_AT >= DATEADD('day', -7, CURRENT_TIMESTAMP()) THEN T.TOTAL_VALUE_USD ELSE 0 END) >
-                 SUM(CASE WHEN T.EXECUTED_AT BETWEEN DATEADD('day', -14, CURRENT_TIMESTAMP()) AND DATEADD('day', -7, CURRENT_TIMESTAMP()) THEN T.TOTAL_VALUE_USD ELSE 0 END)
-            THEN 'Increasing'
-            ELSE 'Decreasing'
-        END AS VOLUME_TREND,
-        ROUND(
-            SUM(CASE WHEN T.EXECUTED_AT >= DATEADD('day', -7, CURRENT_TIMESTAMP()) THEN T.TOTAL_VALUE_USD ELSE 0 END) *
-            CASE 
-                WHEN SUM(CASE WHEN T.EXECUTED_AT >= DATEADD('day', -7, CURRENT_TIMESTAMP()) THEN T.TOTAL_VALUE_USD ELSE 0 END) >
-                     SUM(CASE WHEN T.EXECUTED_AT BETWEEN DATEADD('day', -14, CURRENT_TIMESTAMP()) AND DATEADD('day', -7, CURRENT_TIMESTAMP()) THEN T.TOTAL_VALUE_USD ELSE 0 END)
-                THEN 1.08
-                ELSE 0.95
-            END
-        , 2) AS PREDICTED_7D_VOLUME,
-        CASE 
-            WHEN COUNT(T.TRADE_ID) > 10000 THEN 'High'
-            WHEN COUNT(T.TRADE_ID) > 1000 THEN 'Medium'
-            ELSE 'Low'
-        END AS CONFIDENCE
-    FROM KRAKEN_DB.RAW.TRADES T
-    WHERE T.EXECUTED_AT >= DATEADD('day', -30, CURRENT_TIMESTAMP())
-      AND T.SETTLEMENT_STATUS = 'Settled'
-    GROUP BY T.TRADING_PAIR
-    ORDER BY AVG_DAILY_VOLUME DESC
-    LIMIT 15
-)
-$$;
-
--- =====================================================
--- 4. CUSTOMER LIFETIME VALUE
--- Returns LTV predictions for customer segments
--- =====================================================
-CREATE OR REPLACE FUNCTION AGENT_GET_CUSTOMER_LTV()
-RETURNS ARRAY
-AS
-$$
-SELECT ARRAY_AGG(OBJECT_CONSTRUCT(
-    'customer_id', CUSTOMER_ID,
-    'username', USERNAME,
-    'account_tier', ACCOUNT_TIER,
-    'account_age_days', ACCOUNT_AGE_DAYS,
-    'historical_fees_usd', HISTORICAL_FEES,
-    'predicted_annual_ltv_usd', PREDICTED_LTV,
-    'ltv_segment', LTV_SEGMENT
-)) FROM (
-    SELECT
-        C.CUSTOMER_ID,
-        C.USERNAME,
-        C.ACCOUNT_TIER,
-        DATEDIFF('day', C.REGISTRATION_DATE, CURRENT_TIMESTAMP()) AS ACCOUNT_AGE_DAYS,
-        ROUND(COALESCE(SUM(T.FEE_USD), 0), 2) AS HISTORICAL_FEES,
-        ROUND(
-            COALESCE(SUM(T.FEE_USD), 0) / GREATEST(DATEDIFF('day', C.REGISTRATION_DATE, CURRENT_TIMESTAMP()), 1) * 365 *
-            CASE 
-                WHEN C.ACCOUNT_TIER = 'Institutional' THEN 1.2
-                WHEN C.ACCOUNT_TIER = 'VIP' THEN 1.1
-                WHEN C.ACCOUNT_TIER = 'Pro' THEN 1.05
-                ELSE 0.9
-            END
-        , 2) AS PREDICTED_LTV,
-        CASE 
-            WHEN COALESCE(SUM(T.FEE_USD), 0) / GREATEST(DATEDIFF('day', C.REGISTRATION_DATE, CURRENT_TIMESTAMP()), 1) * 365 > 50000 THEN 'Whale'
-            WHEN COALESCE(SUM(T.FEE_USD), 0) / GREATEST(DATEDIFF('day', C.REGISTRATION_DATE, CURRENT_TIMESTAMP()), 1) * 365 > 10000 THEN 'High Value'
-            WHEN COALESCE(SUM(T.FEE_USD), 0) / GREATEST(DATEDIFF('day', C.REGISTRATION_DATE, CURRENT_TIMESTAMP()), 1) * 365 > 1000 THEN 'Growth'
-            ELSE 'Standard'
-        END AS LTV_SEGMENT
-    FROM KRAKEN_DB.RAW.CUSTOMERS C
-    LEFT JOIN KRAKEN_DB.RAW.TRADES T ON C.CUSTOMER_ID = T.CUSTOMER_ID
-    WHERE C.IS_ACTIVE = TRUE
-    GROUP BY C.CUSTOMER_ID, C.USERNAME, C.ACCOUNT_TIER, C.REGISTRATION_DATE
-    ORDER BY PREDICTED_LTV DESC
     LIMIT 50
 )
 $$;
 
--- =====================================================
--- 5. MARKET RISK SCORING
--- Returns risk grades for open futures positions
--- =====================================================
-CREATE OR REPLACE FUNCTION AGENT_GET_RISK_SCORES()
+-- ============================================================================
+-- FUNCTION 2: Score Energy Efficiency
+-- Returns efficiency scores for devices compared to design specifications
+-- ============================================================================
+CREATE OR REPLACE FUNCTION SCORE_ENERGY_EFFICIENCY()
 RETURNS ARRAY
 AS
 $$
 SELECT ARRAY_AGG(OBJECT_CONSTRUCT(
-    'customer_id', CUSTOMER_ID,
-    'username', USERNAME,
-    'contract_pair', CONTRACT_PAIR,
-    'side', SIDE,
-    'leverage', LEVERAGE,
-    'notional_value_usd', NOTIONAL_VALUE_USD,
-    'unrealized_pnl_usd', UNREALIZED_PNL_USD,
-    'risk_grade', RISK_GRADE,
-    'risk_factors', RISK_FACTORS
+    'device_model', DEVICE_MODEL,
+    'site_region', SITE_REGION,
+    'device_count', DEVICE_COUNT,
+    'avg_efficiency_pct', AVG_EFFICIENCY,
+    'design_efficiency_pct', DESIGN_EFFICIENCY,
+    'efficiency_gap_pct', ROUND(DESIGN_EFFICIENCY - AVG_EFFICIENCY, 2),
+    'efficiency_score', EFFICIENCY_SCORE,
+    'rating', CASE
+        WHEN EFFICIENCY_SCORE >= 95 THEN 'Excellent'
+        WHEN EFFICIENCY_SCORE >= 85 THEN 'Good'
+        WHEN EFFICIENCY_SCORE >= 70 THEN 'Fair'
+        ELSE 'Poor - Action Required'
+    END,
+    'potential_energy_savings_kwh', POTENTIAL_SAVINGS
 )) FROM (
     SELECT
-        C.CUSTOMER_ID,
-        C.USERNAME,
-        FP.CONTRACT_PAIR,
-        FP.SIDE,
-        FP.LEVERAGE,
-        FP.NOTIONAL_VALUE_USD,
-        FP.UNREALIZED_PNL_USD,
-        CASE 
-            WHEN FP.LEVERAGE >= 20 AND FP.UNREALIZED_PNL_USD < -10000 THEN 'F'
-            WHEN FP.LEVERAGE >= 15 OR FP.UNREALIZED_PNL_USD < -50000 THEN 'D'
-            WHEN FP.LEVERAGE >= 10 OR FP.UNREALIZED_PNL_USD < -20000 THEN 'C'
-            WHEN FP.LEVERAGE >= 5 OR FP.UNREALIZED_PNL_USD < -5000 THEN 'B'
-            ELSE 'A'
-        END AS RISK_GRADE,
-        CASE 
-            WHEN FP.LEVERAGE >= 20 THEN 'Extreme leverage (' || FP.LEVERAGE || 'x) with significant unrealized loss'
-            WHEN FP.LEVERAGE >= 10 THEN 'High leverage (' || FP.LEVERAGE || 'x) position'
-            WHEN FP.UNREALIZED_PNL_USD < -20000 THEN 'Large unrealized loss: $' || ABS(FP.UNREALIZED_PNL_USD)
-            ELSE 'Moderate position risk'
-        END AS RISK_FACTORS
-    FROM KRAKEN_DB.RAW.FUTURES_POSITIONS FP
-    JOIN KRAKEN_DB.RAW.CUSTOMERS C ON FP.CUSTOMER_ID = C.CUSTOMER_ID
-    WHERE FP.STATUS = 'Open'
-    ORDER BY 
-        CASE RISK_GRADE 
-            WHEN 'F' THEN 1 WHEN 'D' THEN 2 WHEN 'C' THEN 3 WHEN 'B' THEN 4 ELSE 5 
-        END,
-        FP.NOTIONAL_VALUE_USD DESC
+        dr.DEVICE_MODEL,
+        dr.SITE_REGION,
+        COUNT(*) AS DEVICE_COUNT,
+        ROUND(AVG(t.AVG_EFF), 2) AS AVG_EFFICIENCY,
+        CASE
+            WHEN dr.DEVICE_MODEL = 'PX-Q650' THEN 98.7
+            WHEN dr.DEVICE_MODEL = 'PX-Q400' THEN 98.0
+            WHEN dr.DEVICE_MODEL = 'PX-220' THEN 96.5
+            WHEN dr.DEVICE_MODEL = 'PX-G1300' THEN 95.0
+            ELSE 96.0
+        END AS DESIGN_EFFICIENCY,
+        ROUND(AVG(t.AVG_EFF) / CASE
+            WHEN dr.DEVICE_MODEL = 'PX-Q650' THEN 98.7
+            WHEN dr.DEVICE_MODEL = 'PX-Q400' THEN 98.0
+            WHEN dr.DEVICE_MODEL = 'PX-220' THEN 96.5
+            WHEN dr.DEVICE_MODEL = 'PX-G1300' THEN 95.0
+            ELSE 96.0
+        END * 100, 1) AS EFFICIENCY_SCORE,
+        ROUND(COUNT(*) * (CASE
+            WHEN dr.DEVICE_MODEL = 'PX-Q650' THEN 98.7
+            WHEN dr.DEVICE_MODEL = 'PX-Q400' THEN 98.0
+            WHEN dr.DEVICE_MODEL = 'PX-220' THEN 96.5
+            ELSE 95.0
+        END - AVG(t.AVG_EFF)) * 250, 0) AS POTENTIAL_SAVINGS
+    FROM ENERGY_RECOVERY_DB.SCADA_IOT.DEVICE_REGISTRY dr
+    JOIN (
+        SELECT DEVICE_ID, AVG(ENERGY_RECOVERY_PCT) AS AVG_EFF
+        FROM ENERGY_RECOVERY_DB.SCADA_IOT.DEVICE_TELEMETRY
+        GROUP BY DEVICE_ID
+    ) t ON dr.DEVICE_ID = t.DEVICE_ID
+    WHERE dr.STATUS = 'Active'
+    GROUP BY dr.DEVICE_MODEL, dr.SITE_REGION
+    ORDER BY AVG_EFFICIENCY ASC
     LIMIT 30
 )
 $$;
 
--- =====================================================
--- 6. SUPPORT TICKET CLASSIFICATION
--- Returns recent unclassified or misrouted tickets
--- =====================================================
-CREATE OR REPLACE FUNCTION AGENT_CLASSIFY_TICKETS()
+-- ============================================================================
+-- FUNCTION 3: Forecast Demand by Region and Quarter
+-- Returns demand forecast based on historical orders and pipeline
+-- ============================================================================
+CREATE OR REPLACE FUNCTION FORECAST_DEMAND()
 RETURNS ARRAY
 AS
 $$
 SELECT ARRAY_AGG(OBJECT_CONSTRUCT(
-    'ticket_id', TICKET_ID,
-    'current_category', CATEGORY,
-    'predicted_category', PREDICTED_CATEGORY,
+    'product_line', PRODUCT_LINE,
+    'region', REGION,
+    'forecast_quarter', FORECAST_QUARTER,
+    'historical_units', HISTORICAL_UNITS,
+    'pipeline_units', PIPELINE_UNITS,
+    'forecast_units', FORECAST_UNITS,
+    'forecast_revenue', FORECAST_REVENUE,
     'confidence', CONFIDENCE,
-    'priority_recommendation', PRIORITY_REC,
-    'subject', SUBJECT
+    'growth_rate_pct', GROWTH_RATE
 )) FROM (
     SELECT
-        ST.TICKET_ID,
-        ST.CATEGORY,
-        CASE 
-            WHEN LOWER(ST.SUBJECT) LIKE '%withdraw%' OR LOWER(ST.DESCRIPTION) LIKE '%withdraw%' THEN 'Withdrawals'
-            WHEN LOWER(ST.SUBJECT) LIKE '%deposit%' OR LOWER(ST.DESCRIPTION) LIKE '%deposit%' THEN 'Deposits'
-            WHEN LOWER(ST.SUBJECT) LIKE '%2fa%' OR LOWER(ST.DESCRIPTION) LIKE '%authenticator%' OR LOWER(ST.DESCRIPTION) LIKE '%security%' THEN 'Security'
-            WHEN LOWER(ST.SUBJECT) LIKE '%kyc%' OR LOWER(ST.DESCRIPTION) LIKE '%verification%' OR LOWER(ST.DESCRIPTION) LIKE '%identity%' THEN 'Verification'
-            WHEN LOWER(ST.SUBJECT) LIKE '%order%' OR LOWER(ST.DESCRIPTION) LIKE '%trade%' OR LOWER(ST.DESCRIPTION) LIKE '%margin%' THEN 'Trading'
-            WHEN LOWER(ST.SUBJECT) LIKE '%stake%' OR LOWER(ST.DESCRIPTION) LIKE '%reward%' THEN 'Staking'
-            WHEN LOWER(ST.SUBJECT) LIKE '%api%' OR LOWER(ST.DESCRIPTION) LIKE '%api%' THEN 'API'
-            ELSE 'Account'
-        END AS PREDICTED_CATEGORY,
-        CASE 
-            WHEN LOWER(ST.SUBJECT) LIKE '%withdraw%' AND LOWER(ST.DESCRIPTION) LIKE '%withdraw%' THEN 0.95
-            WHEN LOWER(ST.SUBJECT) LIKE '%2fa%' OR LOWER(ST.SUBJECT) LIKE '%locked%' THEN 0.90
-            ELSE 0.75
+        so.PRODUCT_LINE,
+        so.REGION,
+        'Q' || QUARTER(DATEADD('quarter', 1, CURRENT_DATE())) || ' ' || YEAR(DATEADD('quarter', 1, CURRENT_DATE())) AS FORECAST_QUARTER,
+        SUM(so.QUANTITY) AS HISTORICAL_UNITS,
+        COALESCE(p.PIPELINE_UNITS, 0) AS PIPELINE_UNITS,
+        ROUND(SUM(so.QUANTITY) * 1.08 + COALESCE(p.PIPELINE_UNITS, 0) * 0.3, 0) AS FORECAST_UNITS,
+        ROUND((SUM(so.QUANTITY) * 1.08 + COALESCE(p.PIPELINE_UNITS, 0) * 0.3) * AVG(so.UNIT_PRICE), 2) AS FORECAST_REVENUE,
+        CASE
+            WHEN COALESCE(p.PIPELINE_UNITS, 0) > SUM(so.QUANTITY) * 0.5 THEN 'High'
+            WHEN COALESCE(p.PIPELINE_UNITS, 0) > SUM(so.QUANTITY) * 0.25 THEN 'Medium'
+            ELSE 'Low'
         END AS CONFIDENCE,
-        CASE 
-            WHEN LOWER(ST.DESCRIPTION) LIKE '%locked%' OR LOWER(ST.DESCRIPTION) LIKE '%cannot access%' THEN 'Critical'
-            WHEN LOWER(ST.DESCRIPTION) LIKE '%fund%' OR LOWER(ST.DESCRIPTION) LIKE '%liquidat%' THEN 'High'
-            ELSE ST.PRIORITY
-        END AS PRIORITY_REC,
-        ST.SUBJECT
-    FROM KRAKEN_DB.RAW.SUPPORT_TICKETS ST
-    WHERE ST.STATUS IN ('Open', 'In Progress')
-    ORDER BY ST.CREATED_AT DESC
-    LIMIT 30
+        ROUND((SUM(so.QUANTITY) * 1.08 - SUM(so.QUANTITY)) / NULLIF(SUM(so.QUANTITY), 0) * 100, 1) AS GROWTH_RATE
+    FROM ENERGY_RECOVERY_DB.DYNAMICS_FINANCE.SALES_ORDERS so
+    LEFT JOIN (
+        SELECT
+            PRODUCT_INTEREST AS PRODUCT_LINE,
+            REGION,
+            SUM(AMOUNT / 200000) AS PIPELINE_UNITS
+        FROM ENERGY_RECOVERY_DB.DYNAMICS_CRM.OPPORTUNITIES
+        WHERE STAGE NOT IN ('Close Won', 'Close Lost')
+        GROUP BY 1, 2
+    ) p ON so.PRODUCT_LINE = p.PRODUCT_LINE AND so.REGION = p.REGION
+    WHERE so.ORDER_DATE >= DATEADD('year', -1, CURRENT_DATE())
+    GROUP BY so.PRODUCT_LINE, so.REGION, p.PIPELINE_UNITS
+    ORDER BY FORECAST_REVENUE DESC
+    LIMIT 25
 )
 $$;
 
-SELECT 'Step 9 Complete: All 6 ML prediction UDFs created in KRAKEN_DB.ML schema.' AS STATUS;
+-- ============================================================================
+-- FUNCTION 4: Calculate Equipment Health Score
+-- Returns composite health score combining multiple factors
+-- ============================================================================
+CREATE OR REPLACE FUNCTION CALCULATE_EQUIPMENT_HEALTH()
+RETURNS ARRAY
+AS
+$$
+SELECT ARRAY_AGG(OBJECT_CONSTRUCT(
+    'device_id', DEVICE_ID,
+    'serial_number', SERIAL_NUMBER,
+    'device_model', DEVICE_MODEL,
+    'installation_site', INSTALLATION_SITE,
+    'health_score', HEALTH_SCORE,
+    'health_status', CASE
+        WHEN HEALTH_SCORE >= 90 THEN 'Excellent'
+        WHEN HEALTH_SCORE >= 75 THEN 'Good'
+        WHEN HEALTH_SCORE >= 60 THEN 'Fair'
+        WHEN HEALTH_SCORE >= 40 THEN 'Poor'
+        ELSE 'Critical'
+    END,
+    'efficiency_score', EFFICIENCY_COMPONENT,
+    'vibration_score', VIBRATION_COMPONENT,
+    'maintenance_score', MAINTENANCE_COMPONENT,
+    'age_score', AGE_COMPONENT,
+    'top_concern', TOP_CONCERN
+)) FROM (
+    SELECT
+        dr.DEVICE_ID,
+        dr.SERIAL_NUMBER,
+        dr.DEVICE_MODEL,
+        dr.INSTALLATION_SITE,
+        ROUND(
+            t.EFFICIENCY_COMPONENT * 0.35 +
+            t.VIBRATION_COMPONENT * 0.30 +
+            m.MAINTENANCE_COMPONENT * 0.20 +
+            CASE
+                WHEN dr.OPERATING_HOURS < 25000 THEN 100
+                WHEN dr.OPERATING_HOURS < 50000 THEN 90
+                WHEN dr.OPERATING_HOURS < 75000 THEN 75
+                WHEN dr.OPERATING_HOURS < 100000 THEN 60
+                ELSE 40
+            END * 0.15
+        , 1) AS HEALTH_SCORE,
+        ROUND(t.EFFICIENCY_COMPONENT, 1) AS EFFICIENCY_COMPONENT,
+        ROUND(t.VIBRATION_COMPONENT, 1) AS VIBRATION_COMPONENT,
+        ROUND(m.MAINTENANCE_COMPONENT, 1) AS MAINTENANCE_COMPONENT,
+        ROUND(CASE
+            WHEN dr.OPERATING_HOURS < 25000 THEN 100
+            WHEN dr.OPERATING_HOURS < 50000 THEN 90
+            WHEN dr.OPERATING_HOURS < 75000 THEN 75
+            WHEN dr.OPERATING_HOURS < 100000 THEN 60
+            ELSE 40
+        END, 1) AS AGE_COMPONENT,
+        CASE
+            WHEN t.VIBRATION_COMPONENT < 50 THEN 'High vibration - bearing inspection needed'
+            WHEN t.EFFICIENCY_COMPONENT < 60 THEN 'Low efficiency - seal replacement recommended'
+            WHEN m.MAINTENANCE_COMPONENT < 50 THEN 'Overdue for maintenance'
+            WHEN dr.OPERATING_HOURS > 100000 THEN 'High operating hours - plan overhaul'
+            ELSE 'No immediate concerns'
+        END AS TOP_CONCERN
+    FROM ENERGY_RECOVERY_DB.SCADA_IOT.DEVICE_REGISTRY dr
+    JOIN (
+        SELECT
+            DEVICE_ID,
+            CASE
+                WHEN AVG(ENERGY_RECOVERY_PCT) >= 97 THEN 100
+                WHEN AVG(ENERGY_RECOVERY_PCT) >= 95 THEN 85
+                WHEN AVG(ENERGY_RECOVERY_PCT) >= 93 THEN 65
+                ELSE 40
+            END AS EFFICIENCY_COMPONENT,
+            CASE
+                WHEN AVG(VIBRATION_MM_S) < 2.0 THEN 100
+                WHEN AVG(VIBRATION_MM_S) < 3.5 THEN 80
+                WHEN AVG(VIBRATION_MM_S) < 5.0 THEN 55
+                ELSE 30
+            END AS VIBRATION_COMPONENT
+        FROM ENERGY_RECOVERY_DB.SCADA_IOT.DEVICE_TELEMETRY
+        GROUP BY DEVICE_ID
+    ) t ON dr.DEVICE_ID = t.DEVICE_ID
+    LEFT JOIN (
+        SELECT
+            DEVICE_ID,
+            CASE
+                WHEN MAX(END_DATE) >= DATEADD('month', -6, CURRENT_TIMESTAMP()) THEN 90
+                WHEN MAX(END_DATE) >= DATEADD('year', -1, CURRENT_TIMESTAMP()) THEN 70
+                ELSE 40
+            END AS MAINTENANCE_COMPONENT
+        FROM ENERGY_RECOVERY_DB.SCADA_IOT.MAINTENANCE_LOGS
+        WHERE STATUS = 'Completed'
+        GROUP BY DEVICE_ID
+    ) m ON dr.DEVICE_ID = m.DEVICE_ID
+    WHERE dr.STATUS = 'Active'
+    ORDER BY HEALTH_SCORE ASC
+    LIMIT 50
+)
+$$;
