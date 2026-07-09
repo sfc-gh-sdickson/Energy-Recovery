@@ -12,10 +12,10 @@
   <rect width="1100" height="620" fill="#ffffff"/>
 
   <!-- Title -->
-  <text x="550" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#0f172a">ML Models — Questions Answered</text>
+  <text x="550" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#0f172a">ML Models &#x2014; Questions Answered</text>
   <text x="550" y="56" text-anchor="middle" font-size="12" fill="#64748b">Each model answers specific business questions via SQL UDF functions</text>
 
-  <!-- ═══ MODEL 1: Predict Failure ═══ -->
+  <!-- === MODEL 1: Predict Failure === -->
   <rect x="40" y="80" width="510" height="120" rx="8" fill="#7f1d1d" filter="url(#shadow)"/>
   <text x="295" y="105" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">PREDICT_PX_FAILURE()</text>
   <text x="295" y="125" text-anchor="middle" font-size="11" fill="#fecaca">Predicts which PX devices will fail within the next 30 days</text>
@@ -28,12 +28,12 @@
 
   <rect x="585" y="80" width="475" height="120" rx="8" fill="#450a0a" filter="url(#shadow)"/>
   <text x="822" y="105" text-anchor="middle" font-size="11" font-weight="bold" fill="#fca5a5">Returns per device:</text>
-  <text x="605" y="128" font-size="10" fill="#fecaca">• risk_score (0-100) with risk_level (Critical/High/Medium/Low)</text>
-  <text x="605" y="148" font-size="10" fill="#fecaca">• primary_risk_factor: "High vibration - possible bearing wear"</text>
-  <text x="605" y="168" font-size="10" fill="#fecaca">• recommended_action: "Schedule bearing inspection in 14 days"</text>
-  <text x="605" y="188" font-size="10" fill="#fecaca">• device_model, installation_site, operating_hours</text>
+  <text x="605" y="128" font-size="10" fill="#fecaca">&#x2022; risk_score (0-100) with risk_level (Critical/High/Medium/Low)</text>
+  <text x="605" y="148" font-size="10" fill="#fecaca">&#x2022; primary_risk_factor: "High vibration - possible bearing wear"</text>
+  <text x="605" y="168" font-size="10" fill="#fecaca">&#x2022; recommended_action: "Schedule bearing inspection in 14 days"</text>
+  <text x="605" y="188" font-size="10" fill="#fecaca">&#x2022; device_model, installation_site, operating_hours</text>
 
-  <!-- ═══ MODEL 2: Score Efficiency ═══ -->
+  <!-- === MODEL 2: Score Efficiency === -->
   <rect x="40" y="215" width="510" height="120" rx="8" fill="#1e3a8a" filter="url(#shadow)"/>
   <text x="295" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">SCORE_ENERGY_EFFICIENCY()</text>
   <text x="295" y="260" text-anchor="middle" font-size="11" fill="#bfdbfe">Scores device efficiency vs. design specs, identifies savings</text>
@@ -46,12 +46,12 @@
 
   <rect x="585" y="215" width="475" height="120" rx="8" fill="#172554" filter="url(#shadow)"/>
   <text x="822" y="240" text-anchor="middle" font-size="11" font-weight="bold" fill="#93c5fd">Returns per model/region:</text>
-  <text x="605" y="263" font-size="10" fill="#bfdbfe">• avg_efficiency vs design_efficiency (e.g. 96.2% vs 98.7%)</text>
-  <text x="605" y="283" font-size="10" fill="#bfdbfe">• efficiency_gap_pct and rating (Excellent/Good/Fair/Poor)</text>
-  <text x="605" y="303" font-size="10" fill="#bfdbfe">• potential_energy_savings_kwh: 125,000</text>
-  <text x="605" y="323" font-size="10" fill="#bfdbfe">• device_count per group</text>
+  <text x="605" y="263" font-size="10" fill="#bfdbfe">&#x2022; avg_efficiency vs design_efficiency (e.g. 96.2% vs 98.7%)</text>
+  <text x="605" y="283" font-size="10" fill="#bfdbfe">&#x2022; efficiency_gap_pct and rating (Excellent/Good/Fair/Poor)</text>
+  <text x="605" y="303" font-size="10" fill="#bfdbfe">&#x2022; potential_energy_savings_kwh: 125,000</text>
+  <text x="605" y="323" font-size="10" fill="#bfdbfe">&#x2022; device_count per group</text>
 
-  <!-- ═══ MODEL 3: Forecast Demand ═══ -->
+  <!-- === MODEL 3: Forecast Demand === -->
   <rect x="40" y="350" width="510" height="120" rx="8" fill="#064e3b" filter="url(#shadow)"/>
   <text x="295" y="375" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">FORECAST_DEMAND()</text>
   <text x="295" y="395" text-anchor="middle" font-size="11" fill="#a7f3d0">Forecasts product demand by region for next quarter</text>
@@ -64,12 +64,12 @@
 
   <rect x="585" y="350" width="475" height="120" rx="8" fill="#022c22" filter="url(#shadow)"/>
   <text x="822" y="375" text-anchor="middle" font-size="11" font-weight="bold" fill="#6ee7b7">Returns per product/region:</text>
-  <text x="605" y="398" font-size="10" fill="#a7f3d0">• forecast_units: 180 | forecast_revenue: $45.2M</text>
-  <text x="605" y="418" font-size="10" fill="#a7f3d0">• confidence: High/Medium/Low</text>
-  <text x="605" y="438" font-size="10" fill="#a7f3d0">• growth_rate_pct: 8.0%</text>
-  <text x="605" y="458" font-size="10" fill="#a7f3d0">• historical_units vs pipeline_units</text>
+  <text x="605" y="398" font-size="10" fill="#a7f3d0">&#x2022; forecast_units: 180 | forecast_revenue: $45.2M</text>
+  <text x="605" y="418" font-size="10" fill="#a7f3d0">&#x2022; confidence: High/Medium/Low</text>
+  <text x="605" y="438" font-size="10" fill="#a7f3d0">&#x2022; growth_rate_pct: 8.0%</text>
+  <text x="605" y="458" font-size="10" fill="#a7f3d0">&#x2022; historical_units vs pipeline_units</text>
 
-  <!-- ═══ MODEL 4: Equipment Health ═══ -->
+  <!-- === MODEL 4: Equipment Health === -->
   <rect x="40" y="485" width="510" height="120" rx="8" fill="#78350f" filter="url(#shadow)"/>
   <text x="295" y="510" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">CALCULATE_EQUIPMENT_HEALTH()</text>
   <text x="295" y="530" text-anchor="middle" font-size="11" fill="#fde68a">Composite health score: efficiency + vibration + maintenance + age</text>
@@ -82,8 +82,8 @@
 
   <rect x="585" y="485" width="475" height="120" rx="8" fill="#451a03" filter="url(#shadow)"/>
   <text x="822" y="510" text-anchor="middle" font-size="11" font-weight="bold" fill="#fbbf24">Returns per device:</text>
-  <text x="605" y="533" font-size="10" fill="#fde68a">• health_score (0-100): Excellent/Good/Fair/Poor/Critical</text>
-  <text x="605" y="553" font-size="10" fill="#fde68a">• Component scores: efficiency, vibration, maintenance, age</text>
-  <text x="605" y="573" font-size="10" fill="#fde68a">• top_concern: "High vibration - bearing inspection needed"</text>
-  <text x="605" y="593" font-size="10" fill="#fde68a">• device_model, serial_number, installation_site</text>
+  <text x="605" y="533" font-size="10" fill="#fde68a">&#x2022; health_score (0-100): Excellent/Good/Fair/Poor/Critical</text>
+  <text x="605" y="553" font-size="10" fill="#fde68a">&#x2022; Component scores: efficiency, vibration, maintenance, age</text>
+  <text x="605" y="573" font-size="10" fill="#fde68a">&#x2022; top_concern: "High vibration - bearing inspection needed"</text>
+  <text x="605" y="593" font-size="10" fill="#fde68a">&#x2022; device_model, serial_number, installation_site</text>
 </svg>
